@@ -11,6 +11,8 @@
 ## MỤC LỤC
 1. [I. QUY ƯỚC CHUNG VỀ GIAO THỨC HTTP, HEADERS & CẤU TRÚC PHẢN HỒI CHUẨN](#i-quy-ước-chung-về-giao-thức-http-headers--cấu-trúc-phản-hồi-chuẩn)
 2. [II. ÁNH XẠ KIẾN TRÚC TỪ SƠ ĐỒ TUẦN TỰ BCE & USE CASES SANG 15 NHÓM REST API](#ii-ánh-xạ-kiến-trúc-từ-sơ-đồ-tuần-tự-bce--use-cases-sang-15-nhóm-rest-api)
+   - [1. Ánh xạ từ 6 Sequence Diagrams BCE sang 15 nhóm Endpoints](#1-ánh-xạ-từ-6-sequence-diagrams-bce-sang-15-nhóm-endpoints)
+   - [2. Ma trận Đối chiếu 100% Các Phương thức Lớp Thực thể (Class Diagram v2) ↔ REST Endpoints](#2-ma-trận-đối-chiếu-100-các-phương-thức-lớp-thực-thể-class-diagram-v2--rest-endpoints)
 3. [III. CHUẨN HÓA PRISMA SCHEMA (`SH-02`, `SH-03`) & TYPESCRIPT INTERFACES (`SH-05`)](#iii-chuẩn-hóa-prisma-schema-sh-02-sh-03--typescript-interfaces-sh-05)
 4. [IV. ĐẶC TẢ CHI TIẾT 15 NHÓM RESTFUL API ENDPOINTS](#iv-đặc-tả-chi-tiết-15-nhóm-restful-api-endpoints)
    - [Nhóm 0 (Hạ tầng): Health Check & Trạng thái Hệ thống (`SH-04`)](#nhóm-0-hạ-tầng-health-check--trạng-thái-hệ-thống-sh-04)
@@ -94,6 +96,8 @@
 
 ## II. ÁNH XẠ KIẾN TRÚC TỪ SƠ ĐỒ TUẦN TỰ BCE & USE CASES SANG 15 NHÓM REST API
 
+### 1. Ánh xạ từ 6 Sequence Diagrams BCE sang 15 nhóm Endpoints
+
 Bảng dưới đây đối chiếu trực tiếp toàn bộ các lớp `<<boundary>>`, `<<control>>`, thông điệp phương thức trong [`Sequence_Diagrams_v2.xml`](./diagrams/ver2/Sequence_Diagrams_v2.xml) và [`ClassDiagram_v2.xml`](./diagrams/ver2/ClassDiagram_v2.xml) sang 15 nhóm REST Endpoint và các Task Jira (`SH-04` $\rightarrow$ `SH-27`):
 
 | Nhóm API | Phân hệ & Mã UC | Sơ đồ SD & Lớp `<<boundary>>` $\rightarrow$ `<<control>>` | Thông điệp gốc trên Sequence / Class Diagram | RESTful Endpoint chuẩn | Task BE & FE |
@@ -113,6 +117,47 @@ Bảng dưới đây đối chiếu trực tiếp toàn bộ các lớp `<<bound
 | **Nhóm 13** | PH3 – `UC3.2` | **SD04 (Phase 2):** `:ServiceUI` $\rightarrow$ `:ServiceController` | `ghiNhanDichVu(maDatPhong, maDichVu, soLuong)` $\rightarrow$ `SuDungDichVu.taoMoi()` | `GET /api/stays/:bookingId/services`<br>`POST /api/stays/:bookingId/services`<br>`DELETE /api/stays/:bookingId/services/:usageId` | `SH-15`<br>`SH-17` |
 | **Nhóm 14** | PH3 – `UC3.3`<br>PH4 – `UC4.1`, `UC4.2` | **SD05:** `:CheckOutUI` $\rightarrow$ `:PaymentController` | `lapHoaDonQuyetToan(maPhong, phuPhi)`<br>`xacNhanThanhToan(maHoaDon, phuongThuc)`<br>`xuatBienLaiPDF()` | `POST /api/stays/:bookingId/check-out-invoice`<br>`GET /api/invoices`<br>`GET /api/invoices/:id`<br>`POST /api/invoices/:id/pay`<br>`GET /api/invoices/:id/pdf` | `SH-16`<br>`SH-17` |
 | **Nhóm 15** | PH5 – `UC5.1`, `UC5.2`<br>PH6 – `UC6.1`, `UC6.2` | **SD06:** `:ReviewUI` $\rightarrow$ `:ReviewController`<br>`:ReportUI` $\rightarrow$ `:ReportController` | `guiDanhGia(maDatPhong, soSao, noiDung)`<br>`guiPhanHoi(maDanhGia, noiDungPhanHoi)`<br>`getRevenueStats`, `getOccupancyRate` | `GET /api/reviews`<br>`POST /api/reviews`<br>`PATCH /api/reviews/:id/reply`<br>`GET /api/reports/revenue`<br>`GET /api/reports/occupancy` | `SH-14`<br>`SH-15`<br>`SH-17`<br>`SH-18` |
+
+---
+
+### 2. Ma trận Đối chiếu 100% Các Phương thức Lớp Thực thể (Class Diagram v2) ↔ REST Endpoints
+
+Bảng ma trận truy vết dưới đây bảo đảm toàn bộ **32 lượt triển khai phương thức nghiệp vụ** được định nghĩa trong 11 lớp thực thể của [`ClassDiagram_v2.xml`](./diagrams/ver2/ClassDiagram_v2.xml) đều có endpoint xử lý tương ứng trong hệ thống:
+
+| STT | Lớp thực thể (Class) | Phương thức trong ClassDiagram_v2 | Endpoint RESTful tương ứng | HTTP Method | Vai trò truy cập & Nhiệm vụ nghiệp vụ |
+| :---: | :--- | :--- | :--- | :---: | :--- |
+| 1 | `Homestay` | `capNhatThongTin(diaChi, sdt): void` | `/api/homestay` | `PUT` | `@Roles('ADMIN')`: Cập nhật tên, địa chỉ, hotline, quy định chung. |
+| 2 | `Homestay` | `layDanhSachPhong(): List<Phong>` | `/api/homestay/rooms` (hoặc `/api/rooms`) | `GET` | `Public`: Xem toàn bộ các phòng thuộc cơ sở homestay. |
+| 3 | `LoaiPhong` | `tinhGiaPhong(ngayDen, ngayDi): double` | `/api/rooms/available` & `/api/bookings` | `GET` / `POST` | `Public`: Thuật toán tính giá theo ngày thường & cuối tuần (Công thức 1). |
+| 4 | `Phong` | `capNhatTrangThai(tt: TrangThaiPhong): void` | `/api/rooms/:id/status` | `PATCH` | `@Roles('STAFF', 'ADMIN')`: Chuyển trạng thái phòng thời gian thực. |
+| 5 | `Phong` | `capNhatTrangThai('TRONG')` (Dọn phòng) | `/api/rooms/:id/complete-cleaning` | `POST` | `@Roles('STAFF', 'ADMIN')`: Xác nhận buồng phòng dọn xong (UC3.4). |
+| 6 | `Phong` | `kiemTraTrong(tuNgay, denNgay): boolean` | `/api/rooms/available` & `/api/bookings` | `GET` / `POST` | `Public`: Lọc phòng không có đơn trùng lịch `(ngayNhan < denNgay AND ngayTra > tuNgay)`. |
+| 7 | `Phong` | `ganTienNghi(ds: List<TienNghi>): void` | `/api/rooms` & `/api/rooms/:id` | `POST` / `PUT` | `@Roles('ADMIN')`: Gán hoặc cập nhật danh sách tiện nghi cho phòng. |
+| 8 | `Phong` | `layDanhSachTienNghi(): List<TienNghi>` | `/api/rooms/:id` | `GET` | `Public`: Lấy chi tiết phòng kèm danh sách tiện nghi đính kèm. |
+| 9 | `TienNghi` | `layThongTin(): String` | `/api/amenities/:id` & `/api/amenities` | `GET` | `Public`: Xem thông tin tiện nghi (tên, phân loại tiện nghi). |
+| 10 | `TienNghi` | `capNhat(ten, loai): void` | `/api/amenities/:id` | `PUT` | `@Roles('ADMIN')`: Sửa tên và phân loại tiện nghi (CoBan, AmThuc...). |
+| 11 | `KhachHang` | `capNhatThongTin(hoTen, sdt, email): void` | `/api/customers/profile` | `PUT` | `@Roles('CUSTOMER')`: Khách hàng cập nhật hồ sơ cá nhân. |
+| 12 | `KhachHang` | `capNhatThongTin(soCCCD): void` | `/api/stays/:bookingId/check-in` | `POST` | `@Roles('STAFF', 'ADMIN')`: Lưu số CCCD khi làm thủ tục Check-in (SD03). |
+| 13 | `KhachHang` | `xemLichSuDatPhong(): List<DatPhong>` | `/api/bookings/my-history` | `GET` | `@Roles('CUSTOMER')`: Khách hàng xem lịch sử các kỳ lưu trú của mình. |
+| 14 | `DatPhong` | `taoMoi(maKH, maPhong, ngayNhan, ngayTra)` | `/api/bookings` | `POST` | `Public` / `@Roles('CUSTOMER')`: Khởi tạo đơn trạng thái `CHO_COC` & cọc 30% (SD01). |
+| 15 | `DatPhong` | `layThongTin(tuKhoa: String): DatPhong` | `/api/bookings/lookup?tuKhoa=...` | `GET` | `Public` / `@Roles('STAFF')`: Tra cứu đơn theo mã đơn hoặc SĐT (SD02, SD03). |
+| 16 | `DatPhong` | `xacNhanDat(): void` | `/api/payments/webhook` | `POST` | `Public / Webhook`: Chuyển đơn sang `DA_XAC_NHAN` & khóa phòng `DA_DAT` (SD01). |
+| 17 | `DatPhong` | `tinhTienHoanCoc(): double` | `/api/bookings/:id/refund-preview` | `GET` | `Public`: Tính trước mức hoàn cọc theo mốc giờ (100% / 50% / 0% - SD02). |
+| 18 | `DatPhong` | `huyDatPhong(lyDo: String): boolean` | `/api/bookings/:id/cancel` | `POST` | `Public`: Chuyển đơn sang `DA_HUY`, hoàn cọc và mở phòng `TRONG` (SD02). |
+| 19 | `DatPhong` | `checkIn(): void` | `/api/stays/:bookingId/check-in` | `POST` | `@Roles('STAFF', 'ADMIN')`: Chuyển đơn sang `DANG_LUU_TRU` & phòng `DANG_SU_DUNG` (SD03). |
+| 20 | `DatPhong` | `checkOut(): void` | `/api/invoices/:id/pay` | `POST` | `@Roles('STAFF', 'ADMIN')`: Chuyển đơn sang `HOAN_TAT` & phòng `CHO_DON_DEP` (SD05). |
+| 21 | `DatPhong` | `layThongTinTienPhongVaCoc(): Map` | `/api/stays/:bookingId/check-out-invoice` | `POST` | `@Roles('STAFF', 'ADMIN')`: Lấy tiền phòng và tiền cọc đã đóng để đối soát hóa đơn (SD05). |
+| 22 | `DichVu` | `layDonGia(): double` | `/api/stays/:bookingId/services` | `POST` | `@Roles('STAFF', 'ADMIN')`: Truy vấn đơn giá niêm yết khi gọi dịch vụ (SD04). |
+| 23 | `DichVu` | `layDanhSach(): List<DichVu>` | `/api/services` | `GET` | `Public`: Lấy menu danh mục dịch vụ phát sinh (SD04). |
+| 24 | `SuDungDichVu` | `tinhThanhTien(): double` | `/api/stays/:bookingId/services` | `POST` | `@Roles('STAFF', 'ADMIN')`: Tính `thanhTien = soLuong * donGia` (SD04). |
+| 25 | `SuDungDichVu` | `layTongTien(maDatPhong): double` | `/api/stays/:bookingId/check-out-invoice` | `POST` | `@Roles('STAFF', 'ADMIN')`: Tổng hợp toàn bộ tiền dịch vụ phát sinh (SD05). |
+| 26 | `HoaDon` | `tinhTongTien(): double` | `/api/stays/:bookingId/check-out-invoice` | `POST` | `@Roles('STAFF', 'ADMIN')`: Tính `tongCanThanhToan` khấu trừ tiền cọc (Công thức 4). |
+| 27 | `HoaDon` | `xacNhanThanhToan(): void` | `/api/invoices/:id/pay` | `POST` | `@Roles('STAFF', 'ADMIN')`: Chuyển hóa đơn sang `DA_THANH_TOAN` (SD05). |
+| 28 | `HoaDon` | `xuatBienLaiPDF(): byte[]` | `/api/invoices/:id/pdf` | `GET` | `Public / @Roles(...)`: Kết xuất file PDF biên lai thanh toán (SD05). |
+| 29 | `DanhGia` | `guiDanhGia(): void` | `/api/reviews` | `POST` | `@Roles('CUSTOMER')`: Gửi đánh giá 1-5 sao sau khi đơn `HOAN_TAT` (SD06). |
+| 30 | `DanhGia` | `phanHoi(noiDung: String): void` | `/api/reviews/:id/reply` | `PATCH` | `@Roles('ADMIN')`: Chủ homestay phản hồi công khai đánh giá của khách (SD06). |
+| 31 | `TaiKhoan` | `kiemTraDangNhap(mk): boolean` | `/api/auth/login` | `POST` | `Public`: Xác thực username/password băm bcrypt. |
+| 32 | `TaiKhoan` | `doiMatKhau(mkMoi): void` | `/api/auth/change-password` | `PATCH` | `@Roles(...)`: Đổi mật khẩu tài khoản người dùng. |
 
 ---
 
@@ -608,6 +653,59 @@ export interface ApiResponse<T> {
 - **Quyền truy cập:** `CUSTOMER`, `STAFF`, `ADMIN`
 - **Response `200 OK`:** Trả về đối tượng `taiKhoan` (kèm `khachHang` nếu có) giống cấu trúc trong `1.1`.
 
+#### `1.5. Lấy thông tin hồ sơ cá nhân của Khách hàng`
+- **URL:** `GET /api/customers/profile`
+- **Headers:** `Authorization: Bearer <token>`
+- **Quyền truy cập:** `@Roles('CUSTOMER')`
+- **Response `200 OK`:**
+```json
+{
+  "success": true,
+  "statusCode": 200,
+  "message": "Lấy thông tin hồ sơ khách hàng thành công",
+  "data": {
+    "maKH": "KH001",
+    "hoTen": "Nguyễn Minh Anh",
+    "soDienThoai": "0901234567",
+    "email": "minhanh@gmail.com",
+    "soCCCD": "079203001234",
+    "maTaiKhoan": "TK_CUST_01"
+  },
+  "timestamp": "2026-11-06T08:16:00.000Z"
+}
+```
+
+#### `1.6. Cập nhật thông tin hồ sơ Khách hàng (KhachHang.capNhatThongTin)`
+- **URL:** `PUT /api/customers/profile`
+- **Headers:** `Authorization: Bearer <token>`
+- **Quyền truy cập:** `@Roles('CUSTOMER')`
+- **Request Body DTO (`UpdateCustomerProfileDto`):**
+```json
+{
+  "hoTen": "Nguyễn Minh Anh",
+  "soDienThoai": "0909999888",
+  "email": "minhanh.new@gmail.com"
+}
+```
+  - *Validation:* `hoTen` (không rỗng), `soDienThoai` (regex `/^0\d{9}$/`), `email` (định dạng email hợp lệ).
+- **Response `200 OK`:**
+```json
+{
+  "success": true,
+  "statusCode": 200,
+  "message": "Cập nhật hồ sơ khách hàng thành công",
+  "data": {
+    "maKH": "KH001",
+    "hoTen": "Nguyễn Minh Anh",
+    "soDienThoai": "0909999888",
+    "email": "minhanh.new@gmail.com",
+    "soCCCD": "079203001234",
+    "maTaiKhoan": "TK_CUST_01"
+  },
+  "timestamp": "2026-11-06T08:17:00.000Z"
+}
+```
+
 ---
 
 ### Nhóm 2: Quản lý Tài khoản & Phân quyền – Users (`UC6.3` / `TaiKhoan`)
@@ -740,6 +838,37 @@ export interface ApiResponse<T> {
 }
 ```
 - **Response `200 OK`:** Trả về đối tượng `Homestay` vừa cập nhật.
+
+#### `3.3. Lấy danh sách toàn bộ Phòng của Homestay (Homestay.layDanhSachPhong)`
+- **URL:** `GET /api/homestay/rooms`
+- **Quyền truy cập:** Public
+- **Response `200 OK`:**
+```json
+{
+  "success": true,
+  "statusCode": 200,
+  "message": "Lấy danh sách phòng thuộc Homestay thành công",
+  "data": [
+    {
+      "maPhong": "P101",
+      "soPhong": "101",
+      "tang": 1,
+      "trangThai": "TRONG",
+      "maHomestay": "HS01",
+      "maLoaiPhong": "LP01"
+    },
+    {
+      "maPhong": "P201",
+      "soPhong": "201",
+      "tang": 2,
+      "trangThai": "DA_DAT",
+      "maHomestay": "HS01",
+      "maLoaiPhong": "LP02"
+    }
+  ],
+  "timestamp": "2026-11-06T08:32:00.000Z"
+}
+```
 
 ---
 
@@ -1165,6 +1294,41 @@ export interface ApiResponse<T> {
 - **URL:** `GET /api/bookings/:id` *(trong đó `:id` là `maDatPhong`)*
 - **Quyền truy cập:** Public (Tra cứu theo mã đơn) hoặc `CUSTOMER`/`STAFF`/`ADMIN`
 - **Response `200 OK`:** Trả về đối tượng `DatPhong` kèm đầy đủ `khachHang`, `phong` (có `loaiPhong`, `tienNghis`), `suDungDichVus` (có `dichVu`), `hoaDon`, `danhGia`.
+
+#### `8.4. Lịch sử đơn đặt phòng của Khách hàng đăng nhập (KhachHang.xemLichSuDatPhong)`
+- **URL:** `GET /api/bookings/my-history`
+- **Headers:** `Authorization: Bearer <token>`
+- **Quyền truy cập:** `@Roles('CUSTOMER')`
+- **Response `200 OK`:**
+```json
+{
+  "success": true,
+  "statusCode": 200,
+  "message": "Lấy lịch sử đặt phòng của khách hàng thành công",
+  "data": [
+    {
+      "maDatPhong": "DP2026110601",
+      "maKH": "KH001",
+      "maPhong": "P201",
+      "ngayDat": "2026-11-06T09:05:00.000Z",
+      "ngayNhan": "2026-11-12T00:00:00.000Z",
+      "ngayTra": "2026-11-15T00:00:00.000Z",
+      "soKhach": 2,
+      "tienCoc": 840000,
+      "tongTienDuKien": 2800000,
+      "trangThai": "DA_XAC_NHAN",
+      "ghiChu": "Nhận phòng khoảng 15h chiều, chuẩn bị sẵn bếp than BBQ.",
+      "phong": {
+        "maPhong": "P201",
+        "soPhong": "201",
+        "tang": 2,
+        "trangThai": "DA_DAT"
+      }
+    }
+  ],
+  "timestamp": "2026-11-06T09:10:00.000Z"
+}
+```
 
 ---
 
@@ -1607,11 +1771,15 @@ export interface ApiResponse<T> {
 
 #### `14.1. Lập hóa đơn quyết toán khi trả phòng (UC3.3, UC4.1 – SD05 Phase 1: lapHoaDonQuyetToan)`
 - **URL:** `POST /api/stays/:bookingId/check-out-invoice` *(trong đó `:bookingId` là `maDatPhong`)*
+- **Đặc tả tương thích linh hoạt (`SD05` Bước 2):** Trong sơ đồ tuần tự SD05, phương thức gọi giữa Giao diện và Bộ điều khiển là `lapHoaDonQuyetToan(maPhong, phuPhi)`. Để hỗ trợ tối đa cho Lễ tân thao tác trực tiếp từ **Sơ đồ phòng theo tầng** (chọn theo số phòng `P201`), Backend hỗ trợ cả 2 cách truyền:
+  1. Truyền `maDatPhong` trên URL `:bookingId` (ví dụ: `POST /api/stays/DP2026110602/check-out-invoice`).
+  2. Hoặc truyền `maPhong` trong Request Body (ví dụ: `POST /api/stays/check-out-invoice` với body `{"maPhong": "P201", "phuPhi": 100000}`). Backend sẽ tự động tìm đơn `DatPhong` đang ở trạng thái `'DANG_LUU_TRU'` của phòng đó để quyết toán.
 - **Headers:** `Authorization: Bearer <token>`
 - **Quyền truy cập:** `@Roles('STAFF', 'ADMIN')`
 - **Request Body DTO (`CreateCheckOutInvoiceDto`):**
 ```json
 {
+  "maPhong": "P201",
   "phuPhi": 100000,
   "phuongThuc": "CHUYEN_KHOAN_QR",
   "ghiChuPhuPhi": "Phụ thu trả phòng muộn 2 giờ"
@@ -1977,11 +2145,13 @@ export interface ApiResponse<T> {
 ```typescript
 // frontend/src/services/apiClient.ts
 export const apiClient = {
-  // Nhóm 1 & 2: Auth & Users (UC6.3 - SH-07, SH-10, SH-18)
+  // Nhóm 1 & 2: Auth & Users & Profile (UC6.3 - SH-07, SH-10, SH-18)
   register: (payload: RegisterDto) => Promise<ApiResponse<AuthResult>>,
   login: (payload: LoginDto) => Promise<ApiResponse<AuthResult>>,
   changePassword: (payload: ChangePasswordDto) => Promise<ApiResponse<{ maTaiKhoan: string; username: string }>>,
   getMe: () => Promise<ApiResponse<TaiKhoan>>,
+  getCustomerProfile: () => Promise<ApiResponse<KhachHang>>,
+  updateCustomerProfile: (payload: { hoTen: string; soDienThoai: string; email: string }) => Promise<ApiResponse<KhachHang>>,
   getUsers: (params?: { vaiTro?: string; trangThai?: string }) => Promise<ApiResponse<TaiKhoan[]>>,
   createUser: (payload: CreateUserDto) => Promise<ApiResponse<TaiKhoan>>,
   updateUserStatus: (maTaiKhoan: string, trangThai: TrangThaiTaiKhoan) => Promise<ApiResponse<TaiKhoan>>,
@@ -1990,6 +2160,7 @@ export const apiClient = {
   // Nhóm 3, 4, 5, 6: Homestay, Room Types, Amenities, Rooms (UC1.1..UC1.4, UC3.4 - SH-07, SH-09, SH-17)
   getHomestay: () => Promise<ApiResponse<Homestay>>,
   updateHomestay: (payload: Partial<Homestay>) => Promise<ApiResponse<Homestay>>,
+  getHomestayRooms: () => Promise<ApiResponse<Phong[]>>,
   getRoomTypes: () => Promise<ApiResponse<LoaiPhong[]>>,
   createRoomType: (payload: Omit<LoaiPhong, 'maLoaiPhong'>) => Promise<ApiResponse<LoaiPhong>>,
   updateRoomType: (maLoaiPhong: string, payload: Partial<LoaiPhong>) => Promise<ApiResponse<LoaiPhong>>,
@@ -2011,6 +2182,7 @@ export const apiClient = {
   createBooking: (payload: CreateBookingDto) => Promise<ApiResponse<CreateBookingResult>>,
   getBookings: (params?: { trangThai?: TrangThaiDatPhong; maPhong?: string }) => Promise<ApiResponse<DatPhong[]>>,
   getBookingById: (maDatPhong: string) => Promise<ApiResponse<DatPhong>>,
+  getMyHistory: () => Promise<ApiResponse<DatPhong[]>>,
   triggerPaymentWebhook: (payload: PaymentWebhookDto, idempotencyKey?: string) => Promise<ApiResponse<WebhookResult>>,
   lookupBookings: (tuKhoa: string) => Promise<ApiResponse<DatPhong[]>>,
   getRefundPreview: (maDatPhong: string) => Promise<ApiResponse<RefundPreviewResult>>,
