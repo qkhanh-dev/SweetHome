@@ -1,0 +1,92 @@
+# ==============================================================================
+# SWEETHOME MONOREPO - DOCKER COMPOSE CONFIGURATION
+# Phục vụ:
+# - Tầng 2 (SH-02, SH-03): Chạy PostgreSQL 16 độc lập bằng `docker compose up -d postgres`
+# - Tầng 7 & 8 (SH-21, SH-27): Chạy toàn bộ hệ thống (DB + BE + FE) bằng `docker compose up --build`
+# ==============================================================================
+
+services:
+  # ----------------------------------------------------------------------------
+  # 1. POSTGRESQL 16 DATABASE (Cổng 5432 - SH-02, SH-03, SH-14, SH-21)
+  # ----------------------------------------------------------------------------
+  postgres:
+    image: postgres:16-alpine
+    container_name: sweethome-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-sweethome_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-sweethome_secret_2026}
+      POSTGRES_DB: ${POSTGRES_DB:-sweethome_db}
+      TZ: Asia/Ho_Chi_Minh
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - sweethome_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-sweethome_user} -d ${POSTGRES_DB:-sweethome_db}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
+    networks:
+      - sweethome-network
+
+  # ----------------------------------------------------------------------------
+  # 2. NESTJS BACKEND API (Cổng 3001 - SH-04, SH-07, SH-08, SH-15, SH-16, SH-21)
+  # ----------------------------------------------------------------------------
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: sweethome-backend
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      PORT: 3001
+      DATABASE_URL: "postgresql://${POSTGRES_USER:-sweethome_user}:${POSTGRES_PASSWORD:-sweethome_secret_2026}@postgres:5432/${POSTGRES_DB:-sweethome_db}?schema=public"
+      JWT_SECRET: ${JWT_SECRET:-sweethome_super_secret_jwt_key_2026_v2_ooad}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-7d}
+      DEPOSIT_RATE: ${DEPOSIT_RATE:-0.3}
+      CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost:3000}
+      TZ: Asia/Ho_Chi_Minh
+    ports:
+      - "3001:3001"
+    networks:
+      - sweethome-network
+    profiles:
+      - fullstack
+
+  # ----------------------------------------------------------------------------
+  # 3. NEXT.JS FRONTEND WEB APP (Cổng 3000 - SH-05, SH-09, SH-10, SH-17, SH-18, SH-21)
+  # ----------------------------------------------------------------------------
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: sweethome-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    environment:
+      NODE_ENV: production
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:3001/api}
+      NEXT_PUBLIC_USE_MOCK: "false"
+      TZ: Asia/Ho_Chi_Minh
+    ports:
+      - "3000:3000"
+    networks:
+      - sweethome-network
+    profiles:
+      - fullstack
+
+volumes:
+  sweethome_pgdata:
+    name: sweethome_pgdata
+
+networks:
+  sweethome-network:
+    name: sweethome-network
+    driver: bridge
