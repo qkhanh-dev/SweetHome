@@ -13,7 +13,8 @@ Trước khi bắt đầu bất kỳ Task nào từ Tầng 2 (`SH-02` $\rightarr
 1. **[`docs/DacTaChucNang_v2.md`](./docs/DacTaChucNang_v2.md):** Đặc tả chi tiết 3 Actors, 6 Phân hệ cốt lõi, 19–21 Use Cases, 11 Lớp thực thể, 3 Enums và 6 Kịch bản tuần tự (`SD01` – `SD06`).
 2. **[`docs/API_CONTRACT_v1.md`](./docs/API_CONTRACT_v1.md):** Đặc tả đầy đủ **15 nhóm RESTful API** (URL, HTTP Method, Headers, Request DTO, Response JSON), mẫu chuẩn `schema.prisma`, `sweethome.ts` và chữ ký hàm `apiClient.ts` giữ nguyên **100% tên thuộc tính** của `ClassDiagram_v2.xml`.
 3. **[`docs/BUSINESS_RULES.md`](./docs/BUSINESS_RULES.md):** Quy định chốt cứng **3 Enum trạng thái** (`TrangThaiPhong`, `TrangThaiDatPhong`, `TrangThaiHoaDon`), **4 công thức tính toán tài chính cốt lõi**, quy tắc chống đặt trùng phòng (`Anti-Double-Booking`), `Idempotency-Key` cho Webhook và ma trận phân quyền RBAC 3 vai trò.
-4. **Bộ 3 Sơ đồ Thiết kế UML v2 (Draw.io XML tại [`docs/diagrams/ver2/`](./docs/diagrams/ver2)):**
+4. **[`docs/SweetHome_Techstack.docx`](./docs/SweetHome_Techstack.docx):** Kiến trúc kỹ thuật chi tiết, lựa chọn công nghệ, cấu hình bảo mật, chuẩn hóa JWT/Bcrypt và hạ tầng triển khai Docker.
+5. **Bộ 3 Sơ đồ Thiết kế UML v2 (Draw.io XML tại [`docs/diagrams/ver2/`](./docs/diagrams/ver2)):**
    - [`ClassDiagram_v2.xml`](./docs/diagrams/ver2/ClassDiagram_v2.xml) *(11 Lớp thực thể & 3 Enums)*
    - [`Usecase_v2_diagram.xml`](./docs/diagrams/ver2/Usecase_v2_diagram.xml) *(3 Actors & 6 Phân hệ chức năng)*
    - [`Sequence_Diagrams_v2.xml`](./docs/diagrams/ver2/Sequence_Diagrams_v2.xml) *(7 Tabs: Tổng hợp & Chi tiết `SD01` – `SD06` chuẩn BCE)*
@@ -51,6 +52,7 @@ SweetHome/
 │   ├── API_CONTRACT_v1.md          # Hợp đồng giao tiếp 15 nhóm RESTful API (v1.0)
 │   ├── BUSINESS_RULES.md           # Quy chuẩn 3 Enums & 4 Công thức tính toán cốt lõi
 │   ├── DacTaChucNang_v2.md         # Đặc tả chức năng phiên bản tinh gọn v2
+│   ├── SweetHome_Techstack.docx    # Hồ sơ kiến trúc kỹ thuật & cấu hình Techstack
 │   └── diagrams/ver2/              # Bộ 3 file Draw.io XML chuẩn v2
 ├── docker-compose.yml              # Khởi tạo PostgreSQL 16 (5432), Backend (3001), Frontend (3000)
 ├── .env.example                    # Mẫu biến môi trường chuẩn cho toàn Monorepo
