@@ -11,6 +11,16 @@ interface OpenApiSchema {
   properties?: Record<string, OpenApiSchema>;
 }
 
+const expectedSwaggerTags = [
+  ['Homestay & Rooms', 'Quản lý thông tin Homestay, Loại phòng, Phòng và Tiện nghi'],
+  ['Booking', 'Tìm kiếm phòng trống, Đặt phòng trực tuyến và Thanh toán cọc'],
+  ['Stay Operations', 'Vận hành lưu trú: Check-in, Dọn phòng và Ghi nhận dịch vụ'],
+  ['Billing & Payment', 'Quyết toán hóa đơn, Thanh toán trả phòng và Xuất biên lai PDF'],
+  ['Reviews', 'Đánh giá trải nghiệm và Phản hồi từ Host'],
+  ['Reports & Admin', 'Báo cáo doanh thu, Tỷ lệ lấp đầy và Quản trị tài khoản'],
+  ['Auth', 'Xác thực và Phân quyền JWT'],
+] as const;
+
 function resolveSchema(
   schema: OpenApiSchema,
   schemas: Record<string, OpenApiSchema>,
@@ -129,5 +139,22 @@ describe('health endpoint', () => {
         version: expect.any(Object),
       }),
     );
+  });
+
+  it('publishes the required API tags and bearer JWT security scheme', async () => {
+    const response = await request(app.getHttpServer()).get('/api/docs-json').expect(200);
+    const tags = response.body.tags as Array<{ name: string; description: string }>;
+
+    expect(tags).toEqual(expect.arrayContaining([expect.objectContaining({ name: 'Health' })]));
+    for (const [name, description] of expectedSwaggerTags) {
+      expect(tags).toEqual(
+        expect.arrayContaining([expect.objectContaining({ name, description })]),
+      );
+    }
+    expect(response.body.components.securitySchemes.bearer).toEqual({
+      type: 'http',
+      scheme: 'bearer',
+      bearerFormat: 'JWT',
+    });
   });
 });

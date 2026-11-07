@@ -8,10 +8,12 @@ import { HomestayRoomsModule } from './modules/homestay-rooms/homestay-rooms.mod
 import { ReportsAdminModule } from './modules/reports-admin/reports-admin.module';
 import { ReviewsModule } from './modules/reviews/reviews.module';
 import { StayOperationsModule } from './modules/stay-operations/stay-operations.module';
+import { PrismaModule } from './prisma/prisma.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
+    PrismaModule,
     HealthModule,
     HomestayRoomsModule,
     BookingModule,
