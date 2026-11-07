@@ -1,19 +1,27 @@
 {
-  "name": "sweethome-backend",
+  "name": "@sweethome/backend",
   "version": "1.0.0",
   "description": "SweetHome v2 Backend API - NestJS & Prisma ORM",
   "scripts": {
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
-    "prisma:status": "prisma migrate status"
+    "prisma:status": "prisma migrate status",
+    "prisma:seed": "prisma db seed"
+  },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
-    "@prisma/client": "^5.21.1"
+    "@prisma/client": "^7.10.1",
+    "@prisma/adapter-pg": "^7.10.1",
+    "pg": "^8.13.1"
   },
   "devDependencies": {
     "@types/node": "^20.17.0",
-    "prisma": "^5.21.1",
+    "@types/pg": "^8.11.10",
+    "dotenv": "^16.4.7",
+    "prisma": "^7.10.1",
+    "tsx": "^4.19.2",
     "typescript": "^5.6.3"
   }
 }
-
