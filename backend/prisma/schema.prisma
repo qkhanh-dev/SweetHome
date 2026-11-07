@@ -85,6 +85,11 @@ model Phong {
   loaiPhong   LoaiPhong       @relation(fields: [maLoaiPhong], references: [maLoaiPhong], onDelete: Restrict)
   tienNghis   TienNghi[]      @relation("PhongTienNghi")
   datPhongs   DatPhong[]
+
+  @@index([maHomestay])
+  @@index([maLoaiPhong])
+  @@index([trangThai])
+  @@index([maHomestay, trangThai])
 }
 
 // 5. Lớp TaiKhoan
@@ -96,6 +101,8 @@ model TaiKhoan {
   trangThai    String     @default("ACTIVE")   // 'ACTIVE' | 'LOCKED'
 
   khachHang    KhachHang?
+
+  @@index([vaiTro, trangThai])
 }
 
 // 6. Lớp KhachHang (Quan hệ 1 - 0..1 với TaiKhoan)
@@ -111,6 +118,8 @@ model KhachHang {
   datPhongs   DatPhong[]
 
   @@index([soDienThoai])
+  @@index([soCCCD])
+  @@index([email])
 }
 
 // 7. Lớp DatPhong
@@ -134,6 +143,9 @@ model DatPhong {
   danhGia        DanhGia?
 
   @@index([maPhong, ngayNhan, ngayTra, trangThai])
+  @@index([maKH])
+  @@index([trangThai])
+  @@index([ngayNhan, ngayTra])
 }
 
 // 8. Lớp DichVu
@@ -159,6 +171,8 @@ model SuDungDichVu {
   dichVu     DichVu   @relation(fields: [maDichVu], references: [maDichVu], onDelete: Restrict)
 
   @@index([maDatPhong])
+  @@index([maDichVu])
+  @@index([thoiDiem])
 }
 
 // 10. Lớp HoaDon (Quan hệ 1 - 1 với DatPhong)
@@ -177,6 +191,7 @@ model HoaDon {
   datPhong         DatPhong        @relation(fields: [maDatPhong], references: [maDatPhong], onDelete: Cascade)
 
   @@index([ngayLap, trangThai])
+  @@index([trangThai])
 }
 
 // 11. Lớp DanhGia (Quan hệ 0..1 - 1 với DatPhong)
@@ -189,5 +204,7 @@ model DanhGia {
   phanHoiHost String?  @db.Text
 
   datPhong    DatPhong @relation(fields: [maDatPhong], references: [maDatPhong], onDelete: Cascade)
-}
 
+  @@index([ngayDanhGia])
+  @@index([soSao])
+}
