@@ -6,6 +6,7 @@ import { configureHttpApp, getPort, setupSwagger } from './config/app.setup';
 
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule);
+  app.enableShutdownHooks();
   const configService = app.get(ConfigService);
   const port = getPort(configService.get<string>('PORT'));
 
