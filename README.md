@@ -65,11 +65,11 @@ SweetHome/
 ## 3. YÊU CẦU MÔI TRƯỜNG & HƯỚNG DẪN CÀI ĐẶT (SETUP GUIDE)
 
 ### 3.1. Công cụ bắt buộc cài đặt
-1. **Node.js v20 LTS** (Khuyến nghị `v20.11.0+`, kiểm tra bằng `node -v` và `npm -v`).
-   - Tải tại: https://nodejs.org/en/download (Chọn bản **LTS 20.x**) hoặc cài qua `nvm`:
+1. **Node.js v24 LTS** (Khuyến nghị `v24.0.0+`, kiểm tra bằng `node -v` và `npm -v`).
+   - Tải tại: https://nodejs.org/en/download (Chọn bản **LTS 24.x**) hoặc cài qua `nvm`:
      ```bash
-     nvm install 20
-     nvm use 20
+     nvm install 24
+     nvm use 24
      ```
 2. **Docker Desktop** (Tích hợp sẵn `docker compose` v2 để chạy PostgreSQL 16 tại cổng `5432`).
 3. **Git** & trình soạn thảo **VS Code** (Khuyến nghị cài extension: *Prisma*, *ESLint*, *Prettier*, *Draw.io Integration*).
