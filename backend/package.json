@@ -1,19 +1,60 @@
 {
-  "name": "sweethome-backend",
-  "version": "1.0.0",
-  "description": "SweetHome v2 Backend API - NestJS & Prisma ORM",
+  "name": "@sweethome/backend",
+  "version": "0.1.0",
+  "private": true,
+  "engines": {
+    "node": ">=24 <25",
+    "npm": ">=11 <12"
+  },
   "scripts": {
+    "build": "nest build",
+    "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
+    "start": "node dist/main",
+    "start:dev": "nest start --watch",
+    "start:debug": "nest start --debug --watch",
+    "lint": "eslint \"{src,test}/**/*.ts\"",
+    "test": "jest --config test/jest.json",
+    "test:watch": "jest --config test/jest.json --watch",
+    "test:cov": "jest --config test/jest.json --coverage",
+    "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/jest/bin/jest.js --config test/jest.json --runInBand",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:status": "prisma migrate status"
   },
   "dependencies": {
+    "@nestjs/config": "^3.3.0",
+    "@nestjs/common": "^10.4.20",
+    "@nestjs/core": "^10.4.20",
+    "@nestjs/platform-express": "^10.4.20",
+    "@nestjs/swagger": "^7.4.2",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.2",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.2",
     "@prisma/client": "^5.21.1"
   },
   "devDependencies": {
-    "@types/node": "^20.17.0",
-    "prisma": "^5.21.1",
-    "typescript": "^5.6.3"
+    "@nestjs/cli": "^10.4.9",
+    "@nestjs/schematics": "^10.2.3",
+    "@nestjs/testing": "^10.4.20",
+    "@types/express": "^5.0.3",
+    "@types/jest": "^29.5.14",
+    "@types/node": "^24.10.0",
+    "@types/supertest": "^6.0.3",
+    "@typescript-eslint/eslint-plugin": "^8.46.3",
+    "@typescript-eslint/parser": "^8.46.3",
+    "eslint": "^8.57.1",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.4",
+    "jest": "^29.7.0",
+    "prettier": "^3.6.2",
+    "source-map-support": "^0.5.21",
+    "supertest": "^7.1.4",
+    "ts-jest": "^29.4.5",
+    "ts-loader": "^9.5.4",
+    "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5.9.3",
+    "prisma": "^5.21.1"
   }
 }
-
