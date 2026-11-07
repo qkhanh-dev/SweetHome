@@ -17,5 +17,10 @@
     "start:backend:dev": "npm run start:dev --workspace=@sweethome/backend",
     "test:backend": "npm run test --workspace=@sweethome/backend",
     "lint:backend": "npm run lint --workspace=@sweethome/backend"
+  },
+  "overrides": {
+    "next": {
+      "postcss": "8.5.23"
+    }
   }
 }

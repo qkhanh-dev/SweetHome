@@ -1,0 +1,194 @@
+// backend/prisma/schema.prisma
+// SweetHome v2 - Prisma Schema
+// Single Source of Truth: docs/diagrams/ver2/ClassDiagram_v2.xml, docs/BUSINESS_RULES.md, docs/API_CONTRACT_v1.md
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================================================
+// 3 ENUMS CHUẨN HÓA (ClassDiagram_v2.xml & BUSINESS_RULES.md)
+// ============================================================================
+
+enum TrangThaiPhong {
+  TRONG
+  DA_DAT
+  DANG_SU_DUNG
+  CHO_DON_DEP
+  BAO_TRI
+}
+
+enum TrangThaiDatPhong {
+  CHO_COC
+  DA_XAC_NHAN
+  DANG_LUU_TRU
+  HOAN_TAT
+  DA_HUY
+}
+
+enum TrangThaiHoaDon {
+  CHUA_THANH_TOAN
+  DA_THANH_TOAN
+}
+
+// ============================================================================
+// 11 MODELS THỰC THỂ (ClassDiagram_v2.xml)
+// ============================================================================
+
+// 1. Lớp Homestay
+model Homestay {
+  maHomestay   String  @id @default(cuid())
+  tenHomestay  String
+  diaChi       String
+  hotline      String
+  email        String
+  quyDinhChung String  @db.Text
+
+  phongs       Phong[]
+}
+
+// 2. Lớp LoaiPhong
+model LoaiPhong {
+  maLoaiPhong   String  @id @default(cuid())
+  tenLoaiPhong  String
+  sucChuaToiDa  Int
+  giaNgayThuong Float
+  giaCuoiTuan   Float
+  moTa          String  @db.Text
+
+  phongs        Phong[]
+}
+
+// 3. Lớp TienNghi
+model TienNghi {
+  maTienNghi   String  @id @default(cuid())
+  tenTienNghi  String
+  loaiTienNghi String
+
+  phongs       Phong[] @relation("PhongTienNghi")
+}
+
+// 4. Lớp Phong
+model Phong {
+  maPhong     String          @id @default(cuid())
+  soPhong     String          @unique
+  tang        Int
+  trangThai   TrangThaiPhong  @default(TRONG)
+  maHomestay  String
+  maLoaiPhong String
+
+  homestay    Homestay        @relation(fields: [maHomestay], references: [maHomestay], onDelete: Cascade)
+  loaiPhong   LoaiPhong       @relation(fields: [maLoaiPhong], references: [maLoaiPhong], onDelete: Restrict)
+  tienNghis   TienNghi[]      @relation("PhongTienNghi")
+  datPhongs   DatPhong[]
+}
+
+// 5. Lớp TaiKhoan
+model TaiKhoan {
+  maTaiKhoan   String     @id @default(cuid())
+  username     String     @unique
+  passwordHash String
+  vaiTro       String     @default("CUSTOMER") // 'ADMIN' | 'STAFF' | 'CUSTOMER'
+  trangThai    String     @default("ACTIVE")   // 'ACTIVE' | 'LOCKED'
+
+  khachHang    KhachHang?
+}
+
+// 6. Lớp KhachHang (Quan hệ 1 - 0..1 với TaiKhoan)
+model KhachHang {
+  maKH        String     @id @default(cuid())
+  hoTen       String
+  soDienThoai String
+  email       String
+  soCCCD      String?
+  maTaiKhoan  String?    @unique
+
+  taiKhoan    TaiKhoan?  @relation(fields: [maTaiKhoan], references: [maTaiKhoan], onDelete: SetNull)
+  datPhongs   DatPhong[]
+
+  @@index([soDienThoai])
+}
+
+// 7. Lớp DatPhong
+model DatPhong {
+  maDatPhong     String            @id @default(cuid())
+  maKH           String
+  maPhong        String
+  ngayDat        DateTime          @default(now())
+  ngayNhan       DateTime
+  ngayTra        DateTime
+  soKhach        Int
+  tienCoc        Float
+  tongTienDuKien Float
+  trangThai      TrangThaiDatPhong @default(CHO_COC)
+  ghiChu         String?           @db.Text
+
+  khachHang      KhachHang         @relation(fields: [maKH], references: [maKH], onDelete: Restrict)
+  phong          Phong             @relation(fields: [maPhong], references: [maPhong], onDelete: Restrict)
+  suDungDichVus  SuDungDichVu[]
+  hoaDon         HoaDon?
+  danhGia        DanhGia?
+
+  @@index([maPhong, ngayNhan, ngayTra, trangThai])
+}
+
+// 8. Lớp DichVu
+model DichVu {
+  maDichVu      String         @id @default(cuid())
+  tenDichVu     String
+  donGia        Float
+  donViTinh     String
+
+  suDungDichVus SuDungDichVu[]
+}
+
+// 9. Lớp SuDungDichVu
+model SuDungDichVu {
+  maSuDung   String   @id @default(cuid())
+  maDatPhong String
+  maDichVu   String
+  soLuong    Int
+  thoiDiem   DateTime @default(now())
+  thanhTien  Float
+
+  datPhong   DatPhong @relation(fields: [maDatPhong], references: [maDatPhong], onDelete: Cascade)
+  dichVu     DichVu   @relation(fields: [maDichVu], references: [maDichVu], onDelete: Restrict)
+
+  @@index([maDatPhong])
+}
+
+// 10. Lớp HoaDon (Quan hệ 1 - 1 với DatPhong)
+model HoaDon {
+  maHoaDon         String          @id @default(cuid())
+  maDatPhong       String          @unique
+  tienPhong        Float
+  tienDichVu       Float
+  phuPhi           Float           @default(0)
+  tienCocDaTra     Float
+  tongCanThanhToan Float
+  ngayLap          DateTime        @default(now())
+  phuongThuc       String          @default("CHUYEN_KHOAN_QR") // 'TIEN_MAT' | 'CHUYEN_KHOAN_QR'
+  trangThai        TrangThaiHoaDon @default(CHUA_THANH_TOAN)
+
+  datPhong         DatPhong        @relation(fields: [maDatPhong], references: [maDatPhong], onDelete: Cascade)
+
+  @@index([ngayLap, trangThai])
+}
+
+// 11. Lớp DanhGia (Quan hệ 0..1 - 1 với DatPhong)
+model DanhGia {
+  maDanhGia   String   @id @default(cuid())
+  maDatPhong  String   @unique
+  soSao       Int
+  noiDung     String   @db.Text
+  ngayDanhGia DateTime @default(now())
+  phanHoiHost String?  @db.Text
+
+  datPhong    DatPhong @relation(fields: [maDatPhong], references: [maDatPhong], onDelete: Cascade)
+}
+
