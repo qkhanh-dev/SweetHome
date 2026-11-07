@@ -1,3 +1,4 @@
+import { ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from './app.module';
 
@@ -16,5 +17,9 @@ describe('AppModule', () => {
 
   it('compiles', () => {
     expect(module).toBeDefined();
+  });
+
+  it('keeps ConfigModule available', () => {
+    expect(module.get(ConfigService)).toBeInstanceOf(ConfigService);
   });
 });
