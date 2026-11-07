@@ -2,7 +2,7 @@
 
 > **Môn học:** Phân tích và Thiết kế Hướng Đối Tượng (OOAD)  
 > **Giảng viên hướng dẫn:** Thầy Huỳnh Nguyễn Khắc Huy  
-> **Kiến trúc:** Modular Monolith BCE (`Boundary – Control – Entity`) | Monorepo (`Next.js App Router` + `NestJS` + `Prisma ORM` + `PostgreSQL 16` + `Docker Compose`)
+> **Kiến trúc:** Modular Monolith BCE (`Boundary – Control – Entity`) | Monorepo (`Next.js App Router` + `NestJS` + `Prisma 7 ORM` + `PostgreSQL 16` + `Docker Compose`)
 
 ---
 
@@ -27,6 +27,7 @@ Trước khi bắt đầu bất kỳ Task nào từ Tầng 2 (`SH-02` $\rightarr
 SweetHome/
 ├── backend/                        # Mã nguồn Backend (NestJS Modular Monolith + Prisma ORM)
 │   ├── prisma/                     # schema.prisma, migrations/ & seed.ts (SH-02, SH-03)
+│   ├── prisma.config.ts            # Cấu hình Prisma 7 (Datasource URL & Migrations)
 │   └── src/
 │       ├── common/                 # Guards (JwtAuthGuard, RolesGuard), Filters, Interceptors
 │       └── modules/                # 6 Modules ánh xạ trực tiếp từ 6 Phân hệ & <<control>>:

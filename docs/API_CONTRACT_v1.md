@@ -163,8 +163,29 @@ Bảng ma trận truy vết dưới đây bảo đảm toàn bộ **32 lượt t
 
 ## III. CHUẨN HÓA PRISMA SCHEMA (`SH-02`, `SH-03`) & TYPESCRIPT INTERFACES (`SH-05`)
 
-### 1. Mẫu chuẩn `backend/prisma/schema.prisma` (Dành cho Huy tại `SH-02` & `SH-03`)
-File `backend/prisma/schema.prisma` dưới đây ánh xạ **chính xác 100% 11 Lớp thực thể, 3 Enums, các mối quan hệ (`1-1`, `1-N`, `N-N`) từ [`ClassDiagram_v2.xml`](./diagrams/ver2/ClassDiagram_v2.xml)** và tích hợp sẵn các `@unique` + `@@index` yêu cầu trong `SH-02` và `SH-03`:
+### 1. Mẫu chuẩn cấu hình Prisma 7 & `backend/prisma/schema.prisma` (Dành cho Huy tại `SH-02` & `SH-03`)
+Hệ thống SweetHome v2 sử dụng **Prisma 7+** kết hợp Driver Adapter `@prisma/adapter-pg` và thư viện `pg`. Trong kiến trúc Prisma 7, cấu hình datasource URL và thư mục migrations được tách biệt sang file `backend/prisma.config.ts`, trong khi file `backend/prisma/schema.prisma` tập trung định nghĩa 11 Models và 3 Enums ánh xạ **chính xác 100% từ [`ClassDiagram_v2.xml`](./diagrams/ver2/ClassDiagram_v2.xml)** và tích hợp sẵn các `@unique` + `@@index` yêu cầu trong `SH-02` và `SH-03`:
+
+```typescript
+// backend/prisma.config.ts (Cấu hình Prisma 7)
+import path from 'path';
+import dotenv from 'dotenv';
+import { defineConfig } from 'prisma/config';
+
+// Tự động nạp file .env từ thư mục gốc Monorepo hoặc cục bộ backend/
+dotenv.config({ path: [path.resolve(__dirname, '../.env'), path.resolve(__dirname, '.env')] });
+
+export default defineConfig({
+  schema: 'prisma/schema.prisma',
+  migrations: {
+    path: 'prisma/migrations',
+  },
+  datasource: {
+    url: process.env.DATABASE_URL || 'postgresql://sweethome_user:sweethome_secret_2026@localhost:5432/sweethome_db?schema=public',
+  },
+});
+```
+
 
 ```prisma
 // backend/prisma/schema.prisma
@@ -174,7 +195,6 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 // ============================================================================
