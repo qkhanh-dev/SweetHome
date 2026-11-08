@@ -7,9 +7,10 @@ import {
   tinhTienCoc,
   tinhTongHoaDon,
 } from "@/mocks/businessRules";
-import { resetMockState } from "@/mocks/mockAdapter";
+import { resetMockState, setMockAuthenticatedAccount } from "@/mocks/mockAdapter";
 import { TrangThaiDatPhong, TrangThaiPhong } from "@/types/sweethome";
 import type { ApiResponse } from "@/types/sweethome";
+import { withMockBrowserSession } from "./mock-browser-session";
 
 function envelope<T>(response: ApiResponse<T>, status = 200): void {
   assert.deepEqual(Object.keys(response).sort(), [
@@ -64,7 +65,12 @@ function webhookPayload(maDatPhong: string, soTien: number) {
 async function main(): Promise<void> {
   assert.equal(process.env.NEXT_PUBLIC_USE_MOCK, "true");
   resetMockState();
-  setAccessToken(null);
+  await withMockBrowserSession(async () => {
+    setAccessToken(null);
+    await apiClient.login({ username: "customer_demo", password: "Customer@123" });
+    await apiClient.getMe();
+    setAccessToken(null);
+  });
 
   const originalFetch = globalThis.fetch;
   globalThis.fetch = async () => {
@@ -424,6 +430,7 @@ async function main(): Promise<void> {
     globalThis.fetch = originalFetch;
     setAccessToken(null);
   }
+  await withMockBrowserSession(async () => setMockAuthenticatedAccount(null));
 }
 
 main().catch((error: unknown) => {

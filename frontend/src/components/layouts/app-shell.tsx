@@ -1,6 +1,8 @@
 ﻿import type { ReactNode } from "react";
 import Link from "next/link";
 import { House } from "lucide-react";
+import { AuthNavigation } from "@/components/auth/auth-navigation";
+import { LogoutButton } from "@/components/auth/logout-button";
 
 function Brand() {
   return (
@@ -18,14 +20,14 @@ export function GuestShell({ children }: { children: ReactNode }) {
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 p-4">
           <Brand />
 
-          <nav aria-label="Điều hướng khách hàng" className="flex gap-6 text-sm">
-            <Link href="/" className="hover:underline">
-              Đặt phòng
-            </Link>
-            <Link href="/reviews" className="hover:underline">
-              Đánh giá
-            </Link>
-          </nav>
+          <div className="flex flex-wrap items-center gap-4">
+            <nav aria-label="Điều hướng khách hàng" className="flex gap-4 text-sm sm:gap-6">
+              <Link href="/" className="hover:underline">Đặt phòng</Link>
+              <Link href="/booking/lookup" className="hover:underline">Tra cứu đơn</Link>
+              <Link href="/reviews" className="hidden hover:underline sm:inline">Đánh giá</Link>
+            </nav>
+            <AuthNavigation />
+          </div>
         </div>
       </header>
 
@@ -91,6 +93,7 @@ export function ManagementShell({
           >
             Về trang khách
           </Link>
+          <LogoutButton />
         </nav>
       </aside>
 

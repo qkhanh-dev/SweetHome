@@ -109,12 +109,11 @@ export function tinhTienHoanCoc(
     throw new Error("Chỉ đơn CHO_COC hoặc DA_XAC_NHAN được tính hoàn cọc");
   }
 
-  const deltaHours = Number(
-    ((checkInAt.getTime() - now.getTime()) / 3_600_000).toFixed(2),
-  );
+  const exactDeltaHours = (checkInAt.getTime() - now.getTime()) / 3_600_000;
+  const deltaHours = Number(exactDeltaHours.toFixed(2));
 
   const tyLeHoanPhanTram: 0 | 50 | 100 =
-    deltaHours >= 72 ? 100 : deltaHours >= 24 ? 50 : 0;
+    exactDeltaHours >= 72 ? 100 : exactDeltaHours >= 24 ? 50 : 0;
   const chinhSachApDung =
     tyLeHoanPhanTram === 100
       ? "Hủy trước giờ nhận phòng >= 72 giờ (3 ngày): Hoàn 100% tiền cọc."

@@ -1,7 +1,9 @@
 ﻿import assert from "node:assert/strict";
+import { apiClient, ApiError, setAccessToken } from "../src/services/apiClient";
 import fixtures from "../src/mocks/fixtures.json";
-import { apiClient, ApiError } from "../src/services/apiClient";
 import type { ApiResponse } from "../src/types/sweethome";
+import { resetMockState, setMockAuthenticatedAccount } from "../src/mocks/mockAdapter";
+import { withMockBrowserSession } from "./mock-browser-session";
 
 function checkEnvelope(
   response: ApiResponse<unknown>,
@@ -28,17 +30,47 @@ async function main() {
   };
 
   try {
+    await withMockBrowserSession(async () => {
+    resetMockState();
+    const registeredUsername = `qa_customer_${Date.now()}`;
     const registered = await apiClient.register({
-      username: "khachhang_minhanh",
-      password: "Password@123",
-      hoTen: "Nguyễn Minh Anh",
+      username: registeredUsername,
+      password: "Valid@123",
+      hoTen: "Khách đăng ký kiểm thử",
       soDienThoai: "0901234567",
-      email: "minhanh@gmail.com",
+      email: `qa-${Date.now()}@example.test`,
     });
 
     checkEnvelope(registered, 201);
-    assert.deepEqual(registered.data, fixtures["1.1"].data);
-    console.log("PASS register: đúng response mẫu");
+    assert.equal(registered.data.taiKhoan.username, registeredUsername);
+    assert.equal(registered.data.taiKhoan.vaiTro, "CUSTOMER");
+    assert.equal("password" in registered.data.taiKhoan, false);
+    assert.equal("passwordHash" in registered.data.taiKhoan, false);
+    console.log("PASS register: lưu tài khoản CUSTOMER, không trả mật khẩu");
+
+    await assert.rejects(
+      () => apiClient.register({
+        username: registered.data.taiKhoan.username,
+        password: "Valid@123",
+        hoTen: "Khách trùng",
+        soDienThoai: "0901234567",
+        email: "duplicate@example.test",
+      }),
+      (error: unknown) => error instanceof ApiError && error.statusCode === 409,
+    );
+    console.log("PASS register username trùng: 409");
+
+    await assert.rejects(
+      () => apiClient.login({ username: "admin_sweethome", password: "sai-mat-khau" }),
+      (error: unknown) => error instanceof ApiError && error.statusCode === 401,
+    );
+    console.log("PASS login sai mật khẩu: 401");
+
+    await assert.rejects(
+      () => apiClient.login({ username: "locked_demo", password: "Locked@123" }),
+      (error: unknown) => error instanceof ApiError && error.statusCode === 403,
+    );
+    console.log("PASS login tài khoản khóa: 403");
 
     const loggedIn = await apiClient.login({
       username: "admin_sweethome",
@@ -46,8 +78,20 @@ async function main() {
     });
 
     checkEnvelope(loggedIn);
-    assert.deepEqual(loggedIn.data, fixtures["1.2"].data);
-    console.log("PASS login: đúng response mẫu");
+    assert.equal(loggedIn.data.taiKhoan.vaiTro, "ADMIN");
+    assert.equal(loggedIn.data.taiKhoan.username, "admin_sweethome");
+    console.log("PASS login xác thực credentials: ADMIN");
+
+    for (const [username, password, role] of [
+      ["customer_demo", "Customer@123", "CUSTOMER"],
+      ["staff_demo", "Staff@123", "STAFF"],
+      ["admin_sweethome", "Admin@123", "ADMIN"],
+    ] as const) {
+      const result = await apiClient.login({ username, password });
+      assert.equal(result.data.taiKhoan.vaiTro, role);
+      assert.equal((await apiClient.getMe()).data.vaiTro, role);
+    }
+    console.log("PASS mock login/getMe phân biệt CUSTOMER, STAFF, ADMIN");
 
     const changedPassword = await apiClient.changePassword({
       matKhauCu: "Password@123",
@@ -60,12 +104,13 @@ async function main() {
 
     const me = await apiClient.getMe();
     checkEnvelope(me);
-    assert.deepEqual(me.data, loggedIn.data.taiKhoan);
+    assert.equal(me.data.vaiTro, "ADMIN");
     console.log("PASS getMe");
 
+    await apiClient.login({ username: registeredUsername, password: "Valid@123" });
     const profile = await apiClient.getCustomerProfile();
     checkEnvelope(profile);
-    assert.deepEqual(profile.data, fixtures["1.5"].data);
+    assert.equal(profile.data.maKH, registered.data.taiKhoan.khachHang?.maKH);
     console.log("PASS getCustomerProfile");
 
     const profileInput = {
@@ -79,15 +124,17 @@ async function main() {
 
     checkEnvelope(updatedProfile);
     assert.deepEqual(updatedProfile.data, {
-      ...fixtures["1.6"].data,
+      ...profile.data,
       ...profileInput,
     });
     console.log("PASS updateCustomerProfile");
 
     const initialUsers = await apiClient.getUsers();
     checkEnvelope(initialUsers);
-    assert.deepEqual(initialUsers.data, fixtures["2.1"].data);
-    console.log("PASS getUsers: đúng danh sách mẫu");
+    assert.ok(initialUsers.data.some((user) => user.username === "admin_sweethome" && user.vaiTro === "ADMIN"));
+    assert.ok(initialUsers.data.some((user) => user.username === "staff_demo" && user.vaiTro === "STAFF"));
+    assert.ok(initialUsers.data.some((user) => user.username === "customer_demo" && user.vaiTro === "CUSTOMER"));
+    console.log("PASS getUsers: có tài khoản mock đủ vai trò để kiểm thử");
 
     const userInput = {
       username: `qa_staff_${Date.now()}`,
@@ -161,6 +208,9 @@ async function main() {
     console.log("PASS cập nhật tài khoản không tồn tại: lỗi 404");
 
     console.log("Hoàn tất kiểm tra nhóm xác thực và tài khoản.");
+    setAccessToken(null);
+    setMockAuthenticatedAccount(null);
+    });
   } finally {
     globalThis.fetch = originalFetch;
   }

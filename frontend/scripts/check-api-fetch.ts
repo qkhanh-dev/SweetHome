@@ -18,19 +18,37 @@ function envelope(statusCode: number, data: unknown, message = "OK") {
   };
 }
 
+async function withoutBrowser<T>(operation: () => Promise<T>): Promise<T> {
+  const descriptor = Object.getOwnPropertyDescriptor(globalThis, "window");
+  Reflect.deleteProperty(globalThis, "window");
+  try {
+    return await operation();
+  } finally {
+    if (descriptor) Object.defineProperty(globalThis, "window", descriptor);
+  }
+}
+
 async function main(): Promise<void> {
   process.env.NEXT_PUBLIC_USE_MOCK = "false";
   process.env.NEXT_PUBLIC_API_URL = "https://backend.example.test/api///";
-  const { apiClient, ApiError, setAccessToken } = await import("@/services/apiClient");
+  process.env.NEXT_PUBLIC_ENABLE_PAYMENT_SIMULATOR = "false";
+  const { apiClient, ApiError, setAccessToken, paymentSimulatorEnabled } = await import("@/services/apiClient");
+  assert.equal(paymentSimulatorEnabled(false, false, "development"), false);
+  assert.equal(paymentSimulatorEnabled(false, true, "development"), true);
+  assert.equal(paymentSimulatorEnabled(false, true, "production"), false);
+  assert.equal(paymentSimulatorEnabled(true, false, "production"), true);
   const calls: Array<{ url: URL; init: RequestInit; headers: Headers; body?: string }> = [];
   let respond: (url: URL, init: RequestInit, headers: Headers, body?: string) => Response = () => jsonResponse(200, envelope(200, null));
 
   const originalFetch = globalThis.fetch;
   globalThis.fetch = async (input: RequestInfo | URL, init: RequestInit = {}) => {
-    const url = new URL(String(input));
+    const url = new URL(String(input), "https://frontend.example.test");
     const headers = new Headers(init.headers);
     const body = typeof init.body === "string" ? init.body : undefined;
     calls.push({ url, init, headers, body });
+    if (url.origin === "https://frontend.example.test") {
+      return jsonResponse(200, envelope(200, { loggedOut: true }));
+    }
     return respond(url, init, headers, body);
   };
 
@@ -53,6 +71,20 @@ async function main(): Promise<void> {
     const login = await apiClient.login({ username: "frontend_test", password: "Pässword!" });
     assert.equal(login.data.accessToken, "jwt-test-token");
     assert.equal(calls.length, 1);
+
+    // The token module is intentionally ignored on the server; these calls carry
+    // a token only when running in a browser request context.
+    respond = (_url, _init, headers) => {
+      assert.equal(headers.get("authorization"), null);
+      return jsonResponse(200, envelope(200, []));
+    };
+    await apiClient.getRooms();
+
+    Object.defineProperty(globalThis, "window", {
+      configurable: true,
+      value: { dispatchEvent: () => true },
+    });
+    setAccessToken("jwt-test-token");
 
     respond = (url, _init, headers) => {
       assert.equal(url.origin, "https://backend.example.test");
@@ -129,6 +161,67 @@ async function main(): Promise<void> {
       trangThaiGiaoDich: "THANH_CONG",
     }, "idem-DP42");
 
+    const bookingDto = {
+      maPhong: "P201",
+      ngayNhan: "2026-11-12",
+      ngayTra: "2026-11-15",
+      soKhach: 2,
+      hoTen: "Khách HTTP",
+      soDienThoai: "0901234567",
+      email: "http@example.test",
+      ghiChu: "Ghi chú",
+    };
+    respond = (url, init, headers, body) => {
+      assert.equal(url.pathname, "/api/bookings");
+      assert.equal(init.method, "POST");
+      assert.equal(headers.get("authorization"), "Bearer jwt-test-token");
+      assert.deepEqual(JSON.parse(body ?? "{}"), bookingDto);
+      assert.equal("tongTienDuKien" in JSON.parse(body ?? "{}"), false);
+      return jsonResponse(201, envelope(201, {
+        datPhong: { maDatPhong: "DP_HTTP", maPhong: bookingDto.maPhong, trangThai: "CHO_COC" },
+        paymentQr: { maDatPhong: "DP_HTTP", maGiaoDich: "PAY_DP_HTTP", soTienCoc: 300000, noiDungChuyenKhoan: "SWEETHOME COC DP_HTTP", qrCodeUrl: "https://qr.example.test/x", idempotencyKey: "idem-DP_HTTP" },
+      }));
+    };
+    await apiClient.createBooking(bookingDto);
+
+    respond = (url, init, headers, body) => {
+      assert.equal(url.pathname, "/api/payments/create-qr");
+      assert.equal(init.method, "POST");
+      assert.deepEqual(JSON.parse(body ?? "{}"), { maDatPhong: "DP_HTTP" });
+      assert.equal(headers.get("authorization"), "Bearer jwt-test-token");
+      return jsonResponse(200, envelope(200, { maDatPhong: "DP_HTTP", maGiaoDich: "PAY_DP_HTTP", soTienCoc: 300000, noiDungChuyenKhoan: "SWEETHOME COC DP_HTTP", qrCodeUrl: "https://qr.example.test/x", idempotencyKey: "idem-DP_HTTP" }));
+    };
+    await apiClient.getPaymentQr("DP_HTTP");
+
+    respond = (url, _init, headers) => {
+      assert.equal(url.pathname, "/api/bookings/DP_HTTP");
+      assert.equal(headers.get("authorization"), "Bearer jwt-test-token");
+      return jsonResponse(200, envelope(200, {
+        maDatPhong: "DP_HTTP",
+        maPhong: "P201",
+        trangThai: "DA_XAC_NHAN",
+        phong: { maPhong: "P201", soPhong: "201", trangThai: "DA_DAT", loaiPhong: { maLoaiPhong: "LP02", tenLoaiPhong: "Deluxe" } },
+      }));
+    };
+    await apiClient.getBookingById("DP_HTTP");
+
+    respond = (url, init, headers) => {
+      assert.equal(url.pathname, "/api/bookings/DP%20HTTP/refund-preview");
+      assert.equal(init.method, undefined);
+      assert.equal(headers.get("authorization"), "Bearer jwt-test-token");
+      return jsonResponse(200, envelope(200, { maDatPhong: "DP HTTP", ngayNhan: "2026-11-12", trangThaiHienTai: "DA_XAC_NHAN", tienCoc: 300000, deltaHours: 72, tyLeHoanPhanTram: 100, soTienHoan: 300000, chinhSachApDung: "Hoàn 100%" }));
+    };
+    await apiClient.getRefundPreview("DP HTTP");
+
+    respond = (url, init, headers, body) => {
+      assert.equal(url.pathname, "/api/bookings/DP%20HTTP/cancel");
+      assert.equal(init.method, "POST");
+      assert.deepEqual(JSON.parse(body ?? "{}"), { lyDo: "Đổi lịch" });
+      assert.equal(headers.get("authorization"), "Bearer jwt-test-token");
+      return jsonResponse(200, envelope(200, { datPhong: { maDatPhong: "DP HTTP", trangThai: "DA_HUY" }, phong: { maPhong: "P1", soPhong: "101", trangThai: "TRONG" }, hoanCoc: { maGiaoDichHoan: "REFUND_DP_HTTP", deltaHours: 72, soTienHoan: 300000, tyLeHoanPhanTram: 100, tienCocDaDong: 300000, trangThaiHoanTien: "DA_HOAN", chinhSachApDung: "Hoàn 100%" } }));
+    };
+    await apiClient.cancelBooking("DP HTTP", "Đổi lịch");
+
     respond = (url, init, headers) => {
       assert.equal(url.pathname, "/api/services/DV%2001%2F%2B");
       assert.equal(init.method, "DELETE");
@@ -153,7 +246,7 @@ async function main(): Promise<void> {
       return jsonResponse(200, envelope(200, sampleAccount));
     };
     setAccessToken(null);
-    await apiClient.getMe();
+    await withoutBrowser(() => apiClient.getMe());
 
     respond = () => jsonResponse(409, {
       success: false,
@@ -166,7 +259,7 @@ async function main(): Promise<void> {
     });
     let httpError: unknown;
     await assert.rejects(
-      () => apiClient.getMe(),
+      () => withoutBrowser(() => apiClient.getMe()),
       (error: unknown) => {
         httpError = error;
         return error instanceof ApiError && error.statusCode === 409 && error.message === "Booking conflict";
@@ -185,7 +278,7 @@ async function main(): Promise<void> {
 
     respond = () => new Response("not-json", { status: 502 });
     await assert.rejects(
-      () => apiClient.getMe(),
+      () => withoutBrowser(() => apiClient.getMe()),
       (error: unknown) => error instanceof ApiError && error.statusCode === 502 && error.payload === null,
     );
 
@@ -213,6 +306,7 @@ async function main(): Promise<void> {
     console.log(`PASS fetch adapter: ${calls.length} requests, URL/query/body/headers/token/errors/envelope`);
   } finally {
     globalThis.fetch = originalFetch;
+    Reflect.deleteProperty(globalThis, "window");
     setAccessToken(null);
   }
 }
