@@ -140,11 +140,40 @@ model DatPhong {
   suDungDichVus  SuDungDichVu[]
   hoaDon         HoaDon?
   danhGia        DanhGia?
+  thanhToan      ThanhToanCoc?
+  hoanCoc        HoanCoc?
 
   @@index([maPhong, ngayNhan, ngayTra, trangThai])
   @@index([maKH])
   @@index([trangThai])
   @@index([ngayNhan, ngayTra])
+}
+
+// Durable receipts: unique constraints protect all workers, not only one process.
+model ThanhToanCoc {
+  maGiaoDich String @id
+  idempotencyKey String @unique
+  maDatPhong String @unique
+  soTien Float
+  ngayXuLy DateTime @default(now())
+  datPhong DatPhong @relation(fields: [maDatPhong], references: [maDatPhong], onDelete: Restrict)
+}
+
+// Commit the refund quote before contacting the gateway. Retries reuse the same
+// amount and key even when the clock crosses the 24/72 hour boundary.
+model HoanCoc {
+  maDatPhong String @id
+  maGiaoDichHoan String @unique
+  maGiaoDich String?
+  soTienHoan Float
+  tienCocDaDong Float
+  deltaHours Float
+  tyLeHoanPhanTram Int
+  chinhSachApDung String
+  lyDo String
+  trangThai String @default("DANG_XU_LY")
+  ngayTao DateTime @default(now())
+  datPhong DatPhong @relation(fields: [maDatPhong], references: [maDatPhong], onDelete: Restrict)
 }
 
 // 8. Lớp DichVu

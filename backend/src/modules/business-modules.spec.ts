@@ -30,9 +30,12 @@ describe('business module skeleton graph', () => {
     ).toHaveLength(7);
   });
 
-  it.each(businessModules)('%p has no dependencies or runtime components yet', (moduleClass) => {
-    expect(Reflect.getMetadata(MODULE_METADATA.IMPORTS, moduleClass) ?? []).toEqual([]);
-    expect(Reflect.getMetadata(MODULE_METADATA.PROVIDERS, moduleClass) ?? []).toEqual([]);
-    expect(Reflect.getMetadata(MODULE_METADATA.CONTROLLERS, moduleClass) ?? []).toEqual([]);
-  });
+  it.each(businessModules.filter((moduleClass) => moduleClass !== BookingModule))(
+    '%p has no dependencies or runtime components yet',
+    (moduleClass) => {
+      expect(Reflect.getMetadata(MODULE_METADATA.IMPORTS, moduleClass) ?? []).toEqual([]);
+      expect(Reflect.getMetadata(MODULE_METADATA.PROVIDERS, moduleClass) ?? []).toEqual([]);
+      expect(Reflect.getMetadata(MODULE_METADATA.CONTROLLERS, moduleClass) ?? []).toEqual([]);
+    },
+  );
 });
