@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { createSearchSchema, homestayFormSchema, roomFormSchema, roomTypeFormSchema, amenityFormSchema } from "../src/lib/sh09-validation";
+import { createSearchSchema, homestayFormSchema, roomFormSchema, roomTypeFormSchema, amenityFormSchema, minCheckoutDate } from "../src/lib/sh09-validation";
 import { LatestRequestGate } from "../src/lib/latest-request";
 import { apiClient, ApiError } from "../src/services/apiClient";
 import { resetMockState } from "../src/mocks/mockAdapter";
@@ -31,13 +31,30 @@ async function main() {
   assert.equal(searchSchema.safeParse({ ...validSearch, soKhach: 1.5 }).success, false);
   console.log("PASS search validation: ngày, ngày quá khứ, thứ tự ngày, số khách và giữ nguyên YYYY-MM-DD");
 
+  assert.equal(minCheckoutDate("2030-12-31", "2030-01-01"), "2031-01-01");
+  assert.equal(minCheckoutDate("2032-02-28", "2030-01-01"), "2032-02-29");
+  assert.equal(minCheckoutDate("2032-02-29", "2030-01-01"), "2032-03-01");
+  assert.equal(minCheckoutDate("", "2030-11-11"), "2030-11-12");
+  assert.equal(minCheckoutDate("sai-ngay", "2030-11-11"), "2030-11-12");
+  assert.equal(minCheckoutDate("2020-01-01", "2030-11-11"), "2030-11-12");
+  for (const ids of [[], ["TN01"], ["TN01", "TN02"]]) {
+    assert.equal(searchSchema.safeParse({ ...validSearch, tienNghiIds: ids }).success, true);
+    assert.equal(roomFormSchema.safeParse({ soPhong: "QA", tang: 1, maLoaiPhong: "LP01", maTienNghis: ids }).success, true);
+  }
+  for (const invalid of [false, true, "TN01"]) {
+    const result = searchSchema.safeParse({ ...validSearch, tienNghiIds: invalid });
+    assert.equal(result.success, false);
+    if (!result.success) assert.equal(result.error.issues[0].message, "Vui lòng chọn danh sách tiện nghi hợp lệ.");
+  }
+  console.log("PASS review regressions: ngày trả tối thiểu qua tháng/năm/ngày nhuận và mảng tiện nghi 0/1/nhiều");
+
   const weekdayPrice = tinhGiaPhongChiTiet("2030-11-11", "2030-11-15", 100000, 200000);
   assert.deepEqual([weekdayPrice.soDemNgayThuong, weekdayPrice.soDemCuoiTuan, weekdayPrice.tongTienDuKien], [4, 0, 400000]);
   const weekendPrice = tinhGiaPhongChiTiet("2030-11-15", "2030-11-18", 100000, 200000);
   assert.deepEqual([weekendPrice.soDemNgayThuong, weekendPrice.soDemCuoiTuan, weekendPrice.tongTienDuKien], [0, 3, 600000]);
   console.log("PASS pricing calendar: T2–T5 và T6–CN với ngày cố định");
 
-  assert.equal(homestayFormSchema.safeParse({ tenHomestay: "  SweetHome  ", diaChi: "  Đà Lạt ", hotline: " 0901 ", email: " contact@example.com ", quyDinhChung: "  Quy định  " }).success, true);
+  assert.equal(homestayFormSchema.safeParse({ tenHomestay: "  SweetHome  ", diaChi: "  Đà Lạt ", hotline: " 0901234567 ", email: " contact@example.com ", quyDinhChung: "  Quy định  " }).success, true);
   assert.equal(homestayFormSchema.safeParse({ tenHomestay: "Nhà", diaChi: "Đà Lạt", hotline: "0901", email: "sai-email", quyDinhChung: "Quy định" }).success, false);
   assert.equal(roomTypeFormSchema.safeParse({ tenLoaiPhong: " Hạng A ", sucChuaToiDa: 2, giaNgayThuong: 1, giaCuoiTuan: 1, moTa: " " }).success, true);
   assert.equal(roomTypeFormSchema.safeParse({ tenLoaiPhong: "Hạng A", sucChuaToiDa: 0, giaNgayThuong: 1, giaCuoiTuan: 1, moTa: "" }).success, false);
@@ -46,7 +63,34 @@ async function main() {
   assert.equal(amenityFormSchema.safeParse({ tenTienNghi: " Wifi ", loaiTienNghi: " CustomType " }).success, true);
   assert.equal(roomFormSchema.safeParse({ soPhong: " ", tang: 0, maLoaiPhong: "", maTienNghis: [] }).success, false);
   assert.equal(roomFormSchema.safeParse({ soPhong: "101", tang: 1.2, maLoaiPhong: "LP01", maTienNghis: [] }).success, false);
+  const validType = { tenLoaiPhong: "QA", sucChuaToiDa: 2, giaNgayThuong: 300000, giaCuoiTuan: 450000, moTa: "" };
+  for (const field of ["sucChuaToiDa", "giaNgayThuong", "giaCuoiTuan"] as const) {
+    const result = roomTypeFormSchema.safeParse({ ...validType, [field]: Number.NaN });
+    assert.equal(result.success, false);
+    if (!result.success) assert.equal(result.error.issues[0].message, "Vui lòng nhập số hợp lệ.");
+  }
+  for (const field of ["giaNgayThuong", "giaCuoiTuan"] as const) {
+    const result = roomTypeFormSchema.safeParse({ ...validType, [field]: 300000.5 });
+    assert.equal(result.success, false);
+    if (!result.success) assert.equal(result.error.issues[0].message, "Giá phòng phải là số nguyên VNĐ.");
+  }
+  for (const [schema, input] of [
+    [searchSchema, { ...validSearch, soKhach: Number.NaN }],
+    [roomFormSchema, { soPhong: "QA", tang: Number.NaN, maLoaiPhong: "LP01", maTienNghis: [] }],
+  ] as const) {
+    const result = schema.safeParse(input);
+    assert.equal(result.success, false);
+    if (!result.success) assert.equal(result.error.issues[0].message, "Vui lòng nhập số hợp lệ.");
+  }
+  const validHomestay = { tenHomestay: "QA", diaChi: "Đà Lạt", email: "qa@example.com", quyDinhChung: "QA" };
+  for (const hotline of ["abc", "0901", "1234567890123456", "090123abc7"]) {
+    assert.equal(homestayFormSchema.safeParse({ ...validHomestay, hotline }).success, false);
+  }
+  for (const hotline of ["0901234567", "+84 901 234 567", "(028) 1234-5678"]) {
+    assert.equal(homestayFormSchema.safeParse({ ...validHomestay, hotline }).success, true);
+  }
   console.log("PASS admin validation: trim, email, giá, sức chứa, loại tiện nghi String và tầng");
+  console.log("PASS review regressions: giá nguyên VNĐ, hotline và thông báo tiếng Việt cho cả 5 trường số bị xóa trắng");
 
   const gate = new LatestRequestGate();
   const oldRequest = gate.begin();

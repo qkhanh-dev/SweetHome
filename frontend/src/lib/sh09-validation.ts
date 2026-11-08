@@ -20,6 +20,12 @@ export function toLocalDateInput(date = new Date()): string {
   return `${year}-${month}-${day}`;
 }
 
+export function minCheckoutDate(ngayNhan: string, today = toLocalDateInput()): string {
+  const start = isDateOnly(ngayNhan) && ngayNhan >= today ? ngayNhan : today;
+  const [year, month, day] = start.split("-").map(Number);
+  return toLocalDateInput(new Date(year, month - 1, day + 1));
+}
+
 export function createSearchSchema(now = new Date()) {
   const today = toLocalDateInput(now);
 
@@ -40,11 +46,11 @@ export function createSearchSchema(now = new Date()) {
         .min(1, "Vui lòng chọn ngày trả phòng.")
         .refine(isDateOnly, "Ngày trả phòng không hợp lệ."),
       soKhach: z
-        .number()
+        .number({ error: "Vui lòng nhập số hợp lệ." })
         .finite("Số khách phải là số hữu hạn.")
         .int("Số khách phải là số nguyên.")
         .min(1, "Số khách tối thiểu là 1."),
-      tienNghiIds: z.array(z.string()).default([]),
+      tienNghiIds: z.array(z.string(), { error: "Vui lòng chọn danh sách tiện nghi hợp lệ." }).default([]),
     })
     .superRefine((values, context) => {
       if (
@@ -64,7 +70,8 @@ export function createSearchSchema(now = new Date()) {
 export const homestayFormSchema = z.object({
   tenHomestay: z.string().trim().min(1, "Vui lòng nhập tên Homestay."),
   diaChi: z.string().trim().min(1, "Vui lòng nhập địa chỉ."),
-  hotline: z.string().trim().min(1, "Vui lòng nhập hotline."),
+  hotline: z.string().trim().min(1, "Vui lòng nhập hotline.")
+    .regex(/^[0-9+\-\s()]{8,15}$/, "Hotline phải là số điện thoại hợp lệ từ 8 đến 15 ký tự."),
   email: z
     .string()
     .trim()
@@ -76,17 +83,19 @@ export const homestayFormSchema = z.object({
 export const roomTypeFormSchema = z.object({
   tenLoaiPhong: z.string().trim().min(1, "Vui lòng nhập tên loại phòng."),
   sucChuaToiDa: z
-    .number()
+    .number({ error: "Vui lòng nhập số hợp lệ." })
     .finite("Sức chứa phải là số hữu hạn.")
     .int("Sức chứa phải là số nguyên.")
     .min(1, "Sức chứa tối thiểu là 1 người."),
   giaNgayThuong: z
-    .number()
+    .number({ error: "Vui lòng nhập số hợp lệ." })
     .finite("Giá ngày thường phải là số hữu hạn.")
+    .int("Giá phòng phải là số nguyên VNĐ.")
     .positive("Giá ngày thường phải lớn hơn 0."),
   giaCuoiTuan: z
-    .number()
+    .number({ error: "Vui lòng nhập số hợp lệ." })
     .finite("Giá cuối tuần phải là số hữu hạn.")
+    .int("Giá phòng phải là số nguyên VNĐ.")
     .positive("Giá cuối tuần phải lớn hơn 0."),
   moTa: z.string().trim(),
 });
@@ -99,12 +108,12 @@ export const amenityFormSchema = z.object({
 export const roomFormSchema = z.object({
   soPhong: z.string().trim().min(1, "Vui lòng nhập số phòng."),
   tang: z
-    .number()
+    .number({ error: "Vui lòng nhập số hợp lệ." })
     .finite("Tầng phải là số hữu hạn.")
     .int("Tầng phải là số nguyên.")
     .min(1, "Tầng tối thiểu là 1."),
   maLoaiPhong: z.string().trim().min(1, "Vui lòng chọn loại phòng."),
-  maTienNghis: z.array(z.string()).default([]),
+  maTienNghis: z.array(z.string(), { error: "Vui lòng chọn danh sách tiện nghi hợp lệ." }).default([]),
 });
 
 export function applyZodIssues<T extends FieldValues>(

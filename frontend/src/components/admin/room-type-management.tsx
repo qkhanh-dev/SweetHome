@@ -12,16 +12,16 @@ import { FormField, inputClassName } from "@/components/ui/form-field";
 type RoomTypeValues = {
   tenLoaiPhong: string;
   sucChuaToiDa: number;
-  giaNgayThuong: number;
-  giaCuoiTuan: number;
+  giaNgayThuong: number | "";
+  giaCuoiTuan: number | "";
   moTa: string;
 };
 
 const emptyValues: RoomTypeValues = {
   tenLoaiPhong: "",
   sucChuaToiDa: 1,
-  giaNgayThuong: 1,
-  giaCuoiTuan: 1,
+  giaNgayThuong: "",
+  giaCuoiTuan: "",
   moTa: "",
 };
 
@@ -162,8 +162,8 @@ export function RoomTypeManagement() {
           <FormField id="tenLoaiPhong" label="Tên loại phòng" error={errors.tenLoaiPhong?.message}><input id="tenLoaiPhong" autoFocus className={inputClassName} aria-invalid={Boolean(errors.tenLoaiPhong)} aria-describedby={errors.tenLoaiPhong ? "tenLoaiPhong-error" : undefined} {...form.register("tenLoaiPhong")} /></FormField>
           <FormField id="sucChuaToiDa" label="Sức chứa tối đa (khách)" error={errors.sucChuaToiDa?.message}><input id="sucChuaToiDa" type="number" min={1} step={1} className={inputClassName} aria-invalid={Boolean(errors.sucChuaToiDa)} aria-describedby={errors.sucChuaToiDa ? "sucChuaToiDa-error" : undefined} {...form.register("sucChuaToiDa", { valueAsNumber: true })} /></FormField>
           <div className="grid gap-4 sm:grid-cols-2">
-            <FormField id="giaNgayThuong" label="Giá ngày thường (T2–T5), VNĐ/đêm" error={errors.giaNgayThuong?.message}><input id="giaNgayThuong" type="number" min={1} step="any" className={inputClassName} aria-invalid={Boolean(errors.giaNgayThuong)} aria-describedby={errors.giaNgayThuong ? "giaNgayThuong-error" : undefined} {...form.register("giaNgayThuong", { valueAsNumber: true })} /></FormField>
-            <FormField id="giaCuoiTuan" label="Giá cuối tuần (T6–CN), VNĐ/đêm" error={errors.giaCuoiTuan?.message}><input id="giaCuoiTuan" type="number" min={1} step="any" className={inputClassName} aria-invalid={Boolean(errors.giaCuoiTuan)} aria-describedby={errors.giaCuoiTuan ? "giaCuoiTuan-error" : undefined} {...form.register("giaCuoiTuan", { valueAsNumber: true })} /></FormField>
+            <FormField id="giaNgayThuong" label="Giá ngày thường (T2–T5), VNĐ/đêm" error={errors.giaNgayThuong?.message}><input id="giaNgayThuong" type="number" min={1} step={1} className={inputClassName} aria-invalid={Boolean(errors.giaNgayThuong)} aria-describedby={errors.giaNgayThuong ? "giaNgayThuong-error" : undefined} {...form.register("giaNgayThuong", { valueAsNumber: true })} /></FormField>
+            <FormField id="giaCuoiTuan" label="Giá cuối tuần (T6–CN), VNĐ/đêm" error={errors.giaCuoiTuan?.message}><input id="giaCuoiTuan" type="number" min={1} step={1} className={inputClassName} aria-invalid={Boolean(errors.giaCuoiTuan)} aria-describedby={errors.giaCuoiTuan ? "giaCuoiTuan-error" : undefined} {...form.register("giaCuoiTuan", { valueAsNumber: true })} /></FormField>
           </div>
           <FormField id="moTa" label="Mô tả" error={errors.moTa?.message}><textarea id="moTa" rows={3} className={inputClassName} aria-invalid={Boolean(errors.moTa)} aria-describedby={errors.moTa ? "moTa-error" : undefined} {...form.register("moTa")} /></FormField>
           {dialogError ? <p className="rounded-md border border-rose-200 bg-rose-50 p-3 text-sm text-rose-800" role="alert">Không thể lưu: {dialogError}</p> : null}

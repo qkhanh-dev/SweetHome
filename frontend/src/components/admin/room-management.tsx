@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Pencil, Plus, Trash2 } from "lucide-react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import type { CreateRoomDto } from "@/types/api";
 import type { LoaiPhong, Phong, TienNghi } from "@/types/sweethome";
 import { TrangThaiPhong } from "@/types/sweethome";
@@ -184,9 +184,20 @@ export function RoomManagement() {
               {roomTypes.map((type) => <option key={type.maLoaiPhong} value={type.maLoaiPhong}>{type.tenLoaiPhong} · {type.maLoaiPhong}</option>)}
             </select>
           </FormField>
-          <fieldset className="space-y-2">
+          <fieldset className="space-y-2" aria-invalid={Boolean(errors.maTienNghis)} aria-describedby={errors.maTienNghis ? "room-amenities-error" : undefined}>
             <legend className="text-sm font-medium">Tiện nghi được gán</legend>
-            {amenities.length ? <div className="grid max-h-48 gap-2 overflow-y-auto rounded-md border p-3 sm:grid-cols-2">{amenities.map((amenity) => <label key={amenity.maTienNghi} className="flex items-center gap-2 text-sm"><input type="checkbox" value={amenity.maTienNghi} className="h-4 w-4 accent-emerald-800" {...form.register("maTienNghis")} /><span>{amenity.tenTienNghi}</span></label>)}</div> : <p className="text-sm text-muted-foreground">Chưa có tiện nghi trong danh mục.</p>}
+            {amenities.length ? <Controller name="maTienNghis" control={form.control} render={({ field }) => (
+              <div className="grid max-h-48 gap-2 overflow-y-auto rounded-md border p-3 sm:grid-cols-2">
+                {amenities.map((amenity, index) => <label key={amenity.maTienNghi} className="flex items-center gap-2 text-sm">
+                  <input type="checkbox" name={field.name} value={amenity.maTienNghi} ref={index === 0 ? field.ref : undefined} checked={field.value.includes(amenity.maTienNghi)} onBlur={field.onBlur} onChange={(event) => {
+                    field.onChange(event.target.checked ? [...field.value, amenity.maTienNghi] : field.value.filter((id) => id !== amenity.maTienNghi));
+                    form.clearErrors("maTienNghis");
+                  }} className="h-4 w-4 accent-emerald-800" />
+                  <span>{amenity.tenTienNghi}</span>
+                </label>)}
+              </div>
+            )} /> : <p className="text-sm text-muted-foreground">Chưa có tiện nghi trong danh mục.</p>}
+            {errors.maTienNghis?.message ? <p id="room-amenities-error" className="text-sm text-rose-700" role="alert">{errors.maTienNghis.message}</p> : null}
           </fieldset>
           {dialogError ? <p className="rounded-md border border-rose-200 bg-rose-50 p-3 text-sm text-rose-800" role="alert">Không thể lưu: {dialogError}</p> : null}
           <div className="flex flex-wrap justify-end gap-2 border-t pt-4"><button type="button" onClick={() => setDialogOpen(false)} disabled={form.formState.isSubmitting} className="min-h-10 rounded-md border px-4 py-2 text-sm">Hủy</button><button type="submit" disabled={form.formState.isSubmitting || !maHomestay || roomTypes.length === 0} className="min-h-10 rounded-md bg-emerald-800 px-4 py-2 text-sm font-semibold text-white disabled:opacity-60">{form.formState.isSubmitting ? "Đang lưu…" : "Lưu phòng"}</button></div>

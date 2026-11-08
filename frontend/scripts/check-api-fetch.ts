@@ -74,6 +74,19 @@ async function main(): Promise<void> {
       maLoaiPhong: "LP02",
     });
 
+    respond = (url) => {
+      assert.equal(url.pathname, "/api/rooms/available");
+      assert.equal(url.searchParams.has("tienNghiIds"), false);
+      assert.equal(url.searchParams.get("soKhach"), "2");
+      return jsonResponse(200, envelope(200, []));
+    };
+    await apiClient.getAvailableRooms({
+      ngayNhan: "2030-11-11",
+      ngayTra: "2030-11-16",
+      soKhach: 2,
+      tienNghiIds: undefined,
+    });
+
     respond = (url, init, headers, body) => {
       assert.equal(url.pathname, "/api/rooms/P%2001%2F%2B/status");
       assert.equal(init.method, "PATCH");

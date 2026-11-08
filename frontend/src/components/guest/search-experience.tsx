@@ -2,11 +2,11 @@
 
 import { useEffect, useRef, useState } from "react";
 import { BedDouble, CalendarDays, Search, Users } from "lucide-react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import type { AvailableRoomResult } from "@/types/api";
 import type { TienNghi } from "@/types/sweethome";
 import { apiClient } from "@/services/apiClient";
-import { apiErrorMessage, applyZodIssues, createSearchSchema, toLocalDateInput } from "@/lib/sh09-validation";
+import { apiErrorMessage, applyZodIssues, createSearchSchema, minCheckoutDate, toLocalDateInput } from "@/lib/sh09-validation";
 import { LatestRequestGate } from "@/lib/latest-request";
 import { FormField, inputClassName } from "@/components/ui/form-field";
 import { StatusBadge } from "@/components/status-badge";
@@ -56,6 +56,7 @@ function RoomCard({ room }: { room: AvailableRoomResult }) {
             Tối đa {room.loaiPhong?.sucChuaToiDa ?? "—"} khách
           </span>
           <span>{room.soDemLuuTru} đêm lưu trú</span>
+          <span>{room.soDemNgayThuong} đêm ngày thường · {room.soDemCuoiTuan} đêm cuối tuần</span>
         </div>
 
         {room.loaiPhong?.moTa ? (
@@ -89,6 +90,7 @@ function RoomCard({ room }: { room: AvailableRoomResult }) {
             <div>
               <p className="text-xs text-muted-foreground">Dự kiến toàn kỳ · {room.soDemLuuTru} đêm</p>
               <p className="text-xl font-semibold text-emerald-800">{currency.format(room.tongTienDuKien)}</p>
+              <p className="mt-1 text-sm text-muted-foreground">Cọc 30%: {currency.format(room.tienCoc)}</p>
             </div>
             <span className="text-xs text-muted-foreground">Giá do hệ thống tính</span>
           </div>
@@ -157,7 +159,7 @@ export function SearchExperience() {
         ngayNhan: values.ngayNhan,
         ngayTra: values.ngayTra,
         soKhach: values.soKhach,
-        tienNghiIds: values.tienNghiIds,
+        tienNghiIds: values.tienNghiIds.length > 0 ? values.tienNghiIds : undefined,
       });
       if (!requestGate.current.isCurrent(requestId)) return;
       setRooms(response.data);
@@ -202,7 +204,7 @@ export function SearchExperience() {
             <FormField id="ngayTra" label="Ngày trả phòng" error={errors.ngayTra?.message}>
               <span className="relative block">
                 <CalendarDays className="pointer-events-none absolute left-3 top-3 h-4 w-4 text-muted-foreground" aria-hidden="true" />
-                <input id="ngayTra" type="date" min={form.watch("ngayNhan") || today} aria-invalid={Boolean(errors.ngayTra)} aria-describedby={errors.ngayTra ? "ngayTra-error" : undefined} className={`${inputClassName} pl-10`} {...form.register("ngayTra")} />
+                <input id="ngayTra" type="date" min={minCheckoutDate(form.watch("ngayNhan"), today)} aria-invalid={Boolean(errors.ngayTra)} aria-describedby={errors.ngayTra ? "ngayTra-error" : undefined} className={`${inputClassName} pl-10`} {...form.register("ngayTra")} />
               </span>
             </FormField>
             <FormField id="soKhach" label="Số khách" error={errors.soKhach?.message}>
@@ -219,7 +221,7 @@ export function SearchExperience() {
             </div>
           </div>
 
-          <fieldset className="mt-5 border-t pt-4" disabled={amenitiesLoading}>
+          <fieldset className="mt-5 border-t pt-4" disabled={amenitiesLoading} aria-invalid={Boolean(errors.tienNghiIds)} aria-describedby={errors.tienNghiIds ? "search-amenities-error" : undefined}>
             <legend className="text-sm font-medium">Tiện nghi mong muốn</legend>
             {amenitiesLoading ? (
               <p className="mt-2 text-sm text-muted-foreground" role="status">Đang tải danh mục tiện nghi…</p>
@@ -229,17 +231,23 @@ export function SearchExperience() {
                 <button type="button" onClick={() => void loadAmenities()} className="font-semibold underline">Thử tải lại</button>
               </div>
             ) : amenities.length ? (
-              <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-                {amenities.map((amenity) => (
-                  <label key={amenity.maTienNghi} className="flex min-h-10 items-center gap-2 rounded-md border px-3 py-2 text-sm hover:bg-muted/50">
-                    <input type="checkbox" value={amenity.maTienNghi} className="h-4 w-4 rounded border-slate-300 accent-emerald-800" {...form.register("tienNghiIds")} />
-                    <span>{amenity.tenTienNghi}</span>
-                  </label>
-                ))}
-              </div>
+              <Controller name="tienNghiIds" control={form.control} render={({ field }) => (
+                <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+                  {amenities.map((amenity, index) => (
+                    <label key={amenity.maTienNghi} className="flex min-h-10 items-center gap-2 rounded-md border px-3 py-2 text-sm hover:bg-muted/50">
+                      <input type="checkbox" name={field.name} value={amenity.maTienNghi} ref={index === 0 ? field.ref : undefined} checked={field.value.includes(amenity.maTienNghi)} onBlur={field.onBlur} onChange={(event) => {
+                        field.onChange(event.target.checked ? [...field.value, amenity.maTienNghi] : field.value.filter((id) => id !== amenity.maTienNghi));
+                        form.clearErrors("tienNghiIds");
+                      }} className="h-4 w-4 rounded border-slate-300 accent-emerald-800" />
+                      <span>{amenity.tenTienNghi}</span>
+                    </label>
+                  ))}
+                </div>
+              )} />
             ) : (
               <p className="mt-2 text-sm text-muted-foreground">Chưa có tiện nghi trong danh mục.</p>
             )}
+            {errors.tienNghiIds?.message ? <p id="search-amenities-error" className="mt-2 text-sm text-rose-700" role="alert">{errors.tienNghiIds.message}</p> : null}
             <p className="mt-2 text-xs text-muted-foreground">Phòng cần có tất cả tiện nghi bạn chọn.</p>
           </fieldset>
         </form>
