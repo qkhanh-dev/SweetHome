@@ -13,7 +13,8 @@
     "check:catalog": "node --env-file=.env.local --import tsx scripts/check-catalog.ts",
     "check:api-mock": "node --env-file=.env.local --import tsx scripts/check-api-mock.ts",
     "check:api-fetch": "node --import tsx scripts/check-api-fetch.ts",
-    "check:fixtures": "node --import tsx scripts/check-fixtures.ts"
+    "check:fixtures": "node --import tsx scripts/check-fixtures.ts",
+    "check:sh09": "node --env-file=.env.local --import tsx scripts/check-sh09.ts"
   },
   "dependencies": {
     "class-variance-authority": "^0.7.1",
