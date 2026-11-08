@@ -65,6 +65,8 @@ async function main(): Promise<void> {
   assert.equal(process.env.NEXT_PUBLIC_USE_MOCK, "true");
   resetMockState();
   setAccessToken(null);
+  await apiClient.login({ username: "customer_demo", password: "Customer@123" });
+  await apiClient.getMe();
 
   const originalFetch = globalThis.fetch;
   globalThis.fetch = async () => {

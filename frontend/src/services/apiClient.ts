@@ -51,9 +51,22 @@ const API_BASE_URL = (
 const USE_MOCK = process.env.NEXT_PUBLIC_USE_MOCK === "true";
 
 let accessToken: string | null = null;
+export const isMockMode = USE_MOCK;
 
 export function setAccessToken(token: string | null): void {
   accessToken = token?.trim() || null;
+}
+
+export function getAccessToken(): string | null {
+  return accessToken;
+}
+
+function clearBrowserSession(): void {
+  setAccessToken(null);
+  if (typeof window !== "undefined") {
+    void fetch("/api/auth/session", { method: "DELETE", credentials: "same-origin" });
+    window.dispatchEvent(new Event("sweethome:session-invalid"));
+  }
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -82,7 +95,11 @@ async function request<T>(
   if (options.body !== undefined && options.body !== null) {
     headers.set("Content-Type", "application/json; charset=utf-8");
   }
-  if (accessToken) headers.set("Authorization", `Bearer ${accessToken}`);
+  // The module token is browser-only. Server requests must carry an explicit
+  // per-request Authorization header so concurrent users cannot share it.
+  if (typeof window !== "undefined" && accessToken) {
+    headers.set("Authorization", `Bearer ${accessToken}`);
+  }
 
   const response = await fetch(`${API_BASE_URL}${path}`, {
     ...options,
@@ -102,6 +119,9 @@ async function request<T>(
   }
 
   if (!response.ok || (isRecord(payload) && payload.success === false)) {
+    if (typeof window !== "undefined" && (response.status === 401 || response.status === 403)) {
+      clearBrowserSession();
+    }
     const message =
       isRecord(payload) && typeof payload.message === "string"
         ? payload.message
@@ -133,6 +153,50 @@ async function request<T>(
   return payload as unknown as ApiResponse<T>;
 }
 
+async function internalAuthRequest<T>(
+  action: string,
+  method: "GET" | "POST",
+  body?: unknown,
+): Promise<ApiResponse<T>> {
+  const response = await fetch(`/api/auth/${action}`, {
+    method,
+    credentials: "same-origin",
+    headers: {
+      Accept: "application/json",
+      ...(body === undefined ? {} : { "Content-Type": "application/json; charset=utf-8" }),
+    },
+    ...(body === undefined ? {} : { body: JSON.stringify(body) }),
+    cache: "no-store",
+  });
+  let payload: unknown;
+  try {
+    payload = await response.json();
+  } catch {
+    throw new ApiError("Phản hồi xác thực không hợp lệ.", response.status, null);
+  }
+  if (!response.ok || (isRecord(payload) && payload.success === false)) {
+    const message = isRecord(payload) && typeof payload.message === "string"
+      ? payload.message
+      : `Yêu cầu xác thực thất bại với mã HTTP ${response.status}.`;
+    const statusCode = isRecord(payload) && typeof payload.statusCode === "number"
+      ? payload.statusCode
+      : response.status;
+    throw new ApiError(message, statusCode, payload);
+  }
+  if (
+    !isRecord(payload) || payload.success !== true ||
+    typeof payload.statusCode !== "number" ||
+    typeof payload.message !== "string" ||
+    typeof payload.timestamp !== "string" ||
+    !Object.prototype.hasOwnProperty.call(payload, "data")
+  ) {
+    throw new ApiError("Phản hồi Backend không đúng cấu trúc ApiResponse.", response.status, payload);
+  }
+  const restoredToken = response.headers.get("X-SweetHome-Access-Token");
+  if (restoredToken) setAccessToken(restoredToken);
+  return payload as unknown as ApiResponse<T>;
+}
+
 const json = (method: string, body?: unknown, headers?: HeadersInit): RequestInit => ({
   method,
   ...(body === undefined ? {} : { body: JSON.stringify(body) }),
@@ -142,13 +206,17 @@ const json = (method: string, body?: unknown, headers?: HeadersInit): RequestIni
 export const apiClient = {
   // Auth, users and customer profile.
   register: async (payload: RegisterDto): Promise<ApiResponse<AuthResult>> => {
-    const response = await request("/auth/register", () => mockApi.register(payload), json("POST", payload));
+    const response = typeof window !== "undefined"
+      ? await internalAuthRequest<AuthResult>("register", "POST", payload)
+      : await request("/auth/register", () => mockApi.register(payload), json("POST", payload));
     setAccessToken(response.data.accessToken);
     return response;
   },
 
   login: async (payload: LoginDto): Promise<ApiResponse<AuthResult>> => {
-    const response = await request("/auth/login", () => mockApi.login(payload), json("POST", payload));
+    const response = typeof window !== "undefined"
+      ? await internalAuthRequest<AuthResult>("login", "POST", payload)
+      : await request("/auth/login", () => mockApi.login(payload), json("POST", payload));
     setAccessToken(response.data.accessToken);
     return response;
   },
@@ -157,7 +225,21 @@ export const apiClient = {
     request("/auth/change-password", () => mockApi.changePassword(payload), json("PATCH", payload)),
 
   getMe: (): Promise<ApiResponse<TaiKhoan>> =>
-    request("/auth/me", () => mockApi.getMe()),
+    typeof window !== "undefined"
+      ? internalAuthRequest<TaiKhoan>("me", "GET")
+      : request("/auth/me", () => mockApi.getMe(accessToken ?? undefined)),
+
+  logout: async (): Promise<void> => {
+    if (typeof window !== "undefined") {
+      try {
+        await fetch("/api/auth/session", { method: "DELETE", credentials: "same-origin" });
+      } finally {
+        setAccessToken(null);
+      }
+      return;
+    }
+    setAccessToken(null);
+  },
 
   getCustomerProfile: (): Promise<ApiResponse<KhachHang>> =>
     request("/customers/profile", () => mockApi.getCustomerProfile()),

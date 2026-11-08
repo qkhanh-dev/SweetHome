@@ -51,8 +51,10 @@ import {
   tinhTongHoaDon,
 } from "@/mocks/businessRules";
 import { ApiError, createErrorPayload } from "@/services/apiError";
+import { loginSchema, registerSchema } from "@/lib/auth-validation";
 
-type ErrorStatus = 400 | 404 | 409;
+type ErrorStatus = 400 | 401 | 403 | 404 | 409;
+const MOCK_BOOKING_STORAGE_KEY = "sweethome.mock.booking-state.v1";
 type BookingFilters = {
   trangThai?: TrangThaiDatPhong;
   maPhong?: string;
@@ -89,14 +91,53 @@ function stripReviewRelations(review: DanhGia): DanhGia {
 }
 
 const seedProfile = structuredClone(mockData["1.5"].data);
-const seedCustomerAccount = structuredClone(mockData["1.1"].data.taiKhoan);
 
 let users: TaiKhoan[] = structuredClone(mockData["2.1"].data).map(
   (account) => normalizeMockAccount(account as RawAccount),
 );
-let currentAccount: TaiKhoan = normalizeMockAccount(seedCustomerAccount as RawAccount);
+let currentAccount: TaiKhoan | null = null;
 let customers: KhachHang[] = [seedProfile];
 let customerProfile: KhachHang = structuredClone(seedProfile);
+type MockCredential = { salt: string; digest: string };
+const mockCredentials = new Map<string, MockCredential>();
+const mockSessions = new Map<string, string>();
+
+function seedMockAuthAccounts(): void {
+  const demoCustomer: KhachHang = {
+    maKH: seedProfile.maKH,
+    hoTen: seedProfile.hoTen,
+    soDienThoai: seedProfile.soDienThoai,
+    email: seedProfile.email,
+    soCCCD: null,
+  };
+  const demoAccounts: Array<{ account: TaiKhoan; digest: string }> = [
+    {
+      account: { maTaiKhoan: "TK_CUST_DEMO", username: "customer_demo", vaiTro: "CUSTOMER", trangThai: "ACTIVE", khachHang: demoCustomer },
+      digest: "700534cbd2811335f521614d8da7920863a37cde0f1f57341f80beb1bbd61bb6",
+    },
+    {
+      account: { maTaiKhoan: "TK_STAFF_DEMO", username: "staff_demo", vaiTro: "STAFF", trangThai: "ACTIVE", khachHang: null },
+      digest: "99f9a055b78d409b0b5cc13d4e59a99ac59b7e3ec83a82d3bff1e195330c0bf9",
+    },
+    {
+      account: { maTaiKhoan: "TK_ADMIN_01", username: "admin_sweethome", vaiTro: "ADMIN", trangThai: "ACTIVE", khachHang: null },
+      digest: "04e7450fb36587ae7e4d3456d4d7f1be12d449b20a4f455012ad55b38e0e5bc1",
+    },
+    {
+      account: { maTaiKhoan: "TK_LOCKED_DEMO", username: "locked_demo", vaiTro: "CUSTOMER", trangThai: "LOCKED", khachHang: null },
+      digest: "597d9859b307ea32aec0e287d2a6f7a7bf0c2104c29a93ce025d3c0a4c18b2dd",
+    },
+  ];
+  for (const { account, digest } of demoAccounts) {
+    if (!users.some((item) => item.username.toLowerCase() === account.username.toLowerCase())) {
+      users.push(structuredClone(account));
+    }
+    mockCredentials.set(account.username.toLowerCase(), { salt: "sweethome-mock-v1", digest });
+  }
+  if (!customers.some((item) => item.maKH === demoCustomer.maKH)) customers.push(demoCustomer);
+}
+
+seedMockAuthAccounts();
 let homestay: Homestay = structuredClone(mockData["3.1"].data);
 let roomTypes: LoaiPhong[] = structuredClone(mockData["4.1"].data);
 let amenities: TienNghi[] = structuredClone(mockData["5.1"].data);
@@ -183,6 +224,11 @@ let reviews: DanhGia[] = (structuredClone(mockData["15.1"].data) as unknown as D
 const processedPaymentKeys = new Map<string, string>();
 const processedPaymentTrades = new Map<string, string>();
 let generatedId = 0;
+let mockClockNow: Date | null = null;
+
+export function setMockClockForTests(now: Date | null): void {
+  mockClockNow = now ? new Date(now) : null;
+}
 
 function makeId(prefix: string): string {
   generatedId += 1;
@@ -403,6 +449,7 @@ function getRefund(booking: DatPhong): RefundPreviewResult {
     booking.tienCoc,
     booking.ngayNhan.slice(0, 10),
     booking.trangThai,
+    mockClockNow ?? new Date(),
   );
   return {
     maDatPhong: booking.maDatPhong,
@@ -414,10 +461,16 @@ function getRefund(booking: DatPhong): RefundPreviewResult {
 }
 
 export function resetMockState(): void {
+  if (typeof window !== "undefined") {
+    try { window.localStorage.removeItem(MOCK_BOOKING_STORAGE_KEY); } catch { /* Mock storage is optional in restricted browsers. */ }
+  }
   users = structuredClone(mockData["2.1"].data).map((account) => normalizeMockAccount(account as RawAccount));
-  currentAccount = normalizeMockAccount(seedCustomerAccount as RawAccount);
+  currentAccount = null;
   customers = [structuredClone(seedProfile)];
   customerProfile = structuredClone(seedProfile);
+  mockCredentials.clear();
+  mockSessions.clear();
+  seedMockAuthAccounts();
   homestay = structuredClone(mockData["3.1"].data);
   roomTypes = structuredClone(mockData["4.1"].data);
   amenities = structuredClone(mockData["5.1"].data);
@@ -446,6 +499,73 @@ export function resetMockState(): void {
   processedPaymentKeys.clear();
   processedPaymentTrades.clear();
   generatedId = 0;
+  mockClockNow = null;
+}
+
+function persistMockBookingState(): void {
+  if (typeof window === "undefined") return;
+  try {
+    window.localStorage.setItem(MOCK_BOOKING_STORAGE_KEY, JSON.stringify({
+      version: 1,
+      bookings,
+      customers,
+      roomStatuses: rooms.map((room) => [room.maPhong, room.trangThai]),
+      processedPaymentKeys: [...processedPaymentKeys.entries()],
+      processedPaymentTrades: [...processedPaymentTrades.entries()],
+      generatedId,
+    }));
+  } catch (error) {
+    console.warn("Không thể lưu trạng thái đặt phòng mock vào trình duyệt.", error);
+  }
+}
+
+function restoreMockBookingState(): void {
+  if (typeof window === "undefined") return;
+  try {
+    const raw = window.localStorage.getItem(MOCK_BOOKING_STORAGE_KEY);
+    if (!raw) return;
+    const saved = JSON.parse(raw) as {
+      version?: unknown;
+      bookings?: unknown;
+      customers?: unknown;
+      roomStatuses?: unknown;
+      processedPaymentKeys?: unknown;
+      processedPaymentTrades?: unknown;
+      generatedId?: unknown;
+    };
+    if (saved.version !== 1 || !Array.isArray(saved.bookings) || !Array.isArray(saved.customers)) {
+      console.warn("Bỏ qua trạng thái đặt phòng mock có phiên bản hoặc cấu trúc không hợp lệ.");
+      return;
+    }
+    if (saved.bookings.some((item) => !item || typeof item !== "object" || typeof item.maDatPhong !== "string" || typeof item.maPhong !== "string")) {
+      console.warn("Bỏ qua trạng thái đặt phòng mock bị lỗi cấu trúc.");
+      return;
+    }
+    if (saved.customers.some((item) => !item || typeof item !== "object" || typeof item.maKH !== "string")) {
+      console.warn("Bỏ qua dữ liệu khách mock bị lỗi cấu trúc.");
+      return;
+    }
+    bookings = structuredClone(saved.bookings as DatPhong[]);
+    customers = structuredClone(saved.customers as KhachHang[]);
+    if (Array.isArray(saved.roomStatuses)) {
+      for (const entry of saved.roomStatuses) {
+        if (!Array.isArray(entry) || typeof entry[0] !== "string" || !Object.values(TrangThaiPhong).includes(entry[1] as TrangThaiPhong)) continue;
+        const room = rooms.find((item) => item.maPhong === entry[0]);
+        if (room) room.trangThai = entry[1] as TrangThaiPhong;
+      }
+    }
+    processedPaymentKeys.clear();
+    processedPaymentTrades.clear();
+    for (const entry of Array.isArray(saved.processedPaymentKeys) ? saved.processedPaymentKeys : []) {
+      if (Array.isArray(entry) && typeof entry[0] === "string" && typeof entry[1] === "string") processedPaymentKeys.set(entry[0], entry[1]);
+    }
+    for (const entry of Array.isArray(saved.processedPaymentTrades) ? saved.processedPaymentTrades : []) {
+      if (Array.isArray(entry) && typeof entry[0] === "string" && typeof entry[1] === "string") processedPaymentTrades.set(entry[0], entry[1]);
+    }
+    if (typeof saved.generatedId === "number" && Number.isInteger(saved.generatedId) && saved.generatedId >= 0) generatedId = saved.generatedId;
+  } catch (error) {
+    console.warn("Không thể khôi phục dữ liệu đặt phòng mock; dữ liệu gốc vẫn được giữ nguyên.", error);
+  }
 }
 
 function mockRecordError(
@@ -493,24 +613,75 @@ function getAccountError(status: ErrorStatus, message: string, path: string): ne
   fail(status, message, path);
 }
 
+async function mockPasswordDigest(password: string, salt: string): Promise<string> {
+  const bytes = new TextEncoder().encode(`${salt}:${password}`);
+  const hash = await globalThis.crypto.subtle.digest("SHA-256", bytes);
+  return Array.from(new Uint8Array(hash), (value) => value.toString(16).padStart(2, "0")).join("");
+}
+
+function newMockAccessToken(): string {
+  const random = globalThis.crypto.randomUUID?.() ?? makeId("TOKEN");
+  return `mock-${random}`;
+}
+
+function mockAuthResult(account: TaiKhoan, status: 200 | 201, message: string): Promise<ApiResponse<{ accessToken: string; taiKhoan: TaiKhoan }>> {
+  const accessToken = newMockAccessToken();
+  mockSessions.set(accessToken, account.maTaiKhoan);
+  currentAccount = structuredClone(account);
+  if (account.khachHang) {
+    const matching = customers.find((item) => item.maKH === account.khachHang?.maKH);
+    if (matching) customerProfile = structuredClone(matching);
+  }
+  return respond(status === 201 ? "1.1" : "1.2", {
+    accessToken,
+    taiKhoan: structuredClone(account),
+  }, message, status);
+}
+
 const authAndCatalogApi = {
   register: async (payload: RegisterDto): Promise<ApiResponse<{ accessToken: string; taiKhoan: TaiKhoan }>> => {
-    const response = await getMockResponse("1.1");
-    currentAccount = normalizeMockAccount(response.data.taiKhoan as RawAccount);
-    void payload; // Registration returns a documented sample; mock credentials are not persisted.
-    return { ...response, data: { ...response.data, taiKhoan: currentAccount } };
+    const parsed = registerSchema.safeParse(payload);
+    if (!parsed.success) fail(400, parsed.error.issues[0]?.message ?? "Thông tin đăng ký không hợp lệ", "/api/auth/register");
+    if (users.some((item) => item.username.toLowerCase() === parsed.data.username.toLowerCase())) {
+      fail(409, "Tên đăng nhập đã tồn tại", "/api/auth/register");
+    }
+    const maKH = makeId("KH");
+    const customer: KhachHang = {
+      maKH,
+      hoTen: parsed.data.hoTen,
+      soDienThoai: parsed.data.soDienThoai,
+      email: parsed.data.email,
+      soCCCD: null,
+    };
+    const account: TaiKhoan = {
+      maTaiKhoan: makeId("TK"),
+      username: parsed.data.username,
+      vaiTro: "CUSTOMER",
+      trangThai: "ACTIVE",
+      khachHang: customer,
+    };
+    const salt = `salt-${makeId("AUTH")}`;
+    mockCredentials.set(account.username.toLowerCase(), {
+      salt,
+      digest: await mockPasswordDigest(parsed.data.password, salt),
+    });
+    users.push(account);
+    customers.push(customer);
+    customerProfile = structuredClone(customer);
+    return mockAuthResult(account, 201, "Đăng ký tài khoản thành công");
   },
 
   login: async (payload: LoginDto): Promise<ApiResponse<{ accessToken: string; taiKhoan: TaiKhoan }>> => {
-    const response = await getMockResponse("1.2");
-    currentAccount = normalizeMockAccount(response.data.taiKhoan as RawAccount);
-    const customer = currentAccount.khachHang;
-    if (customer) {
-      const found = customers.find((item) => item.maKH === customer.maKH);
-      if (found) customerProfile = structuredClone(found);
+    const parsed = loginSchema.safeParse(payload);
+    if (!parsed.success) fail(400, parsed.error.issues[0]?.message ?? "Thông tin đăng nhập không hợp lệ", "/api/auth/login");
+    const account = users.find((item) => item.username.toLowerCase() === parsed.data.username.toLowerCase());
+    const credential = mockCredentials.get(parsed.data.username.toLowerCase());
+    const digest = credential ? await mockPasswordDigest(parsed.data.password, credential.salt) : "";
+    if (!account || !credential || digest !== credential.digest) {
+      fail(401, "Tên đăng nhập hoặc mật khẩu không chính xác", "/api/auth/login");
     }
-    void payload; // Mock login returns a sample success; credentials are not authenticated.
-    return { ...response, data: { ...response.data, taiKhoan: currentAccount } };
+    if (account.trangThai === "LOCKED") fail(403, "Tài khoản của bạn đã bị khóa", "/api/auth/login");
+    return mockAuthResult(account, 200, "Đăng nhập thành công");
   },
 
   changePassword: (payload: ChangePasswordDto) => {
@@ -518,8 +689,18 @@ const authAndCatalogApi = {
     return getMockResponse("1.3");
   },
 
-  getMe: async (): Promise<ApiResponse<TaiKhoan>> =>
-    respond("1.2", structuredClone(currentAccount), "Lấy thông tin phiên đăng nhập thành công"),
+  getMe: async (accessToken?: string): Promise<ApiResponse<TaiKhoan>> => {
+    const accountId = accessToken ? mockSessions.get(accessToken) : undefined;
+    const account = accountId ? users.find((item) => item.maTaiKhoan === accountId) : undefined;
+    if (!account) fail(401, "Phiên đăng nhập không hợp lệ hoặc đã hết hạn", "/api/auth/me");
+    if (account.trangThai === "LOCKED") fail(403, "Tài khoản của bạn đã bị khóa", "/api/auth/me");
+    currentAccount = structuredClone(account);
+    if (account.khachHang) {
+      const matching = customers.find((item) => item.maKH === account.khachHang?.maKH);
+      if (matching) customerProfile = structuredClone(matching);
+    }
+    return respond("1.2", account, "Lấy thông tin phiên đăng nhập thành công");
+  },
 
   getCustomerProfile: async (): Promise<ApiResponse<KhachHang>> =>
     respond("1.5", customerProfile, "Lấy hồ sơ khách hàng thành công"),
@@ -540,7 +721,7 @@ const authAndCatalogApi = {
     customerProfile = { ...customerProfile, ...payload };
     const index = customers.findIndex((item) => item.maKH === customerProfile.maKH);
     if (index >= 0) customers[index] = structuredClone(customerProfile);
-    if (currentAccount.khachHang?.maKH === customerProfile.maKH) {
+    if (currentAccount?.khachHang?.maKH === customerProfile.maKH) {
       currentAccount = { ...currentAccount, khachHang: structuredClone(customerProfile) };
     }
     return respond("1.6", customerProfile, "Cập nhật hồ sơ khách hàng thành công");
@@ -1000,6 +1181,7 @@ const bookingApi = {
       ghiChu: payload.ghiChu ?? null,
     };
     bookings.push(booking);
+    persistMockBookingState();
     const result: CreateBookingResult = {
       datPhong: bookingView(booking),
       paymentQr: paymentQr(booking),
@@ -1027,7 +1209,7 @@ const bookingApi = {
     respond("10.1", bookingView(findBooking(maDatPhong), { fullRoom: true, includeUsages: true, includeEmptyRelations: true }), "Lấy chi tiết đơn đặt phòng thành công"),
 
   getMyHistory: async (): Promise<ApiResponse<DatPhong[]>> => {
-    const maKH = currentAccount.khachHang?.maKH;
+    const maKH = currentAccount?.khachHang?.maKH;
     const history = maKH ? bookings.filter((item) => item.maKH === maKH).map((item) => bookingView(item)) : [];
     return respond("8.4", history, "Lấy lịch sử đặt phòng của khách hàng thành công");
   },
@@ -1061,6 +1243,7 @@ const bookingApi = {
         datPhong: bookingView(booking),
         phong: getPaymentRoom(booking),
       };
+      persistMockBookingState();
       return respond("9.1", result, "Webhook đã được xử lý trước đó", 200);
     }
     if (booking.trangThai === TrangThaiDatPhong.DA_XAC_NHAN) {
@@ -1072,6 +1255,7 @@ const bookingApi = {
       };
       if (idempotencyKey) processedPaymentKeys.set(idempotencyKey, booking.maDatPhong);
       processedPaymentTrades.set(payload.maGiaoDich, booking.maDatPhong);
+      persistMockBookingState();
       return respond("9.1", result, "Webhook đã được xử lý trước đó", 200);
     }
     if (booking.trangThai !== TrangThaiDatPhong.CHO_COC) fail(400, "Đơn đặt phòng không còn ở trạng thái chờ cọc", path);
@@ -1083,6 +1267,7 @@ const bookingApi = {
     updateRoomStatus(room, TrangThaiPhong.DA_DAT);
     if (idempotencyKey) processedPaymentKeys.set(idempotencyKey, booking.maDatPhong);
     processedPaymentTrades.set(payload.maGiaoDich, booking.maDatPhong);
+    persistMockBookingState();
     const result: WebhookResult = {
       idempotentReplay: false,
       maGiaoDich: payload.maGiaoDich,
@@ -1138,6 +1323,7 @@ const bookingApi = {
         [TrangThaiDatPhong.CHO_COC, TrangThaiDatPhong.DA_XAC_NHAN, TrangThaiDatPhong.DANG_LUU_TRU].includes(item.trangThai),
     );
     if (!hasOtherActiveBooking) updateRoomStatus(room, TrangThaiPhong.TRONG);
+    persistMockBookingState();
     const result: CancelBookingResult = {
       datPhong: bookingView(booking),
       phong: getPaymentRoom(booking),
@@ -1574,3 +1760,5 @@ export const mockApi = {
   ...invoicesApi,
   ...reviewsAndReportsApi,
 };
+
+restoreMockBookingState();

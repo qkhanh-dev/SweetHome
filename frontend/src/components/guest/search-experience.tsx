@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import { BedDouble, CalendarDays, Search, Users } from "lucide-react";
 import { Controller, useForm } from "react-hook-form";
 import type { AvailableRoomResult } from "@/types/api";
@@ -26,7 +27,7 @@ const currency = new Intl.NumberFormat("vi-VN", {
   maximumFractionDigits: 0,
 });
 
-function RoomCard({ room }: { room: AvailableRoomResult }) {
+function RoomCard({ room, bookingUrl }: { room: AvailableRoomResult; bookingUrl: string | null }) {
   const amenities = room.tienNghis ?? [];
 
   return (
@@ -94,6 +95,14 @@ function RoomCard({ room }: { room: AvailableRoomResult }) {
             </div>
             <span className="text-xs text-muted-foreground">Giá do hệ thống tính</span>
           </div>
+          {bookingUrl ? (
+            <Link
+              href={bookingUrl}
+              className="mt-4 inline-flex min-h-10 w-full items-center justify-center rounded-md bg-emerald-800 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2"
+            >
+              Chọn phòng này
+            </Link>
+          ) : null}
         </div>
       </div>
     </article>
@@ -292,7 +301,15 @@ export function SearchExperience() {
                 </div>
                 <p className="text-sm text-muted-foreground">{rooms.length} phòng phù hợp</p>
               </div>
-              <div className="grid gap-4 md:grid-cols-2">{rooms.map((room) => <RoomCard key={room.maPhong} room={room} />)}</div>
+              <div className="grid gap-4 md:grid-cols-2">{rooms.map((room) => {
+                const query = criteria ? new URLSearchParams({
+                  maPhong: room.maPhong,
+                  ngayNhan: criteria.ngayNhan,
+                  ngayTra: criteria.ngayTra,
+                  soKhach: String(criteria.soKhach),
+                }) : null;
+                return <RoomCard key={room.maPhong} room={room} bookingUrl={query ? `/booking?${query.toString()}` : null} />;
+              })}</div>
             </>
           ) : null}
         </section>
