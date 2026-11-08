@@ -8,11 +8,17 @@ import { PrismaService } from './prisma/prisma.service';
 
 describe('AppModule', () => {
   let module: TestingModule;
+  const prismaService = {
+    $disconnect: jest.fn().mockResolvedValue(undefined),
+  };
 
   beforeEach(async () => {
     module = await Test.createTestingModule({
       imports: [AppModule],
-    }).compile();
+    })
+      .overrideProvider(PrismaService)
+      .useValue(prismaService)
+      .compile();
   });
 
   afterEach(async () => {
@@ -37,7 +43,7 @@ describe('AppModule', () => {
     const appPrismaService = module.get(PrismaService);
     const prismaModuleService = module.select(PrismaModule).get(PrismaService, { strict: true });
 
-    expect(appPrismaService).toBeInstanceOf(PrismaService);
+    expect(appPrismaService).toBe(prismaService);
     expect(appPrismaService).toBe(prismaModuleService);
   });
 });

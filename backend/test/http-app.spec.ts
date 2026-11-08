@@ -6,6 +6,7 @@ import { IsEmail, IsInt } from 'class-validator';
 import * as request from 'supertest';
 import { AppModule } from '../src/app.module';
 import { configureHttpApp, setupSwagger } from '../src/config/app.setup';
+import { PrismaService } from '../src/prisma/prisma.service';
 
 class ValidationTestDto {
   @IsEmail()
@@ -32,7 +33,10 @@ describe('global HTTP configuration', () => {
     const module = await Test.createTestingModule({
       imports: [AppModule],
       controllers: [TestOnlyController],
-    }).compile();
+    })
+      .overrideProvider(PrismaService)
+      .useValue({ $disconnect: jest.fn().mockResolvedValue(undefined) })
+      .compile();
 
     app = module.createNestApplication();
     configureHttpApp(app, { apiPrefix: 'api', corsOrigin: allowedOrigin });
