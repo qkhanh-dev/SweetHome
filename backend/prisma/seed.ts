@@ -44,9 +44,9 @@ async function main() {
   // BƯỚC 2: KHỞI TẠO TÀI KHOẢN (TaiKhoan - 6 tài khoản phân quyền RBAC)
   // --------------------------------------------------------------------------
   console.log('2. Đang tạo dữ liệu TaiKhoan...');
-  // Password mẫu: '123456' đã được băm bcrypt 10 rounds
+  // Password mẫu: '123456' đã được băm bcrypt 10 rounds (chuẩn 60 ký tự)
   const defaultPasswordHash =
-    '$2b$10$epRswT6.KG7QWdGz8.26C.F5d8Y3Z1zXlH3cK9w4q6P3K8i1d/22y';
+    '$2b$10$f6xS62a4x12Q1y1y6f.rNuM6e2F56n7s0UqFj6w8e/Y9bZq3p2c3y';
 
   const tkAdmin = await prisma.taiKhoan.create({
     data: {
@@ -251,7 +251,7 @@ async function main() {
     data: {
       soPhong: 'P201',
       tang: 2,
-      trangThai: TrangThaiPhong.DANG_SU_DUNG,
+      trangThai: TrangThaiPhong.TRONG,
       maHomestay: hsDalat.maHomestay,
       maLoaiPhong: lpDeluxe.maLoaiPhong,
       tienNghis: {
@@ -322,7 +322,7 @@ async function main() {
     data: {
       soPhong: 'P203',
       tang: 2,
-      trangThai: TrangThaiPhong.DA_DAT,
+      trangThai: TrangThaiPhong.TRONG,
       maHomestay: hsVungtau.maHomestay,
       maLoaiPhong: lpDeluxe.maLoaiPhong,
       tienNghis: {

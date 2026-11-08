@@ -86,7 +86,6 @@ model Phong {
   tienNghis   TienNghi[]      @relation("PhongTienNghi")
   datPhongs   DatPhong[]
 
-  @@index([maHomestay])
   @@index([maLoaiPhong])
   @@index([trangThai])
   @@index([maHomestay, trangThai])
@@ -190,7 +189,7 @@ model HoaDon {
 
   datPhong         DatPhong        @relation(fields: [maDatPhong], references: [maDatPhong], onDelete: Cascade)
 
-  @@index([ngayLap, trangThai])
+  @@index([trangThai, ngayLap])
   @@index([trangThai])
 }
 
