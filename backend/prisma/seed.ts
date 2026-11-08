@@ -44,9 +44,9 @@ async function main() {
   // BƯỚC 2: KHỞI TẠO TÀI KHOẢN (TaiKhoan - 6 tài khoản phân quyền RBAC)
   // --------------------------------------------------------------------------
   console.log('2. Đang tạo dữ liệu TaiKhoan...');
-  // Password mẫu: '123456' đã được băm bcrypt 10 rounds (chuẩn 60 ký tự)
+  // Password mẫu: '123456' đã được băm bcrypt 10 rounds (chuẩn 60 ký tự, đã verify bcrypt.compare)
   const defaultPasswordHash =
-    '$2b$10$f6xS62a4x12Q1y1y6f.rNuM6e2F56n7s0UqFj6w8e/Y9bZq3p2c3y';
+    '$2b$10$xq.4qNyhHjkLQl8a4RcGN.sMgcxb.tLc3f7NI/GIEkPaJIspL1zkq';
 
   const tkAdmin = await prisma.taiKhoan.create({
     data: {
