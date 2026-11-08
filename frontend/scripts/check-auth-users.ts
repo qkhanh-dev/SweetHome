@@ -1,8 +1,9 @@
 ﻿import assert from "node:assert/strict";
-import { apiClient, ApiError } from "../src/services/apiClient";
+import { apiClient, ApiError, setAccessToken } from "../src/services/apiClient";
 import fixtures from "../src/mocks/fixtures.json";
 import type { ApiResponse } from "../src/types/sweethome";
-import { resetMockState } from "../src/mocks/mockAdapter";
+import { resetMockState, setMockAuthenticatedAccount } from "../src/mocks/mockAdapter";
+import { withMockBrowserSession } from "./mock-browser-session";
 
 function checkEnvelope(
   response: ApiResponse<unknown>,
@@ -29,6 +30,7 @@ async function main() {
   };
 
   try {
+    await withMockBrowserSession(async () => {
     resetMockState();
     const registeredUsername = `qa_customer_${Date.now()}`;
     const registered = await apiClient.register({
@@ -206,6 +208,9 @@ async function main() {
     console.log("PASS cập nhật tài khoản không tồn tại: lỗi 404");
 
     console.log("Hoàn tất kiểm tra nhóm xác thực và tài khoản.");
+    setAccessToken(null);
+    setMockAuthenticatedAccount(null);
+    });
   } finally {
     globalThis.fetch = originalFetch;
   }

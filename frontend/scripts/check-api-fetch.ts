@@ -31,7 +31,12 @@ async function withoutBrowser<T>(operation: () => Promise<T>): Promise<T> {
 async function main(): Promise<void> {
   process.env.NEXT_PUBLIC_USE_MOCK = "false";
   process.env.NEXT_PUBLIC_API_URL = "https://backend.example.test/api///";
-  const { apiClient, ApiError, setAccessToken } = await import("@/services/apiClient");
+  process.env.NEXT_PUBLIC_ENABLE_PAYMENT_SIMULATOR = "false";
+  const { apiClient, ApiError, setAccessToken, paymentSimulatorEnabled } = await import("@/services/apiClient");
+  assert.equal(paymentSimulatorEnabled(false, false, "development"), false);
+  assert.equal(paymentSimulatorEnabled(false, true, "development"), true);
+  assert.equal(paymentSimulatorEnabled(false, true, "production"), false);
+  assert.equal(paymentSimulatorEnabled(true, false, "production"), true);
   const calls: Array<{ url: URL; init: RequestInit; headers: Headers; body?: string }> = [];
   let respond: (url: URL, init: RequestInit, headers: Headers, body?: string) => Response = () => jsonResponse(200, envelope(200, null));
 
@@ -79,6 +84,7 @@ async function main(): Promise<void> {
       configurable: true,
       value: { dispatchEvent: () => true },
     });
+    setAccessToken("jwt-test-token");
 
     respond = (url, _init, headers) => {
       assert.equal(url.origin, "https://backend.example.test");
@@ -186,6 +192,18 @@ async function main(): Promise<void> {
       return jsonResponse(200, envelope(200, { maDatPhong: "DP_HTTP", maGiaoDich: "PAY_DP_HTTP", soTienCoc: 300000, noiDungChuyenKhoan: "SWEETHOME COC DP_HTTP", qrCodeUrl: "https://qr.example.test/x", idempotencyKey: "idem-DP_HTTP" }));
     };
     await apiClient.getPaymentQr("DP_HTTP");
+
+    respond = (url, _init, headers) => {
+      assert.equal(url.pathname, "/api/bookings/DP_HTTP");
+      assert.equal(headers.get("authorization"), "Bearer jwt-test-token");
+      return jsonResponse(200, envelope(200, {
+        maDatPhong: "DP_HTTP",
+        maPhong: "P201",
+        trangThai: "DA_XAC_NHAN",
+        phong: { maPhong: "P201", soPhong: "201", trangThai: "DA_DAT", loaiPhong: { maLoaiPhong: "LP02", tenLoaiPhong: "Deluxe" } },
+      }));
+    };
+    await apiClient.getBookingById("DP_HTTP");
 
     respond = (url, init, headers) => {
       assert.equal(url.pathname, "/api/bookings/DP%20HTTP/refund-preview");

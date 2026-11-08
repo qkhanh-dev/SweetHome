@@ -23,6 +23,7 @@ Set these values in `.env.local`, then restart the dev server:
 ```dotenv
 NEXT_PUBLIC_USE_MOCK=true
 NEXT_PUBLIC_API_URL=http://localhost:3001/api
+NEXT_PUBLIC_ENABLE_PAYMENT_SIMULATOR=false
 ```
 
 Set `NEXT_PUBLIC_USE_MOCK=false` to send requests to the Backend. `NEXT_PUBLIC_API_URL` is the API base URL. Auth responses are verified through `GET /api/auth/me`; the server issues a signed, HttpOnly session cookie for middleware and restores the short-lived client token after reload. No password or role is stored in localStorage. Configure `SWEETHOME_SESSION_SECRET` as a private server-only value outside mock development.
@@ -38,7 +39,9 @@ Mock sign-in accounts:
 | Admin | `admin_sweethome` | `Admin@123` |
 | Locked account | `locked_demo` | `Locked@123` |
 
-Credentials are verified by the mock adapter; the role is never selected in registration. QR/webhook handling is clearly marked as a simulation and does not request real transfers. The PDF method returns a Backend URL and does not generate a PDF in the frontend.
+The booking QR dialog enables its local webhook simulation automatically in mock mode. With `NEXT_PUBLIC_USE_MOCK=false`, the `Simulate Webhook` QA button is disabled by default; enable it only for a non-production HTTP integration/stub environment with `NEXT_PUBLIC_ENABLE_PAYMENT_SIMULATOR=true`, then restart Next.js. The flag is public UI configuration only: it contains no webhook secret and does not verify or represent a real transfer. In production HTTP mode the simulator stays disabled; use “Check payment status” to read `getBookingById()` after an external webhook. The Backend remains the authority for the resulting status.
+
+Mock auth sessions are checked by the signed, HttpOnly session route. After that verification, the browser hydrates its local mock customer/history scope from the returned account. Created mock bookings and payment idempotency data live in that browser's localStorage; they are not shared with another browser or the Backend. The mock customer demo uses the fixture IDs `TK_CUST_01` / `KH001`. Do not enter real customer or payment information in mock mode. The role is never selected in registration. The PDF method returns a Backend URL and does not generate a PDF in the frontend.
 
 ## Contract and checks
 

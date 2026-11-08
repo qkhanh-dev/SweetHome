@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 import type { AvailableRoomResult, CreateBookingResult } from "@/types/api";
 import type { Phong } from "@/types/sweethome";
 import { apiClient } from "@/services/apiClient";
-import { mergeBookingMutation } from "@/lib/booking-relations";
+import { mergeBookingMutation, type BookingRoomMutation } from "@/lib/booking-relations";
 import { apiErrorMessage } from "@/lib/sh09-validation";
 import { bookingContactSchema, parseBookingQuery, type BookingContactValues } from "@/lib/booking-validation";
 import { toLocalDateInput } from "@/lib/sh09-validation";
@@ -14,6 +14,7 @@ import { LatestRequestGate } from "@/lib/latest-request";
 import { FormField, inputClassName } from "@/components/ui/form-field";
 import { DepositDialog } from "@/components/booking/deposit-dialog";
 import { StatusBadge } from "@/components/status-badge";
+import { useAuthStore } from "@/stores/auth-store";
 
 const currency = new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND", maximumFractionDigits: 0 });
 
@@ -33,13 +34,45 @@ export function BookingCreate({ query }: { query: Record<string, string | undefi
   const [booking, setBooking] = useState<CreateBookingResult["datPhong"] | null>(null);
   const [paymentQr, setPaymentQr] = useState<CreateBookingResult["paymentQr"] | null>(null);
   const [qrOpen, setQrOpen] = useState(false);
+  const [qrLoading, setQrLoading] = useState(false);
+  const [qrError, setQrError] = useState<string | null>(null);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const submitLock = useRef(false);
+  const previousAccountId = useRef<string | null | undefined>(undefined);
+  const receiptLinkRef = useRef<HTMLAnchorElement>(null);
   const quoteGate = useRef(new LatestRequestGate());
+  const authStatus = useAuthStore((state) => state.status);
+  const authUser = useAuthStore((state) => state.user);
+  const customerCandidate = authUser?.khachHang;
+  const verifiedCustomer = authStatus === "authenticated" &&
+    authUser?.vaiTro === "CUSTOMER" &&
+    customerCandidate &&
+    (!customerCandidate.maTaiKhoan || customerCandidate.maTaiKhoan === authUser.maTaiKhoan) &&
+    bookingContactSchema.safeParse({
+      hoTen: customerCandidate.hoTen,
+      soDienThoai: customerCandidate.soDienThoai,
+      email: customerCandidate.email,
+      ghiChu: "",
+    }).success
+    ? customerCandidate
+    : null;
   const form = useForm<BookingContactValues>({
     defaultValues: { hoTen: "", soDienThoai: "", email: "", ghiChu: "" },
   });
   const errors = form.formState.errors;
+
+  useEffect(() => {
+    if (authStatus === "unknown" || authStatus === "loading") return;
+    const nextAccountId = verifiedCustomer ? authUser?.maTaiKhoan ?? null : null;
+    if (previousAccountId.current !== undefined && previousAccountId.current !== nextAccountId) {
+      form.reset({ hoTen: "", soDienThoai: "", email: "", ghiChu: "" });
+    }
+    previousAccountId.current = nextAccountId;
+    if (!verifiedCustomer) return;
+    if (!form.getFieldState("hoTen").isDirty) form.setValue("hoTen", verifiedCustomer.hoTen);
+    if (!form.getFieldState("soDienThoai").isDirty) form.setValue("soDienThoai", verifiedCustomer.soDienThoai);
+    if (!form.getFieldState("email").isDirty) form.setValue("email", verifiedCustomer.email);
+  }, [authStatus, authUser, verifiedCustomer, form]);
 
   useEffect(() => {
     if (!maPhong || !ngayNhan || !ngayTra || !soKhach || dateIsPast) return;
@@ -78,7 +111,7 @@ export function BookingCreate({ query }: { query: Record<string, string | undefi
       }
       return;
     }
-    if (!parsedQuery || !quote || submitLock.current) return;
+    if (!parsedQuery || !quote || booking || submitLock.current) return;
 
     submitLock.current = true;
     try {
@@ -90,11 +123,24 @@ export function BookingCreate({ query }: { query: Record<string, string | undefi
         hoTen: parsed.data.hoTen,
         soDienThoai: parsed.data.soDienThoai,
         email: parsed.data.email,
+        ...(verifiedCustomer &&
+          (!verifiedCustomer.maTaiKhoan || verifiedCustomer.maTaiKhoan === authUser?.maTaiKhoan) &&
+          parsed.data.hoTen === verifiedCustomer.hoTen &&
+          parsed.data.soDienThoai === verifiedCustomer.soDienThoai &&
+          parsed.data.email === verifiedCustomer.email
+          ? { maKH: verifiedCustomer.maKH }
+          : {}),
         ...(parsed.data.ghiChu ? { ghiChu: parsed.data.ghiChu } : {}),
       });
       setBooking(response.data.datPhong);
-      setPaymentQr(response.data.paymentQr);
-      setQrOpen(true);
+      if (response.data.paymentQr) {
+        setPaymentQr(response.data.paymentQr);
+        setQrError(null);
+        setQrOpen(true);
+      } else {
+        setPaymentQr(null);
+        setQrError("Đơn đã được tạo nhưng chưa tải được thông tin QR. Hãy thử mở lại QR từ mã đơn.");
+      }
     } catch (error) {
       setSubmitError(error instanceof Error && "statusCode" in error && error.statusCode === 409
         ? "Phòng vừa được người khác giữ trong khoảng ngày này. Hãy tra cứu phòng khác hoặc thử lại với ngày khác."
@@ -103,6 +149,37 @@ export function BookingCreate({ query }: { query: Record<string, string | undefi
       submitLock.current = false;
     }
   });
+
+  async function reopenPaymentQr() {
+    if (!booking || booking.trangThai !== "CHO_COC" || qrLoading) return;
+    setQrLoading(true);
+    setQrError(null);
+    try {
+      const response = await apiClient.getPaymentQr(booking.maDatPhong);
+      setPaymentQr(response.data);
+      setQrOpen(true);
+    } catch (error) {
+      setQrError(apiErrorMessage(error));
+    } finally {
+      setQrLoading(false);
+    }
+  }
+
+  function applyBookingMutation(updated: CreateBookingResult["datPhong"], updatedRoom?: BookingRoomMutation) {
+    const current = booking ?? updated;
+    const roomMutation = updatedRoom ?? updated.phong;
+    const currentWithRoomDetails = { ...current, phong: room ?? current.phong };
+    const mergedBooking = roomMutation
+      ? mergeBookingMutation(currentWithRoomDetails, updated, roomMutation)
+      : { ...currentWithRoomDetails, ...updated, phong: currentWithRoomDetails.phong };
+
+    setBooking(mergedBooking);
+    if (roomMutation && mergedBooking.phong) {
+      setRoom((currentRoom) => currentRoom && currentRoom.maPhong === mergedBooking.maPhong
+        ? { ...currentRoom, ...mergedBooking.phong }
+        : currentRoom);
+    }
+  }
 
   if (!parsedQuery || dateIsPast) {
     return (
@@ -144,9 +221,38 @@ export function BookingCreate({ query }: { query: Record<string, string | undefi
           </div>
         ) : null}
 
+        {booking ? (
+          <div className="mt-6 rounded-xl border border-emerald-200 bg-emerald-50 p-5" aria-live="polite">
+            <div className="flex flex-wrap items-start justify-between gap-3">
+              <div>
+                <h2 className="font-semibold text-emerald-950">
+                  {booking.trangThai === "DA_XAC_NHAN" ? "Đặt phòng đã được xác nhận" : "Đơn đặt phòng đã được tạo"}
+                </h2>
+                <p className="mt-1 text-sm text-emerald-900">Mã đơn: <strong>{booking.maDatPhong}</strong></p>
+              </div>
+              <StatusBadge status={booking.trangThai} />
+            </div>
+            <p className="mt-2 text-sm text-emerald-900">
+              {booking.trangThai === "CHO_COC"
+                ? "Đóng hộp thoại QR không hủy đơn. Bạn có thể mở lại QR hoặc xem phiếu bất cứ lúc nào."
+                : "Trạng thái xác nhận do API trả về. Xem phiếu để kiểm tra đầy đủ thông tin đặt phòng."}
+            </p>
+            {qrError ? <p role="alert" className="mt-3 rounded-md border border-rose-200 bg-white p-3 text-sm text-rose-800">{qrError}</p> : null}
+            <div className="mt-4 flex flex-wrap gap-3">
+              <Link ref={receiptLinkRef} href={`/booking/${encodeURIComponent(booking.maDatPhong)}`} className="inline-flex min-h-10 items-center rounded-md bg-emerald-800 px-4 py-2 text-sm font-semibold text-white">Xem phiếu xác nhận</Link>
+              {booking.trangThai === "CHO_COC" ? (
+                <button type="button" onClick={() => void reopenPaymentQr()} disabled={qrLoading} className="min-h-10 rounded-md border border-emerald-800 bg-white px-4 py-2 text-sm font-semibold text-emerald-900 disabled:opacity-60">
+                  {qrLoading ? "Đang tải QR…" : "Mở lại QR cọc"}
+                </button>
+              ) : null}
+              <Link href="/" className="inline-flex min-h-10 items-center rounded-md border border-emerald-800 bg-white px-4 py-2 text-sm font-semibold text-emerald-900">Tìm phòng khác</Link>
+            </div>
+          </div>
+        ) : null}
+
         {room && quote ? (
           <div className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1.2fr)_minmax(280px,0.8fr)]">
-            <form className="space-y-4 rounded-2xl border bg-card p-5 shadow-sm sm:p-6" onSubmit={submit} noValidate>
+            {!booking ? <form className="space-y-4 rounded-2xl border bg-card p-5 shadow-sm sm:p-6" onSubmit={submit} noValidate>
               <h2 className="text-lg font-semibold">Thông tin liên hệ</h2>
               <FormField id="hoTen" label="Họ và tên" error={errors.hoTen?.message}>
                 <input id="hoTen" autoComplete="name" aria-invalid={Boolean(errors.hoTen)} aria-describedby={errors.hoTen ? "hoTen-error" : undefined} className={inputClassName} {...form.register("hoTen")} />
@@ -164,7 +270,12 @@ export function BookingCreate({ query }: { query: Record<string, string | undefi
               <button type="submit" disabled={form.formState.isSubmitting || quoteState !== "ready"} className="min-h-11 w-full rounded-md bg-emerald-800 px-4 py-2 font-semibold text-white hover:bg-emerald-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60">
                 {form.formState.isSubmitting ? "Đang tạo đơn…" : "Tạo đơn và xem QR cọc"}
               </button>
-            </form>
+            </form> : (
+              <div className="rounded-2xl border bg-card p-5 shadow-sm sm:p-6">
+                <h2 className="text-lg font-semibold">Đơn này đã được giữ lại</h2>
+                <p className="mt-2 text-sm text-muted-foreground">Để tránh tạo trùng đơn, biểu mẫu đã khóa sau khi API tạo mã {booking.maDatPhong}. Dùng nút mở lại QR hoặc phiếu xác nhận phía trên. Tìm phòng khác sẽ không hủy đơn này.</p>
+              </div>
+            )}
 
             <aside className="h-fit rounded-2xl border bg-muted/20 p-5 sm:p-6">
               <div className="flex items-start justify-between gap-3">
@@ -193,12 +304,8 @@ export function BookingCreate({ query }: { query: Record<string, string | undefi
             onClose={() => setQrOpen(false)}
             booking={booking}
             paymentQr={paymentQr}
-            onBookingChange={(result) => setBooking((current) => {
-              const currentWithRoomDetails = current
-                ? { ...current, phong: room ?? current.phong }
-                : { ...result.datPhong, phong: room ?? result.datPhong.phong };
-              return mergeBookingMutation(currentWithRoomDetails, result.datPhong, result.phong);
-            })}
+            returnFocusRef={receiptLinkRef}
+            onBookingChange={applyBookingMutation}
           />
         ) : null}
       </div>

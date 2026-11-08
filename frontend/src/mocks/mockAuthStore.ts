@@ -49,7 +49,9 @@ function accountRecord(input: {
       username: input.username,
       vaiTro: input.role,
       trangThai: input.status ?? "ACTIVE",
-      ...(input.customer ? { khachHang: input.customer } : { khachHang: null }),
+      ...(input.customer
+        ? { khachHang: { ...input.customer, maTaiKhoan: input.id } }
+        : { khachHang: null }),
     },
     salt,
     passwordHash: hashPassword(input.password, salt),
@@ -59,20 +61,20 @@ function accountRecord(input: {
 function seedAccounts(): void {
   const initial: Array<Parameters<typeof accountRecord>[0]> = [
     {
-      id: "TK_CUST_DEMO",
+      id: "TK_CUST_01",
       username: "customer_demo",
       password: "Customer@123",
       role: "CUSTOMER",
       customer: {
-        maKH: "KH_CUST_DEMO",
-        hoTen: "Khách hàng thử nghiệm",
+        maKH: "KH001",
+        hoTen: "Nguyễn Minh Anh",
         soDienThoai: "0901234567",
-        email: "customer@example.test",
+        email: "minhanh@gmail.com",
         soCCCD: null,
       },
     },
-    { id: "TK_STAFF_DEMO", username: "staff_demo", password: "Staff@123", role: "STAFF" },
-    { id: "TK_ADMIN_DEMO", username: "admin_sweethome", password: "Admin@123", role: "ADMIN" },
+    { id: "TK_STAFF_01", username: "staff_demo", password: "Staff@123", role: "STAFF" },
+    { id: "TK_ADMIN_01", username: "admin_sweethome", password: "Admin@123", role: "ADMIN" },
     { id: "TK_LOCKED_DEMO", username: "locked_demo", password: "Locked@123", role: "CUSTOMER", status: "LOCKED" },
   ];
   for (const seed of initial) accounts.set(seed.username.toLowerCase(), accountRecord(seed));

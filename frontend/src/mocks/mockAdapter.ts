@@ -95,9 +95,10 @@ const seedProfile = structuredClone(mockData["1.5"].data);
 let users: TaiKhoan[] = structuredClone(mockData["2.1"].data).map(
   (account) => normalizeMockAccount(account as RawAccount),
 );
-let currentAccount: TaiKhoan | null = null;
+// Browser session identity is hydrated only from an account returned by the
+// verified /api/auth/* route. Server auth sessions live in mockAuthStore.
+let browserSessionAccount: TaiKhoan | null = null;
 let customers: KhachHang[] = [seedProfile];
-let customerProfile: KhachHang = structuredClone(seedProfile);
 type MockCredential = { salt: string; digest: string };
 const mockCredentials = new Map<string, MockCredential>();
 const mockSessions = new Map<string, string>();
@@ -109,14 +110,15 @@ function seedMockAuthAccounts(): void {
     soDienThoai: seedProfile.soDienThoai,
     email: seedProfile.email,
     soCCCD: null,
+    maTaiKhoan: "TK_CUST_01",
   };
   const demoAccounts: Array<{ account: TaiKhoan; digest: string }> = [
     {
-      account: { maTaiKhoan: "TK_CUST_DEMO", username: "customer_demo", vaiTro: "CUSTOMER", trangThai: "ACTIVE", khachHang: demoCustomer },
+      account: { maTaiKhoan: "TK_CUST_01", username: "customer_demo", vaiTro: "CUSTOMER", trangThai: "ACTIVE", khachHang: demoCustomer },
       digest: "700534cbd2811335f521614d8da7920863a37cde0f1f57341f80beb1bbd61bb6",
     },
     {
-      account: { maTaiKhoan: "TK_STAFF_DEMO", username: "staff_demo", vaiTro: "STAFF", trangThai: "ACTIVE", khachHang: null },
+      account: { maTaiKhoan: "TK_STAFF_01", username: "staff_demo", vaiTro: "STAFF", trangThai: "ACTIVE", khachHang: null },
       digest: "99f9a055b78d409b0b5cc13d4e59a99ac59b7e3ec83a82d3bff1e195330c0bf9",
     },
     {
@@ -465,9 +467,8 @@ export function resetMockState(): void {
     try { window.localStorage.removeItem(MOCK_BOOKING_STORAGE_KEY); } catch { /* Mock storage is optional in restricted browsers. */ }
   }
   users = structuredClone(mockData["2.1"].data).map((account) => normalizeMockAccount(account as RawAccount));
-  currentAccount = null;
+  browserSessionAccount = null;
   customers = [structuredClone(seedProfile)];
-  customerProfile = structuredClone(seedProfile);
   mockCredentials.clear();
   mockSessions.clear();
   seedMockAuthAccounts();
@@ -500,6 +501,43 @@ export function resetMockState(): void {
   processedPaymentTrades.clear();
   generatedId = 0;
   mockClockNow = null;
+}
+
+/** Hydrate the browser mock adapter from an account returned by verified auth. */
+export function setMockAuthenticatedAccount(account: TaiKhoan | null): void {
+  if (typeof window === "undefined") return;
+  browserSessionAccount = account ? normalizeMockAccount(account as RawAccount) : null;
+  if (!browserSessionAccount) return;
+
+  if (browserSessionAccount.vaiTro === "CUSTOMER" && browserSessionAccount.khachHang && !browserSessionAccount.khachHang.maTaiKhoan) {
+    browserSessionAccount = {
+      ...browserSessionAccount,
+      khachHang: { ...browserSessionAccount.khachHang, maTaiKhoan: browserSessionAccount.maTaiKhoan },
+    };
+  }
+
+  const userIndex = users.findIndex((user) => user.maTaiKhoan === browserSessionAccount?.maTaiKhoan);
+  if (userIndex < 0) users.push(structuredClone(browserSessionAccount));
+  else users[userIndex] = structuredClone(browserSessionAccount);
+
+  const customer = browserSessionAccount.khachHang;
+  if (browserSessionAccount.vaiTro !== "CUSTOMER" || !customer || customer.maTaiKhoan !== browserSessionAccount.maTaiKhoan) return;
+  const customerIndex = customers.findIndex((item) => item.maKH === customer.maKH);
+  if (customerIndex < 0) customers.push(structuredClone(customer));
+  else if (customers[customerIndex].maTaiKhoan !== browserSessionAccount.maTaiKhoan) {
+    customers[customerIndex] = structuredClone(customer);
+  }
+}
+
+function getVerifiedBrowserCustomer(path: string): KhachHang {
+  if (!browserSessionAccount) fail(401, "Vui l\u00f2ng \u0111\u0103ng nh\u1eadp l\u1ea1i \u0111\u1ec3 xem th\u00f4ng tin t\u00e0i kho\u1ea3n.", path);
+  const customer = browserSessionAccount.khachHang;
+  if (browserSessionAccount.vaiTro !== "CUSTOMER" || !customer || customer.maTaiKhoan !== browserSessionAccount.maTaiKhoan) {
+    fail(403, "T\u00e0i kho\u1ea3n hi\u1ec7n t\u1ea1i kh\u00f4ng c\u00f3 h\u1ed3 s\u01a1 kh\u00e1ch h\u00e0ng.", path);
+  }
+  const storedCustomer = customers.find((item) => item.maKH === customer.maKH && item.maTaiKhoan === browserSessionAccount?.maTaiKhoan);
+  if (!storedCustomer) fail(404, "Kh\u00f4ng t\u00ecm th\u1ea5y h\u1ed3 s\u01a1 kh\u00e1ch h\u00e0ng c\u1ee7a phi\u00ean hi\u1ec7n t\u1ea1i.", path);
+  return storedCustomer;
 }
 
 function persistMockBookingState(): void {
@@ -627,11 +665,7 @@ function newMockAccessToken(): string {
 function mockAuthResult(account: TaiKhoan, status: 200 | 201, message: string): Promise<ApiResponse<{ accessToken: string; taiKhoan: TaiKhoan }>> {
   const accessToken = newMockAccessToken();
   mockSessions.set(accessToken, account.maTaiKhoan);
-  currentAccount = structuredClone(account);
-  if (account.khachHang) {
-    const matching = customers.find((item) => item.maKH === account.khachHang?.maKH);
-    if (matching) customerProfile = structuredClone(matching);
-  }
+  setMockAuthenticatedAccount(account);
   return respond(status === 201 ? "1.1" : "1.2", {
     accessToken,
     taiKhoan: structuredClone(account),
@@ -653,8 +687,10 @@ const authAndCatalogApi = {
       email: parsed.data.email,
       soCCCD: null,
     };
+    const maTaiKhoan = makeId("TK");
+    customer.maTaiKhoan = maTaiKhoan;
     const account: TaiKhoan = {
-      maTaiKhoan: makeId("TK"),
+      maTaiKhoan,
       username: parsed.data.username,
       vaiTro: "CUSTOMER",
       trangThai: "ACTIVE",
@@ -667,7 +703,6 @@ const authAndCatalogApi = {
     });
     users.push(account);
     customers.push(customer);
-    customerProfile = structuredClone(customer);
     return mockAuthResult(account, 201, "Đăng ký tài khoản thành công");
   },
 
@@ -694,16 +729,12 @@ const authAndCatalogApi = {
     const account = accountId ? users.find((item) => item.maTaiKhoan === accountId) : undefined;
     if (!account) fail(401, "Phiên đăng nhập không hợp lệ hoặc đã hết hạn", "/api/auth/me");
     if (account.trangThai === "LOCKED") fail(403, "Tài khoản của bạn đã bị khóa", "/api/auth/me");
-    currentAccount = structuredClone(account);
-    if (account.khachHang) {
-      const matching = customers.find((item) => item.maKH === account.khachHang?.maKH);
-      if (matching) customerProfile = structuredClone(matching);
-    }
+    setMockAuthenticatedAccount(account);
     return respond("1.2", account, "Lấy thông tin phiên đăng nhập thành công");
   },
 
   getCustomerProfile: async (): Promise<ApiResponse<KhachHang>> =>
-    respond("1.5", customerProfile, "Lấy hồ sơ khách hàng thành công"),
+    respond("1.5", getVerifiedBrowserCustomer("/api/customers/profile"), "Lấy hồ sơ khách hàng thành công"),
 
   updateCustomerProfile: async (payload: Pick<KhachHang, "hoTen" | "soDienThoai" | "email">): Promise<ApiResponse<KhachHang>> => {
     if (
@@ -718,13 +749,11 @@ const authAndCatalogApi = {
     ) {
       fail(400, "Thông tin hồ sơ không hợp lệ", "/api/customers/profile");
     }
-    customerProfile = { ...customerProfile, ...payload };
-    const index = customers.findIndex((item) => item.maKH === customerProfile.maKH);
-    if (index >= 0) customers[index] = structuredClone(customerProfile);
-    if (currentAccount?.khachHang?.maKH === customerProfile.maKH) {
-      currentAccount = { ...currentAccount, khachHang: structuredClone(customerProfile) };
-    }
-    return respond("1.6", customerProfile, "Cập nhật hồ sơ khách hàng thành công");
+    const profile = getVerifiedBrowserCustomer("/api/customers/profile");
+    const updatedProfile = { ...profile, ...payload };
+    customers = customers.map((item) => item.maKH === profile.maKH ? updatedProfile : item);
+    browserSessionAccount = { ...browserSessionAccount!, khachHang: structuredClone(updatedProfile) };
+    return respond("1.6", updatedProfile, "Cập nhật hồ sơ khách hàng thành công");
   },
 
   getUsers: async (params?: { vaiTro?: string; trangThai?: string }): Promise<ApiResponse<TaiKhoan[]>> => {
@@ -1149,17 +1178,31 @@ const bookingApi = {
 
     let customer: KhachHang | undefined;
     if (payload.maKH) {
-      customer = customers.find((item) => item.maKH === payload.maKH);
+      if (
+        browserSessionAccount?.vaiTro !== "CUSTOMER" ||
+        browserSessionAccount.khachHang?.maKH !== payload.maKH ||
+        browserSessionAccount.khachHang.maTaiKhoan !== browserSessionAccount.maTaiKhoan
+      ) {
+        fail(403, "Ch\u1ec9 c\u00f3 th\u1ec3 g\u1eafn \u0111\u01a1n v\u1edbi h\u1ed3 s\u01a1 kh\u00e1ch h\u00e0ng \u0111\u00e3 x\u00e1c minh.", "/api/bookings");
+      }
+      customer = customers.find((item) => item.maKH === payload.maKH && item.maTaiKhoan === browserSessionAccount?.maTaiKhoan);
+      if (customer && (
+        customer.hoTen !== payload.hoTen ||
+        customer.soDienThoai !== payload.soDienThoai ||
+        customer.email !== payload.email
+      )) {
+        fail(400, "Th\u00f4ng tin li\u00ean h\u1ec7 kh\u00e1c h\u1ed3 s\u01a1; kh\u00f4ng t\u1ef1 \u0111\u1ed9ng c\u1eadp nh\u1eadt h\u1ed3 s\u01a1.", "/api/bookings");
+      }
       if (!customer) fail(404, "Không tìm thấy khách hàng", "/api/bookings");
     } else {
       customer = customers.find(
-        (item) => item.soDienThoai === payload.soDienThoai || item.email.toLowerCase() === payload.email.toLowerCase(),
+        (item) =>
+          item.hoTen === payload.hoTen &&
+          item.soDienThoai === payload.soDienThoai &&
+          item.email.toLowerCase() === payload.email.toLowerCase(),
       );
     }
-    if (customer) {
-      customer = { ...customer, hoTen: payload.hoTen, soDienThoai: payload.soDienThoai, email: payload.email };
-      customers = customers.map((item) => item.maKH === customer?.maKH ? customer! : item);
-    } else {
+    if (!customer) {
       customer = { maKH: makeId("KH"), hoTen: payload.hoTen, soDienThoai: payload.soDienThoai, email: payload.email, soCCCD: null };
       customers.push(customer);
     }
@@ -1209,8 +1252,8 @@ const bookingApi = {
     respond("10.1", bookingView(findBooking(maDatPhong), { fullRoom: true, includeUsages: true, includeEmptyRelations: true }), "Lấy chi tiết đơn đặt phòng thành công"),
 
   getMyHistory: async (): Promise<ApiResponse<DatPhong[]>> => {
-    const maKH = currentAccount?.khachHang?.maKH;
-    const history = maKH ? bookings.filter((item) => item.maKH === maKH).map((item) => bookingView(item)) : [];
+    const customer = getVerifiedBrowserCustomer("/api/bookings/my-history");
+    const history = bookings.filter((item) => item.maKH === customer.maKH).map((item) => bookingView(item));
     return respond("8.4", history, "Lấy lịch sử đặt phòng của khách hàng thành công");
   },
 
@@ -1290,7 +1333,7 @@ const bookingApi = {
     const matches = query
       ? bookings.filter((booking) => {
           const customer = customers.find((item) => item.maKH === booking.maKH);
-          return booking.maDatPhong.toLowerCase().includes(query) || Boolean(customer?.soDienThoai.includes(query));
+          return booking.maDatPhong.toLowerCase() === query || customer?.soDienThoai === query;
         }).map((booking) => bookingView(booking, { fullRoom: true, includeUsages: true, includeEmptyRelations: true }))
       : [];
     return respond("10.1", matches, "Tra cứu đơn đặt phòng thành công");
@@ -1322,7 +1365,11 @@ const bookingApi = {
         item.maPhong === booking.maPhong &&
         [TrangThaiDatPhong.CHO_COC, TrangThaiDatPhong.DA_XAC_NHAN, TrangThaiDatPhong.DANG_LUU_TRU].includes(item.trangThai),
     );
-    if (!hasOtherActiveBooking) updateRoomStatus(room, TrangThaiPhong.TRONG);
+    // Only a booking reservation can release DA_DAT. Operational states belong
+    // to cleaning, maintenance and active stays and must survive cancellation.
+    if (room.trangThai === TrangThaiPhong.DA_DAT && !hasOtherActiveBooking) {
+      updateRoomStatus(room, TrangThaiPhong.TRONG);
+    }
     persistMockBookingState();
     const result: CancelBookingResult = {
       datPhong: bookingView(booking),

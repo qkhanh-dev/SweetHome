@@ -40,7 +40,7 @@ import type {
   UpdateRoomDto,
   WebhookResult,
 } from "@/types/api";
-import { mockApi } from "@/mocks/mockAdapter";
+import { mockApi, setMockAuthenticatedAccount } from "@/mocks/mockAdapter";
 import { ApiError } from "@/services/apiError";
 
 export { ApiError } from "@/services/apiError";
@@ -50,20 +50,38 @@ const API_BASE_URL = (
 ).replace(/\/+$/, "");
 const USE_MOCK = process.env.NEXT_PUBLIC_USE_MOCK === "true";
 
+export function paymentSimulatorEnabled(useMock: boolean, explicitQaFlag: boolean, nodeEnv: string | undefined): boolean {
+  return useMock || (nodeEnv !== "production" && explicitQaFlag);
+}
+
+const PAYMENT_SIMULATOR_ENABLED = paymentSimulatorEnabled(
+  USE_MOCK,
+  process.env.NEXT_PUBLIC_ENABLE_PAYMENT_SIMULATOR === "true",
+  process.env.NODE_ENV,
+);
+
 let accessToken: string | null = null;
 export const isMockMode = USE_MOCK;
+export const isPaymentSimulatorEnabled = PAYMENT_SIMULATOR_ENABLED;
 
 export function setAccessToken(token: string | null): void {
+  // Never retain a user token in a server module shared by concurrent requests.
+  if (typeof window === "undefined") return;
   accessToken = token?.trim() || null;
 }
 
 export function getAccessToken(): string | null {
-  return accessToken;
+  return typeof window === "undefined" ? null : accessToken;
+}
+
+function syncVerifiedMockAccount(account: TaiKhoan | null): void {
+  if (USE_MOCK && typeof window !== "undefined") setMockAuthenticatedAccount(account);
 }
 
 function clearBrowserSession(): void {
   setAccessToken(null);
   if (typeof window !== "undefined") {
+    syncVerifiedMockAccount(null);
     void fetch("/api/auth/session", { method: "DELETE", credentials: "same-origin" });
     window.dispatchEvent(new Event("sweethome:session-invalid"));
   }
@@ -210,6 +228,7 @@ export const apiClient = {
       ? await internalAuthRequest<AuthResult>("register", "POST", payload)
       : await request("/auth/register", () => mockApi.register(payload), json("POST", payload));
     setAccessToken(response.data.accessToken);
+    syncVerifiedMockAccount(response.data.taiKhoan);
     return response;
   },
 
@@ -218,16 +237,26 @@ export const apiClient = {
       ? await internalAuthRequest<AuthResult>("login", "POST", payload)
       : await request("/auth/login", () => mockApi.login(payload), json("POST", payload));
     setAccessToken(response.data.accessToken);
+    syncVerifiedMockAccount(response.data.taiKhoan);
     return response;
   },
 
   changePassword: (payload: ChangePasswordDto): Promise<ApiResponse<{ maTaiKhoan: string; username: string }>> =>
     request("/auth/change-password", () => mockApi.changePassword(payload), json("PATCH", payload)),
 
-  getMe: (): Promise<ApiResponse<TaiKhoan>> =>
-    typeof window !== "undefined"
-      ? internalAuthRequest<TaiKhoan>("me", "GET")
-      : request("/auth/me", () => mockApi.getMe(accessToken ?? undefined)),
+  getMe: async (): Promise<ApiResponse<TaiKhoan>> => {
+    try {
+      const response = typeof window !== "undefined"
+        ? await internalAuthRequest<TaiKhoan>("me", "GET")
+        : await request("/auth/me", () => mockApi.getMe());
+      syncVerifiedMockAccount(response.data);
+      return response;
+    } catch (error) {
+      syncVerifiedMockAccount(null);
+      setAccessToken(null);
+      throw error;
+    }
+  },
 
   logout: async (): Promise<void> => {
     if (typeof window !== "undefined") {
@@ -235,6 +264,7 @@ export const apiClient = {
         await fetch("/api/auth/session", { method: "DELETE", credentials: "same-origin" });
       } finally {
         setAccessToken(null);
+        syncVerifiedMockAccount(null);
       }
       return;
     }

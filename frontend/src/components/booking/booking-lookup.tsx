@@ -145,8 +145,8 @@ export function BookingLookup() {
 
         <form onSubmit={submit} noValidate className="flex flex-col gap-3 rounded-2xl border bg-card p-4 shadow-sm sm:flex-row sm:items-end sm:p-5">
           <div className="flex-1">
-            <FormField id="tuKhoa" label="Mã đặt phòng hoặc số điện thoại" error={fieldError}>
-              <input id="tuKhoa" autoComplete="off" aria-invalid={Boolean(fieldError)} aria-describedby={fieldError ? "tuKhoa-error" : undefined} className={inputClassName} placeholder="Ví dụ: DP202611… hoặc 0901234567" {...form.register("tuKhoa")} />
+            <FormField id="tuKhoa" label="Mã đặt phòng hoặc số điện thoại" error={fieldError} hint="Nhập đầy đủ mã đặt phòng hoặc đủ 10 số điện thoại; không tra cứu bằng một phần.">
+              <input id="tuKhoa" autoComplete="off" aria-invalid={Boolean(fieldError)} aria-describedby={fieldError ? "tuKhoa-error" : "tuKhoa-hint"} className={inputClassName} placeholder="Mã đầy đủ hoặc 0901234567" {...form.register("tuKhoa")} />
             </FormField>
           </div>
           <button type="submit" disabled={lookupState === "loading"} className="min-h-10 rounded-md bg-emerald-800 px-5 py-2 text-sm font-semibold text-white hover:bg-emerald-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 disabled:opacity-60">

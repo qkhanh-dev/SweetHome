@@ -28,7 +28,7 @@ function requestWithCookie(path: string, cookie?: string): NextRequest {
 
 async function main(): Promise<void> {
   process.env.NEXT_PUBLIC_USE_MOCK = "true";
-  const [{ apiClient, ApiError, setAccessToken, getAccessToken }, { resetMockState, setMockClockForTests }, authStore, sessionStore, sessionCookie, route, middlewareModule, serverSession] = await Promise.all([
+  const [{ apiClient, ApiError, setAccessToken, getAccessToken, isPaymentSimulatorEnabled }, { resetMockState, setMockClockForTests, setMockAuthenticatedAccount }, authStore, sessionStore, sessionCookie, route, middlewareModule, serverSession] = await Promise.all([
     import("../src/services/apiClient"),
     import("../src/mocks/mockAdapter"),
     import("../src/mocks/mockAuthStore"),
@@ -40,6 +40,7 @@ async function main(): Promise<void> {
   ]);
 
   checkPhoneValidation(registerSchema);
+  assert.equal(isPaymentSimulatorEnabled, true, "mock mode explicitly allows the local simulator");
   checkPhoneValidation(bookingContactSchema);
   assert.equal(registerSchema.safeParse({ username: "ab", password: "123456", hoTen: "Khách", soDienThoai: "0901234567", email: "a@b.test" }).success, false);
   assert.equal(registerSchema.safeParse({ username: "x".repeat(51), password: "123456", hoTen: "Khách", soDienThoai: "0901234567", email: "a@b.test" }).success, false);
@@ -145,6 +146,91 @@ async function main(): Promise<void> {
   assert.equal((await route.GET(requestWithCookie("/api/auth/me", adminSessionHeader), actionContext("me"))).status, 401);
   assert.equal((await route.GET(requestWithCookie("/api/auth/me", staffSessionHeader), actionContext("me"))).status, 200);
   console.log("PASS SH-10 form logout redirect and independent ADMIN/STAFF sessions");
+
+  const originalFetch = globalThis.fetch;
+  const originalWindow = Object.getOwnPropertyDescriptor(globalThis, "window");
+  let browserCookie: string | null = null;
+  Object.defineProperty(globalThis, "window", {
+    configurable: true,
+    value: {
+      localStorage: { getItem: () => null, setItem: () => undefined, removeItem: () => undefined },
+      dispatchEvent: () => true,
+    },
+  });
+  globalThis.fetch = async (input: RequestInfo | URL, init?: RequestInit) => {
+    const url = new URL(String(input), "http://localhost:3000");
+    if (!url.pathname.startsWith("/api/auth/")) throw new Error(`Unexpected browser auth fetch: ${url.pathname}`);
+    const action = url.pathname.split("/").at(-1) ?? "";
+    const headers = new Headers(init?.headers);
+    if (browserCookie) headers.set("cookie", `${sessionCookie.SESSION_COOKIE_NAME}=${browserCookie}`);
+    const request = new NextRequest(url, {
+      method: init?.method ?? "GET",
+      headers,
+      ...(init?.body === undefined || init.body === null ? {} : { body: init.body as BodyInit }),
+    });
+    const context = actionContext(action);
+    const response = init?.method === "DELETE"
+      ? await route.DELETE(request, context)
+      : init?.method === "GET"
+        ? await route.GET(request, context)
+        : await route.POST(request, context);
+    const session = response.cookies.get(sessionCookie.SESSION_COOKIE_NAME);
+    if (session?.maxAge === 0) browserCookie = null;
+    else if (session?.value) browserCookie = session.value;
+    return new Response(await response.text(), { status: response.status, headers: response.headers });
+  };
+  try {
+    resetMockState();
+    authStore.resetMockAuthStore();
+    setAccessToken(null);
+    const registeredUsername = `browser_customer_${Date.now()}`;
+    const registered = await apiClient.register({
+      username: registeredUsername,
+      password: "Strong@123",
+      hoTen: "Khách trình duyệt SH-10",
+      soDienThoai: "0907777666",
+      email: `browser-${Date.now()}@example.test`,
+    });
+    const registrationCookie = browserCookie;
+    ok(registrationCookie, "browser register should keep its own session cookie");
+    const registeredProfile = await apiClient.getCustomerProfile();
+    assert.equal(registeredProfile.data.maKH, registered.data.taiKhoan.khachHang?.maKH);
+    assert.equal(registeredProfile.data.maTaiKhoan, registered.data.taiKhoan.maTaiKhoan);
+    assert.deepEqual((await apiClient.getMyHistory()).data, []);
+
+    const browserRoom = (await apiClient.getAvailableRooms({ ngayNhan: "2040-01-02", ngayTra: "2040-01-04", soKhach: 2 })).data[0];
+    ok(browserRoom, "registered customer should be able to start a guest booking");
+    const browserBooking = await apiClient.createBooking({
+      maPhong: browserRoom.maPhong,
+      ngayNhan: "2040-01-02",
+      ngayTra: "2040-01-04",
+      soKhach: 2,
+      hoTen: registeredProfile.data.hoTen,
+      soDienThoai: registeredProfile.data.soDienThoai,
+      email: registeredProfile.data.email,
+      maKH: registeredProfile.data.maKH,
+    });
+    assert.equal(browserBooking.data.datPhong.maKH, registeredProfile.data.maKH);
+    assert.equal((await apiClient.getMyHistory()).data.some((item) => item.maDatPhong === browserBooking.data.datPhong.maDatPhong), true);
+
+    browserCookie = null;
+    await apiClient.login({ username: "customer_demo", password: "Customer@123" });
+    const otherHistory = await apiClient.getMyHistory();
+    assert.equal(otherHistory.data.some((item) => item.maDatPhong === browserBooking.data.datPhong.maDatPhong), false);
+    browserCookie = registrationCookie;
+    setAccessToken(null);
+    setMockAuthenticatedAccount(null);
+    assert.equal((await apiClient.getMe()).data.maTaiKhoan, registered.data.taiKhoan.maTaiKhoan);
+    assert.equal((await apiClient.getCustomerProfile()).data.maKH, registeredProfile.data.maKH);
+    assert.equal((await apiClient.getMyHistory()).data.some((item) => item.maDatPhong === browserBooking.data.datPhong.maDatPhong), true);
+    await apiClient.logout();
+    await assert.rejects(() => apiClient.getMyHistory(), (error: unknown) => error instanceof ApiError && error.statusCode === 401);
+    console.log("PASS SH-10 browser route -> verified register/login/getMe -> scoped profile/history, reload, account isolation and logout");
+  } finally {
+    globalThis.fetch = originalFetch;
+    if (originalWindow) Object.defineProperty(globalThis, "window", originalWindow);
+    else Reflect.deleteProperty(globalThis, "window");
+  }
 
   const activeAdmin = await route.POST(new NextRequest("http://localhost:3000/api/auth/login", {
     method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ username: "admin_sweethome", password: "Admin@123" }),
@@ -270,8 +356,14 @@ async function main(): Promise<void> {
   assert.ok(phoneLookup.data.length >= 2, "one phone number can return more than one booking");
   assert.equal(phoneLookup.data.some((item) => item.maDatPhong === booking.maDatPhong), true);
   assert.equal(phoneLookup.data.some((item) => item.maDatPhong === unpaid.data.datPhong.maDatPhong), true);
+  const exactCodeLookup = await apiClient.lookupBookings(`  ${booking.maDatPhong.toLowerCase()}  `);
+  assert.deepEqual(exactCodeLookup.data.map((item) => item.maDatPhong), [booking.maDatPhong]);
+  assert.equal((await apiClient.lookupBookings(`${booking.maDatPhong}X`)).data.length, 0);
+  for (const partial of ["0", "dp", firstPhone.slice(0, 5), ""]) {
+    assert.equal((await apiClient.lookupBookings(partial)).data.length, 0, `lookup must not match partial input ${partial}`);
+  }
   await assert.rejects(() => apiClient.getPaymentQr(unpaid.data.datPhong.maDatPhong), (error: unknown) => error instanceof ApiError && error.statusCode === 400);
-  console.log("PASS SH-10 booking/QR/webhook retry/lookup-many/unpaid cancellation and idempotency");
+  console.log("PASS SH-10 booking/QR/webhook retry/exact lookup-many/unpaid cancellation and idempotency");
 
   const checkedCancel = async (start: string, end: string, deltaHours: number, expectedRate: 0 | 50 | 100) => {
     const pending = await create(firstRoom.maPhong, start, end, `09${String(Math.floor(Math.random() * 1_000_000_00)).padStart(8, "0")}`);
@@ -317,6 +409,56 @@ async function main(): Promise<void> {
   await apiClient.checkIn(staying.data.datPhong.maDatPhong, { soCCCD: "012345678901" });
   await assert.rejects(() => apiClient.cancelBooking(staying.data.datPhong.maDatPhong, "Không hợp lệ"), (error: unknown) => error instanceof ApiError && error.statusCode === 400);
   console.log("PASS SH-10 cancellation 100/50/0, stale preview vs final API, blocked ineligible states");
+
+  resetMockState();
+  const createP201 = (ngayNhan: string, ngayTra: string, soDienThoai: string) => apiClient.createBooking({
+    maPhong: "P201",
+    ngayNhan,
+    ngayTra,
+    soKhach: 2,
+    hoTen: "Khách vận hành phòng",
+    soDienThoai,
+    email: `${soDienThoai}@example.test`,
+  });
+  const cleaningBooking = await createP201("2042-01-02", "2042-01-04", "0901000001");
+  const cleaningCancel = await apiClient.cancelBooking(cleaningBooking.data.datPhong.maDatPhong, "Đổi lịch");
+  assert.equal(cleaningCancel.data.phong.trangThai, TrangThaiPhong.CHO_DON_DEP);
+  assert.equal((await apiClient.getRoomById("P201")).data.trangThai, TrangThaiPhong.CHO_DON_DEP);
+
+  const maintenanceBooking = await createP201("2042-02-02", "2042-02-04", "0901000002");
+  await apiClient.updateRoomStatus("P201", TrangThaiPhong.BAO_TRI);
+  const maintenanceCancel = await apiClient.cancelBooking(maintenanceBooking.data.datPhong.maDatPhong, "Bảo trì tiếp tục");
+  assert.equal(maintenanceCancel.data.phong.trangThai, TrangThaiPhong.BAO_TRI);
+
+  await apiClient.updateRoomStatus("P201", TrangThaiPhong.TRONG);
+  const inUseBooking = await createP201("2042-03-02", "2042-03-04", "0901000003");
+  const inUseQr = inUseBooking.data.paymentQr;
+  await apiClient.triggerPaymentWebhook({ maDatPhong: inUseBooking.data.datPhong.maDatPhong, maGiaoDich: inUseQr.maGiaoDich, soTien: inUseQr.soTienCoc, trangThaiGiaoDich: "THANH_CONG" }, inUseQr.idempotencyKey);
+  await apiClient.checkIn(inUseBooking.data.datPhong.maDatPhong, { soCCCD: "012345678901" });
+  const pendingDuringStay = await createP201("2042-03-10", "2042-03-12", "0901000007");
+  const inUseCancel = await apiClient.cancelBooking(pendingDuringStay.data.datPhong.maDatPhong, "Giữ trạng thái vận hành");
+  assert.equal(inUseCancel.data.phong.trangThai, TrangThaiPhong.DANG_SU_DUNG);
+
+  resetMockState();
+  await apiClient.completeRoomCleaning("P201");
+  const reservedBooking = await createP201("2042-04-02", "2042-04-04", "0901000004");
+  const reservedQr = reservedBooking.data.paymentQr;
+  await apiClient.triggerPaymentWebhook({ maDatPhong: reservedBooking.data.datPhong.maDatPhong, maGiaoDich: reservedQr.maGiaoDich, soTien: reservedQr.soTienCoc, trangThaiGiaoDich: "THANH_CONG" }, reservedQr.idempotencyKey);
+  assert.equal((await apiClient.getRoomById("P201")).data.trangThai, TrangThaiPhong.DA_DAT);
+  const reservedCancel = await apiClient.cancelBooking(reservedBooking.data.datPhong.maDatPhong, "Hủy đơn đã đặt");
+  assert.equal(reservedCancel.data.phong.trangThai, TrangThaiPhong.TRONG);
+
+  const activeOne = await createP201("2042-05-02", "2042-05-04", "0901000005");
+  const activeTwo = await createP201("2042-05-10", "2042-05-12", "0901000006");
+  for (const pending of [activeOne, activeTwo]) {
+    const qr = pending.data.paymentQr;
+    await apiClient.triggerPaymentWebhook({ maDatPhong: pending.data.datPhong.maDatPhong, maGiaoDich: qr.maGiaoDich, soTien: qr.soTienCoc, trangThaiGiaoDich: "THANH_CONG" }, qr.idempotencyKey);
+  }
+  const firstActiveCancel = await apiClient.cancelBooking(activeOne.data.datPhong.maDatPhong, "Còn đơn khác");
+  assert.equal(firstActiveCancel.data.phong.trangThai, TrangThaiPhong.DA_DAT);
+  const lastActiveCancel = await apiClient.cancelBooking(activeTwo.data.datPhong.maDatPhong, "Đã hủy đơn cuối");
+  assert.equal(lastActiveCancel.data.phong.trangThai, TrangThaiPhong.TRONG);
+  console.log("PASS SH-10 cancel preserves cleaning/maintenance/in-use state and releases DA_DAT only after last active booking");
 
   setMockClockForTests(null);
   resetMockState();

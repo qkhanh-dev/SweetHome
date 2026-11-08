@@ -30,6 +30,7 @@ export function BookingReceipt({ maDatPhong }: { maDatPhong: string }) {
   const [error, setError] = useState<string | null>(null);
   const [qrError, setQrError] = useState<string | null>(null);
   const requestGate = useRef(new LatestRequestGate());
+  const modalFallbackRef = useRef<HTMLButtonElement>(null);
 
   const loadBooking = useCallback(async () => {
     const requestId = requestGate.current.begin();
@@ -93,7 +94,7 @@ export function BookingReceipt({ maDatPhong }: { maDatPhong: string }) {
       <div className="mx-auto max-w-3xl">
         <div className="mb-5 flex flex-wrap items-center justify-between gap-3 print:hidden">
           <Link href="/booking/lookup" className="text-sm font-medium text-emerald-800 underline">← Tra cứu đơn</Link>
-          <button type="button" onClick={() => window.print()} className="min-h-10 rounded-md border px-4 py-2 text-sm font-medium hover:bg-muted">In phiếu xác nhận</button>
+          <button ref={modalFallbackRef} type="button" onClick={() => window.print()} className="min-h-10 rounded-md border px-4 py-2 text-sm font-medium hover:bg-muted">In phiếu xác nhận</button>
         </div>
 
         <article className="rounded-2xl border bg-card p-5 shadow-sm sm:p-8 print:border-0 print:shadow-none">
@@ -145,7 +146,11 @@ export function BookingReceipt({ maDatPhong }: { maDatPhong: string }) {
           ) : null}
         </article>
 
-        {paymentQr ? <DepositDialog open={qrOpen} onClose={() => setQrOpen(false)} booking={booking} paymentQr={paymentQr} onBookingChange={(result) => setBooking((current) => current ? mergeBookingMutation(current, result.datPhong, result.phong) : current)} /> : null}
+        {paymentQr ? <DepositDialog open={qrOpen} onClose={() => setQrOpen(false)} booking={booking} paymentQr={paymentQr} returnFocusRef={modalFallbackRef} onBookingChange={(updated, updatedRoom) => setBooking((current) => {
+          if (!current) return updated;
+          const roomMutation = updatedRoom ?? updated.phong;
+          return roomMutation ? mergeBookingMutation(current, updated, roomMutation) : { ...current, ...updated, phong: current.phong };
+        })} /> : null}
       </div>
     </section>
   );
