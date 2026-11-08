@@ -145,7 +145,9 @@ CREATE TABLE "DanhGia" (
 -- CreateTable
 CREATE TABLE "_PhongTienNghi" (
     "A" TEXT NOT NULL,
-    "B" TEXT NOT NULL
+    "B" TEXT NOT NULL,
+
+    CONSTRAINT "_PhongTienNghi_AB_pkey" PRIMARY KEY ("A","B")
 );
 
 -- CreateIndex
@@ -174,9 +176,6 @@ CREATE INDEX "HoaDon_ngayLap_trangThai_idx" ON "HoaDon"("ngayLap", "trangThai");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "DanhGia_maDatPhong_key" ON "DanhGia"("maDatPhong");
-
--- CreateIndex
-CREATE UNIQUE INDEX "_PhongTienNghi_AB_unique" ON "_PhongTienNghi"("A", "B");
 
 -- CreateIndex
 CREATE INDEX "_PhongTienNghi_B_index" ON "_PhongTienNghi"("B");

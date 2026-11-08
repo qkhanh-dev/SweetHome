@@ -1,9 +1,3 @@
--- AlterTable
-ALTER TABLE "_PhongTienNghi" ADD CONSTRAINT "_PhongTienNghi_AB_pkey" PRIMARY KEY ("A", "B");
-
--- DropIndex
-DROP INDEX "_PhongTienNghi_AB_unique";
-
 -- CreateIndex
 CREATE INDEX "DanhGia_ngayDanhGia_idx" ON "DanhGia"("ngayDanhGia");
 
