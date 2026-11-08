@@ -35,9 +35,19 @@ export function GuestShell({ children }: { children: ReactNode }) {
 }
 
 const staffLinks = [
+  { href: "/staff/rooms", label: "Sơ đồ phòng" },
   { href: "/staff/check-in", label: "Nhận phòng" },
   { href: "/staff/services", label: "Dịch vụ" },
   { href: "/staff/check-out", label: "Trả phòng" },
+];
+
+const adminLinks = [
+  { href: "/admin", label: "Tổng quan" },
+  { href: "/admin/homestay", label: "Homestay" },
+  { href: "/admin/room-types", label: "Loại phòng & giá" },
+  { href: "/admin/amenities", label: "Tiện nghi" },
+  { href: "/admin/rooms", label: "Quản lý phòng" },
+  ...staffLinks,
 ];
 
 export function ManagementShell({
@@ -49,7 +59,7 @@ export function ManagementShell({
 }) {
   const links =
     role === "admin"
-      ? [{ href: "/admin", label: "Quản trị" }, ...staffLinks]
+      ? adminLinks
       : staffLinks;
 
   return (
