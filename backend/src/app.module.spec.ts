@@ -3,6 +3,8 @@ import { GLOBAL_MODULE_METADATA, MODULE_METADATA } from '@nestjs/common/constant
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from './app.module';
 import { HealthModule } from './health/health.module';
+import { BookingModule } from './modules/booking/booking.module';
+import { HomestayRoomsModule } from './modules/homestay-rooms/homestay-rooms.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { PrismaService } from './prisma/prisma.service';
 
@@ -31,6 +33,14 @@ describe('AppModule', () => {
 
   it('keeps ConfigModule available', () => {
     expect(module.get(ConfigService)).toBeInstanceOf(ConfigService);
+  });
+
+  it('registers BookingModule before parameterized room routes for SH-08 compatibility', () => {
+    const imports = Reflect.getMetadata(MODULE_METADATA.IMPORTS, AppModule) as object[];
+
+    expect(imports.indexOf(BookingModule)).toBeGreaterThanOrEqual(0);
+    expect(imports.indexOf(HomestayRoomsModule)).toBeGreaterThanOrEqual(0);
+    expect(imports.indexOf(BookingModule)).toBeLessThan(imports.indexOf(HomestayRoomsModule));
   });
 
   it('registers one global PrismaService that is available to application modules', () => {

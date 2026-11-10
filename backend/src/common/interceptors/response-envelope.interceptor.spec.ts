@@ -33,12 +33,18 @@ describe('ResponseEnvelopeInterceptor', () => {
   });
 
   it('preserves the contract-specific message for SH-07 handlers', async () => {
-    const next: CallHandler<unknown> = { handle: () => of(sh07Result('Đăng nhập thành công', { accessToken: 'test' })) };
-    const wrapped = await lastValueFrom(new ResponseEnvelopeInterceptor<unknown>().intercept(createContext(), next));
-    expect(wrapped).toEqual(expect.objectContaining({
-      message: 'Đăng nhập thành công',
-      data: { accessToken: 'test' },
-    }));
+    const next: CallHandler<unknown> = {
+      handle: () => of(sh07Result('Đăng nhập thành công', { accessToken: 'test' })),
+    };
+    const wrapped = await lastValueFrom(
+      new ResponseEnvelopeInterceptor<unknown>().intercept(createContext(), next),
+    );
+    expect(wrapped).toEqual(
+      expect.objectContaining({
+        message: 'Đăng nhập thành công',
+        data: { accessToken: 'test' },
+      }),
+    );
   });
 
   it('does not double-wrap an existing envelope', async () => {

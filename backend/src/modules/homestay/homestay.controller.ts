@@ -7,14 +7,25 @@ import { result } from '../../common/utils/sh07-result';
 import { UpdateHomestayDto } from './dto/homestay.dto';
 import { HomestayService } from './homestay.service';
 
-@ApiTags('Homestay') @Controller('homestay')
+@ApiTags('Homestay')
+@Controller('homestay')
 export class HomestayController {
   constructor(private readonly homestay: HomestayService) {}
-  @Get() async get() { return result('Lấy thông tin Homestay thành công', await this.homestay.get()); }
-  @Get('rooms') async rooms() {
+
+  @Get()
+  async get() {
+    return result('Lấy thông tin Homestay thành công', await this.homestay.get());
+  }
+
+  @Get('rooms')
+  async rooms() {
     return result('Lấy danh sách phòng thuộc Homestay thành công', await this.homestay.rooms());
   }
-  @Put() @UseGuards(JwtAuthGuard, RolesGuard) @Roles('ADMIN') @ApiBearerAuth()
+
+  @Put()
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('ADMIN')
+  @ApiBearerAuth()
   async update(@Body() dto: UpdateHomestayDto) {
     return result('Cập nhật thông tin Homestay thành công', await this.homestay.update(dto));
   }

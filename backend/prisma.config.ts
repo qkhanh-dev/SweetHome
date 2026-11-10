@@ -4,6 +4,12 @@ import { defineConfig } from 'prisma/config';
 
 dotenv.config({ path: [path.resolve(__dirname, '../.env'), path.resolve(__dirname, '.env')] });
 
+const databaseUrl = process.env.DATABASE_URL;
+
+if (!databaseUrl) {
+  throw new Error('DATABASE_URL is not configured. Set it in backend/.env or the process environment.');
+}
+
 export default defineConfig({
   schema: 'prisma/schema.prisma',
   migrations: {
@@ -11,6 +17,6 @@ export default defineConfig({
     seed: 'tsx prisma/seed.ts',
   },
   datasource: {
-    url: process.env.DATABASE_URL || 'postgresql://sweethome_user:sweethome_secret_2026@localhost:5432/sweethome_db?schema=public',
+    url: databaseUrl,
   },
 });
