@@ -164,7 +164,9 @@ export class BookingService {
       }
       if (dto.soTien !== booking.tienCoc)
         throw new BadRequestException('Số tiền thanh toán không khớp tiền cọc');
-      if (receipt || booking.thanhToan || booking.trangThai === 'DA_XAC_NHAN') {
+      if (booking.thanhToan && booking.thanhToan.maGiaoDich !== dto.maGiaoDich)
+        throw new ConflictException('Đơn đã có giao dịch cọc khác; cần đối soát thanh toán');
+      if (receipt) {
         return {
           idempotentReplay: true,
           maGiaoDich: booking.thanhToan?.maGiaoDich ?? dto.maGiaoDich,

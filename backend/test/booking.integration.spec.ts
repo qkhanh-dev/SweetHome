@@ -1,10 +1,13 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access */
-import { ConflictException, INestApplication } from '@nestjs/common';
+import { ConflictException, INestApplication, ServiceUnavailableException } from '@nestjs/common';
 import { TrangThaiPhong } from '@prisma/client';
 import { Test } from '@nestjs/testing';
 import { ConfigService } from '@nestjs/config';
+import { JwtService } from '@nestjs/jwt';
 import * as request from 'supertest';
 import { randomUUID } from 'node:crypto';
+import { createServer } from 'node:http';
+import { AddressInfo } from 'node:net';
 import { AppModule } from '../src/app.module';
 import { configureHttpApp } from '../src/config/app.setup';
 import { PrismaService } from '../src/prisma/prisma.service';
@@ -29,19 +32,20 @@ integration('SH08 real PostgreSQL HTTP integration', () => {
     email: `${scope}@example.com`,
   };
   const refunds = new Map<string, number>();
+  let configValues: Record<string, string | undefined>;
   const refundCall = jest.fn(async (_transaction: string, amount: number, key: string) => {
     if (refunds.has(key) && refunds.get(key) !== amount) throw new Error('Changed refund amount');
     refunds.set(key, amount);
   });
 
   beforeAll(async () => {
-    const values: Record<string, string | undefined> = {
+    const values: Record<string, string | undefined> = (configValues = {
       DATABASE_URL: process.env.SH08_TEST_DATABASE_URL,
       PAYMENT_GATEWAY_MODE: 'mock',
       NODE_ENV: 'test',
       VIETQR_BANK_ID: 'MB',
       VIETQR_ACCOUNT_NO: '0987654321',
-    };
+    });
     const config = new ConfigService();
     jest.spyOn(config, 'get').mockImplementation((key: string) => values[key]);
     jest.spyOn(config, 'getOrThrow').mockImplementation((key: string) => {
@@ -98,6 +102,8 @@ integration('SH08 real PostgreSQL HTTP integration', () => {
   }, 30000);
 
   afterEach(async () => {
+    jest.useRealTimers();
+    configValues.PAYMENT_GATEWAY_MODE = 'mock';
     await db.hoanCoc.deleteMany({ where: { datPhong: { maPhong: payload.maPhong } } });
     await db.thanhToanCoc.deleteMany({ where: { datPhong: { maPhong: payload.maPhong } } });
     await db.datPhong.deleteMany({ where: { maPhong: payload.maPhong } });
@@ -109,6 +115,7 @@ integration('SH08 real PostgreSQL HTTP integration', () => {
 
   afterAll(async () => {
     if (db) {
+      await db.taiKhoan.deleteMany({ where: { username: { startsWith: scope } } });
       await db.phong.deleteMany({ where: { maHomestay: scope } });
       await db.tienNghi.deleteMany({ where: { maTienNghi: { startsWith: scope } } });
       await db.loaiPhong.deleteMany({ where: { maLoaiPhong: scope } });
@@ -123,6 +130,14 @@ integration('SH08 real PostgreSQL HTTP integration', () => {
       .send(payload)
       .expect(201);
     const booking = created.body.data.datPhong;
+    expect(booking.trangThai).toBe('CHO_COC');
+    expect(created.body.data.paymentQr.maDatPhong).toBe(booking.maDatPhong);
+    expect(created.body.data.paymentQr.soTienCoc).toBe(booking.tienCoc);
+    const qr = await request(app.getHttpServer())
+      .post('/api/payments/create-qr')
+      .send({ maDatPhong: booking.maDatPhong })
+      .expect(200);
+    expect(qr.body.data).toEqual(created.body.data.paymentQr);
     const webhook = {
       maDatPhong: booking.maDatPhong,
       maGiaoDich: `PAY_${booking.maDatPhong}`,
@@ -257,53 +272,89 @@ integration('SH08 real PostgreSQL HTTP integration', () => {
     }
   });
 
-  it('duplicate concurrent webhooks write exactly one payment receipt', async () => {
-    const created = await request(app.getHttpServer())
-      .post('/api/bookings')
-      .send(payload)
-      .expect(201);
-    const booking = created.body.data.datPhong;
-    const webhook = {
-      maDatPhong: booking.maDatPhong,
-      maGiaoDich: `provider-${randomUUID()}`,
-      soTien: booking.tienCoc,
-      trangThaiGiaoDich: 'THANH_CONG',
-    };
-    const results = await Promise.all(
-      Array.from({ length: 5 }, () =>
-        request(app.getHttpServer())
+  it.each([false, true])(
+    'duplicate concurrent webhooks write exactly one payment receipt (sequential first: %s)',
+    async (sequentialFirst) => {
+      const created = await request(app.getHttpServer())
+        .post('/api/bookings')
+        .send(payload)
+        .expect(201);
+      const booking = created.body.data.datPhong;
+      const webhook = {
+        maDatPhong: booking.maDatPhong,
+        maGiaoDich: `provider-${randomUUID()}`,
+        soTien: booking.tienCoc,
+        trangThaiGiaoDich: 'THANH_CONG',
+      };
+      if (sequentialFirst) {
+        await request(app.getHttpServer())
           .post('/api/payments/webhook')
           .set('Idempotency-Key', `key-${booking.maDatPhong}`)
-          .send(webhook),
-      ),
-    );
-    expect(results.map((r) => r.status)).toEqual([200, 200, 200, 200, 200]);
-    expect(results.filter((r) => r.body.data.idempotentReplay === false)).toHaveLength(1);
-    expect(await db.thanhToanCoc.count({ where: { maDatPhong: booking.maDatPhong } })).toBe(1);
-    expect(
-      (await db.phong.findUniqueOrThrow({ where: { maPhong: payload.maPhong } })).trangThai,
-    ).toBe('DA_DAT');
-    await request(app.getHttpServer())
-      .post('/api/payments/webhook')
-      .send({ ...webhook, soTien: 1 })
-      .expect(409);
-  });
+          .send(webhook)
+          .expect(200);
+        const sequentialReplay = await request(app.getHttpServer())
+          .post('/api/payments/webhook')
+          .set('Idempotency-Key', `key-${booking.maDatPhong}`)
+          .send(webhook)
+          .expect(200);
+        expect(sequentialReplay.body.data.idempotentReplay).toBe(true);
+      }
+      const results = await Promise.all(
+        Array.from({ length: 5 }, () =>
+          request(app.getHttpServer())
+            .post('/api/payments/webhook')
+            .set('Idempotency-Key', `key-${booking.maDatPhong}`)
+            .send(webhook),
+        ),
+      );
+      expect(results.map((r) => r.status)).toEqual([200, 200, 200, 200, 200]);
+      expect(results.filter((r) => r.body.data.idempotentReplay === false)).toHaveLength(
+        sequentialFirst ? 0 : 1,
+      );
+      expect(await db.thanhToanCoc.count({ where: { maDatPhong: booking.maDatPhong } })).toBe(1);
+      expect(
+        (await db.phong.findUniqueOrThrow({ where: { maPhong: payload.maPhong } })).trangThai,
+      ).toBe('DA_DAT');
+      await request(app.getHttpServer())
+        .post('/api/payments/webhook')
+        .send({ ...webhook, soTien: 1 })
+        .expect(409);
+    },
+  );
 
   it.each([
-    [96, 100],
-    [48, 50],
-    [12, 0],
+    [72, 100],
+    [71.999, 50],
+    [24, 50],
+    [23.999, 0],
   ])(
     'cancellation %sh before arrival refunds %s percent and reopens room',
     async (hours, percent) => {
       const { booking, webhook } = await createAndPay();
-      await db.datPhong.update({
-        where: { maDatPhong: booking.maDatPhong },
-        data: {
-          ngayNhan: new Date(Date.now() + hours * 3600000),
-          ngayTra: new Date(Date.now() + (hours + 72) * 3600000),
-        },
+      jest.useFakeTimers({
+        doNotFake: [
+          'nextTick',
+          'setImmediate',
+          'clearImmediate',
+          'setTimeout',
+          'clearTimeout',
+          'setInterval',
+          'clearInterval',
+          'hrtime',
+          'performance',
+          'queueMicrotask',
+        ],
       });
+      jest.setSystemTime(new Date(+new Date(`${payload.ngayNhan}T07:00:00Z`) - hours * 3600000));
+      const preview = await request(app.getHttpServer())
+        .get(`/api/bookings/${booking.maDatPhong}/refund-preview`)
+        .expect(200);
+      expect(preview.body.data.tyLeHoanPhanTram).toBe(percent);
+      const lookup = await request(app.getHttpServer())
+        .get('/api/bookings/lookup')
+        .query({ maDatPhong: booking.maDatPhong })
+        .expect(200);
+      expect(lookup.body.data[0].hoanCocDuKien.soTienHoan).toBe(preview.body.data.soTienHoan);
       const cancelled = await request(app.getHttpServer())
         .post(`/api/bookings/${booking.maDatPhong}/cancel`)
         .send({ lyDo: 'Đổi lịch trình' })
@@ -311,6 +362,7 @@ integration('SH08 real PostgreSQL HTTP integration', () => {
       expect(cancelled.body.data.hoanCoc.soTienHoan).toBe(
         Math.round((booking.tienCoc * percent) / 100),
       );
+      expect(cancelled.body.data.hoanCoc.soTienHoan).toBe(preview.body.data.soTienHoan);
       expect(cancelled.body.data.datPhong.trangThai).toBe('DA_HUY');
       expect(cancelled.body.data.phong.trangThai).toBe('TRONG');
       await request(app.getHttpServer())
@@ -332,6 +384,11 @@ integration('SH08 real PostgreSQL HTTP integration', () => {
       .send(payload)
       .expect(201);
     const booking = created.body.data.datPhong;
+    const preview = await request(app.getHttpServer())
+      .get(`/api/bookings/${booking.maDatPhong}/refund-preview`)
+      .expect(200);
+    expect(preview.body.data.soTienHoan).toBe(0);
+    expect(preview.body.data.tyLeHoanPhanTram).toBe(0);
     const result = await request(app.getHttpServer())
       .post(`/api/bookings/${booking.maDatPhong}/cancel`)
       .send({ lyDo: 'Hủy trước cọc' })
@@ -391,7 +448,13 @@ integration('SH08 real PostgreSQL HTTP integration', () => {
     const second = other.body.data.datPhong;
     await request(app.getHttpServer())
       .post('/api/payments/webhook')
-      .send({ ...webhook, maDatPhong: second.maDatPhong, soTien: second.tienCoc })
+      .set('Idempotency-Key', webhook.maGiaoDich)
+      .send({
+        ...webhook,
+        maGiaoDich: 'different-transaction',
+        maDatPhong: second.maDatPhong,
+        soTien: second.tienCoc,
+      })
       .expect(409);
     expect(
       (await db.datPhong.findUniqueOrThrow({ where: { maDatPhong: second.maDatPhong } })).trangThai,
@@ -405,11 +468,11 @@ integration('SH08 real PostgreSQL HTTP integration', () => {
   it('resumes an uncertain refund with the persisted amount and key', async () => {
     const { booking } = await createAndPay();
     const spy = jest.spyOn(gateway, 'hoanTien');
-    spy.mockRejectedValueOnce(new Error('Gateway timeout'));
+    spy.mockRejectedValueOnce(new ServiceUnavailableException('Gateway timeout'));
     await request(app.getHttpServer())
       .post(`/api/bookings/${booking.maDatPhong}/cancel`)
       .send({ lyDo: 'Đổi lịch' })
-      .expect(500);
+      .expect(503);
     expect(
       (await db.datPhong.findUniqueOrThrow({ where: { maDatPhong: booking.maDatPhong } }))
         .trangThai,
@@ -417,6 +480,7 @@ integration('SH08 real PostgreSQL HTTP integration', () => {
     const reserved = await db.hoanCoc.findUniqueOrThrow({
       where: { maDatPhong: booking.maDatPhong },
     });
+    expect(reserved.trangThai).toBe('DANG_XU_LY');
     await db.datPhong.update({
       where: { maDatPhong: booking.maDatPhong },
       data: { ngayNhan: new Date(Date.now() + 12 * 3600000) },
@@ -430,7 +494,72 @@ integration('SH08 real PostgreSQL HTTP integration', () => {
       reserved.soTienHoan,
       reserved.maGiaoDichHoan,
     );
+    expect(refunds.size).toBe(1);
+    expect(
+      (await db.hoanCoc.findUniqueOrThrow({ where: { maDatPhong: booking.maDatPhong } })).trangThai,
+    ).toBe('THANH_CONG');
   });
+
+  it('retries a real HTTP gateway timeout with the same committed refund and one provider operation', async () => {
+    const { booking } = await createAndPay();
+    const calls: Array<{ key: string; body: string }> = [];
+    const ledger = new Map<string, string>();
+    const server = createServer((req, res) => {
+      let body = '';
+      req.setEncoding('utf8');
+      req.on('data', (chunk: string) => {
+        body += chunk;
+      });
+      req.on('end', () => {
+        const key = String(req.headers['idempotency-key']);
+        calls.push({ key, body });
+        ledger.set(key, body);
+        // Provider has processed the refund, but its first response never arrives.
+        if (calls.length === 1) return;
+        res.setHeader('Content-Type', 'application/json');
+        res.end(JSON.stringify({ trangThaiHoanTien: 'THANH_CONG' }));
+      });
+    });
+    await new Promise<void>((resolve) => server.listen(0, '127.0.0.1', resolve));
+    configValues.PAYMENT_GATEWAY_MODE = 'live';
+    configValues.PAYMENT_REFUND_URL = `http://127.0.0.1:${(server.address() as AddressInfo).port}/refund`;
+    configValues.PAYMENT_API_KEY = 'qa-only';
+    jest.spyOn(gateway, 'hoanTien').mockRestore();
+    try {
+      await request(app.getHttpServer())
+        .post(`/api/bookings/${booking.maDatPhong}/cancel`)
+        .send({ lyDo: 'HTTP gateway timeout' })
+        .expect(503);
+      const pending = await db.hoanCoc.findUniqueOrThrow({
+        where: { maDatPhong: booking.maDatPhong },
+      });
+      expect(pending.trangThai).toBe('DANG_XU_LY');
+      expect(
+        (await db.datPhong.findUniqueOrThrow({ where: { maDatPhong: booking.maDatPhong } }))
+          .trangThai,
+      ).toBe('DA_XAC_NHAN');
+      await db.datPhong.update({
+        where: { maDatPhong: booking.maDatPhong },
+        data: { ngayNhan: new Date() },
+      });
+      await request(app.getHttpServer())
+        .post(`/api/bookings/${booking.maDatPhong}/cancel`)
+        .send({ lyDo: 'Retry after timeout' })
+        .expect(200);
+      expect(calls).toHaveLength(2);
+      expect(calls[1]).toEqual(calls[0]);
+      expect(calls[0].key).toBe(pending.maGiaoDichHoan);
+      expect(JSON.parse(calls[0].body)).toEqual({
+        maGiaoDich: pending.maGiaoDich,
+        soTienHoan: pending.soTienHoan,
+      });
+      expect(ledger.size).toBe(1);
+    } finally {
+      server.closeAllConnections();
+      await new Promise<void>((resolve) => server.close(() => resolve()));
+      jest.spyOn(gateway, 'hoanTien').mockImplementation(refundCall);
+    }
+  }, 25000);
 
   it('preserves DA_DAT when another non-overlapping confirmed booking exists', async () => {
     const { booking } = await createAndPay();
@@ -453,6 +582,181 @@ integration('SH08 real PostgreSQL HTTP integration', () => {
       .send({ lyDo: 'Đổi lịch' })
       .expect(200);
     expect(cancelled.body.data.phong.trangThai).toBe('DA_DAT');
+  });
+
+  it('serves both room routes publicly, reflects CORS preflight headers and protects SH07 writes', async () => {
+    const detail = await request(app.getHttpServer())
+      .get(`/api/rooms/${payload.maPhong}`)
+      .expect(200);
+    expect(detail.body.data.maPhong).toBe(payload.maPhong);
+    expect(detail.body.success).toBe(true);
+    const preflight = await request(app.getHttpServer())
+      .options('/api/payments/webhook')
+      .set('Origin', 'http://localhost:3000')
+      .set('Access-Control-Request-Method', 'POST')
+      .set('Access-Control-Request-Headers', 'content-type,idempotency-key,x-webhook-secret')
+      .expect(204);
+    expect(preflight.headers['access-control-allow-origin']).toBe('http://localhost:3000');
+    expect(preflight.headers['access-control-allow-headers']).toContain('idempotency-key');
+    await request(app.getHttpServer()).post('/api/rooms').send({}).expect(401);
+    await request(app.getHttpServer())
+      .patch(`/api/rooms/${payload.maPhong}/status`)
+      .set('Authorization', 'Bearer invalid')
+      .send({ trangThai: 'BAO_TRI' })
+      .expect(401);
+  });
+
+  it('enforces current JWT roles on management routes while allowing guest booking routes', async () => {
+    for (const role of ['CUSTOMER', 'STAFF', 'ADMIN']) {
+      const account = await db.taiKhoan.create({
+        data: {
+          username: `${scope}-${role}`,
+          passwordHash: 'unused-test-hash',
+          vaiTro: role,
+        },
+      });
+      const token = app.get(JwtService).sign({ sub: account.maTaiKhoan });
+      await request(app.getHttpServer())
+        .post('/api/rooms')
+        .set('Authorization', `Bearer ${token}`)
+        .send({})
+        .expect(role === 'ADMIN' ? 400 : 403);
+      await request(app.getHttpServer())
+        .patch(`/api/rooms/${payload.maPhong}/status`)
+        .set('Authorization', `Bearer ${token}`)
+        .send({ trangThai: 'TRONG' })
+        .expect(role === 'CUSTOMER' ? 403 : 200);
+    }
+  });
+
+  it('authenticates webhook with gateway secret rather than requiring guest JWT', async () => {
+    const created = await request(app.getHttpServer())
+      .post('/api/bookings')
+      .send(payload)
+      .expect(201);
+    const booking = created.body.data.datPhong;
+    configValues.PAYMENT_GATEWAY_MODE = 'live';
+    configValues.PAYMENT_WEBHOOK_SECRET = 'qa-webhook-secret';
+    const webhook = {
+      maDatPhong: booking.maDatPhong,
+      maGiaoDich: `PAY_${booking.maDatPhong}`,
+      soTien: booking.tienCoc,
+      trangThaiGiaoDich: 'THANH_CONG',
+    };
+    await request(app.getHttpServer()).post('/api/payments/webhook').send(webhook).expect(401);
+    await request(app.getHttpServer())
+      .post('/api/payments/webhook')
+      .set('x-webhook-secret', 'wrong')
+      .send(webhook)
+      .expect(401);
+    await request(app.getHttpServer())
+      .post('/api/payments/webhook')
+      .set('x-webhook-secret', 'qa-webhook-secret')
+      .send(webhook)
+      .expect(200);
+  });
+
+  it.each(['DANG_SU_DUNG', 'CHO_DON_DEP', 'BAO_TRI'] as const)(
+    'preserves operational room status %s after cancellation',
+    async (status) => {
+      const { booking } = await createAndPay();
+      await db.phong.update({ where: { maPhong: payload.maPhong }, data: { trangThai: status } });
+      const response = await request(app.getHttpServer())
+        .post(`/api/bookings/${booking.maDatPhong}/cancel`)
+        .send({ lyDo: 'Operational status test' })
+        .expect(200);
+      expect(response.body.data.phong.trangThai).toBe(status);
+    },
+  );
+
+  it('reopens operational room with another unpaid hold, while that hold still blocks its dates', async () => {
+    const { booking } = await createAndPay();
+    await request(app.getHttpServer())
+      .post('/api/bookings')
+      .send({ ...payload, ngayNhan: '2035-12-01', ngayTra: '2035-12-03' })
+      .expect(201);
+    const response = await request(app.getHttpServer())
+      .post(`/api/bookings/${booking.maDatPhong}/cancel`)
+      .send({ lyDo: 'Unpaid hold test' })
+      .expect(200);
+    expect(response.body.data.phong.trangThai).toBe('TRONG');
+    const search = await request(app.getHttpServer())
+      .get('/api/rooms/available')
+      .query({ ngayNhan: '2035-12-01', ngayTra: '2035-12-03', soKhach: 2, maLoaiPhong: scope })
+      .expect(200);
+    expect(search.body.data).toHaveLength(0);
+  });
+
+  it.each(['CHO_COC', 'DA_XAC_NHAN', 'DANG_LUU_TRU', 'DA_HUY', 'HOAN_TAT'] as const)(
+    'only active booking status %s determines date availability',
+    async (status) => {
+      const created = await request(app.getHttpServer())
+        .post('/api/bookings')
+        .send(payload)
+        .expect(201);
+      await db.datPhong.update({
+        where: { maDatPhong: created.body.data.datPhong.maDatPhong },
+        data: { trangThai: status },
+      });
+      const response = await request(app.getHttpServer())
+        .get('/api/rooms/available')
+        .query({
+          ngayNhan: payload.ngayNhan,
+          ngayTra: payload.ngayTra,
+          soKhach: 2,
+          maLoaiPhong: scope,
+        })
+        .expect(200);
+      expect(response.body.data).toHaveLength(['DA_HUY', 'HOAN_TAT'].includes(status) ? 1 : 0);
+    },
+  );
+
+  it('rejects unrecognized deposit transactions, wrong amount and failed gateway status', async () => {
+    const { booking, webhook } = await createAndPay();
+    await request(app.getHttpServer())
+      .post('/api/payments/webhook')
+      .send({ ...webhook, maGiaoDich: 'unexpected-new-payment' })
+      .expect(409);
+    await request(app.getHttpServer())
+      .post('/api/payments/webhook')
+      .send({ ...webhook, trangThaiGiaoDich: 'THAT_BAI' })
+      .expect(400);
+    expect(await db.thanhToanCoc.count({ where: { maDatPhong: booking.maDatPhong } })).toBe(1);
+    const other = await request(app.getHttpServer())
+      .post('/api/bookings')
+      .send({ ...payload, ngayNhan: '2035-12-01', ngayTra: '2035-12-03' })
+      .expect(201);
+    await request(app.getHttpServer())
+      .post('/api/payments/webhook')
+      .send({
+        ...webhook,
+        maDatPhong: other.body.data.datPhong.maDatPhong,
+        maGiaoDich: 'wrong-amount',
+        soTien: 1,
+      })
+      .expect(400);
+  });
+
+  it('requires reconciliation for a legacy confirmed booking without payment receipt', async () => {
+    const created = await request(app.getHttpServer())
+      .post('/api/bookings')
+      .send(payload)
+      .expect(201);
+    const booking = created.body.data.datPhong;
+    await db.datPhong.update({
+      where: { maDatPhong: booking.maDatPhong },
+      data: { trangThai: 'DA_XAC_NHAN' },
+    });
+    await request(app.getHttpServer())
+      .post(`/api/bookings/${booking.maDatPhong}/cancel`)
+      .send({ lyDo: 'Legacy booking' })
+      .expect(409);
+    expect(await db.hoanCoc.count({ where: { maDatPhong: booking.maDatPhong } })).toBe(0);
+    expect(refundCall).not.toHaveBeenCalled();
+    expect(
+      (await db.datPhong.findUniqueOrThrow({ where: { maDatPhong: booking.maDatPhong } }))
+        .trangThai,
+    ).toBe('DA_XAC_NHAN');
   });
 
   it('lookup requires a key, accepts phone and booking aliases, validates dates and rejects client-supplied prices', async () => {
