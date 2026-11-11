@@ -1,3 +1,4 @@
+import { isSh07Result } from '../utils/sh07-result';
 import {
   CallHandler,
   ExecutionContext,
@@ -31,11 +32,13 @@ export class ResponseEnvelopeInterceptor<T> implements NestInterceptor<T, T | Re
           return data;
         }
 
+        const payload = isSh07Result(data) ? data.data : data;
+        const message = isSh07Result(data) ? data.message : 'Thao tác thành công';
         return {
           success: true,
           statusCode: response.statusCode,
-          message: 'Thao tác thành công',
-          data,
+          message,
+          data: payload as T,
           timestamp: new Date().toISOString(),
         };
       }),

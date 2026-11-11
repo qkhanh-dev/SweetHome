@@ -1,3 +1,4 @@
+import { result as sh07Result } from '../utils/sh07-result';
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { CallHandler, ExecutionContext, StreamableFile } from '@nestjs/common';
 import { lastValueFrom, of } from 'rxjs';
@@ -27,6 +28,21 @@ describe('ResponseEnvelopeInterceptor', () => {
         message: 'Thao tác thành công',
         data: { id: 'HS001' },
         timestamp: expect.any(String),
+      }),
+    );
+  });
+
+  it('preserves the contract-specific message for SH-07 handlers', async () => {
+    const next: CallHandler<unknown> = {
+      handle: () => of(sh07Result('Đăng nhập thành công', { accessToken: 'test' })),
+    };
+    const wrapped = await lastValueFrom(
+      new ResponseEnvelopeInterceptor<unknown>().intercept(createContext(), next),
+    );
+    expect(wrapped).toEqual(
+      expect.objectContaining({
+        message: 'Đăng nhập thành công',
+        data: { accessToken: 'test' },
       }),
     );
   });

@@ -18,8 +18,9 @@ import { PrismaModule } from './prisma/prisma.module';
     }),
     PrismaModule,
     HealthModule,
-    HomestayRoomsModule,
+    // Keep SH-08 static room-availability routes ahead of RoomsController's /rooms/:id.
     BookingModule,
+    HomestayRoomsModule,
     StayOperationsModule,
     BillingPaymentModule,
     ReviewsModule,
