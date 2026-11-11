@@ -1,0 +1,1436 @@
+{
+  "info": {
+    "_postman_id": "sh12-sweethome-ph1-ph2-collection-v2",
+    "name": "SweetHome v2 - Phân hệ 1 & Phân hệ 2 (SH-07 & SH-08 QA Collection)",
+    "description": "Bộ sưu tập Postman Collection kiểm thử toàn diện API Phân hệ 1 (Quản lý Homestay, Loại phòng, Tiện nghi, Phòng, Trạng thái phòng) & Phân hệ 2 (Tìm phòng trống, Đặt phòng, QR cọc, Webhook thanh toán, Tra cứu & Hủy hoàn cọc) kèm Auth/RBAC setup cho Task SH-12.\n\nTài liệu đối chiếu:\n- docs/DacTaChucNang_v2.md (UC1.1–UC1.4, UC2.1–UC2.5)\n- docs/API_CONTRACT_v1.md (Nhóm 0, 1, 3, 4, 5, 6, 7, 8, 9, 10)\n- docs/BUSINESS_RULES.md",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:3001/api", "type": "string" },
+    { "key": "webhookSecret", "value": "sweethome_webhook_secret_2026", "type": "string" },
+    { "key": "adminToken", "value": "", "type": "string" },
+    { "key": "staffToken", "value": "", "type": "string" },
+    { "key": "customerToken", "value": "", "type": "string" },
+    { "key": "homestayId", "value": "", "type": "string" },
+    { "key": "roomTypeId", "value": "", "type": "string" },
+    { "key": "seededRoomTypeId", "value": "", "type": "string" },
+    { "key": "amenityId", "value": "", "type": "string" },
+    { "key": "seededAmenityId", "value": "", "type": "string" },
+    { "key": "roomId", "value": "", "type": "string" },
+    { "key": "availRoomId", "value": "", "type": "string" },
+    { "key": "seededBookedRoomId", "value": "", "type": "string" },
+    { "key": "bookingId", "value": "", "type": "string" },
+    { "key": "maGiaoDich", "value": "", "type": "string" },
+    { "key": "soTienCoc", "value": "", "type": "string" },
+    { "key": "idempotencyKey", "value": "", "type": "string" }
+  ],
+  "item": [
+    {
+      "name": "00 - Health & Auth Setup (UC6.3)",
+      "item": [
+        {
+          "name": "0.1 Health Check (GET /health)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200 & Database CONNECTED', () => {",
+                  "  pm.response.to.have.status(200);",
+                  "  const json = pm.response.json();",
+                  "  pm.expect(json.success).to.eql(true);",
+                  "  pm.expect(json.data.database).to.eql('CONNECTED');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/health"
+          }
+        },
+        {
+          "name": "1.1 Login ADMIN (admin / 123456)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200 & Save adminToken', () => {",
+                  "  pm.response.to.have.status(200);",
+                  "  const json = pm.response.json();",
+                  "  pm.expect(json.data.taiKhoan.vaiTro).to.eql('ADMIN');",
+                  "  pm.expect(json.data.taiKhoan).to.not.have.property('passwordHash');",
+                  "  pm.collectionVariables.set('adminToken', json.data.accessToken);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"123456\"\n}"
+            },
+            "url": "{{baseUrl}}/auth/login"
+          }
+        },
+        {
+          "name": "1.2 Login STAFF (staff_dalat / 123456)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200 & Save staffToken', () => {",
+                  "  pm.response.to.have.status(200);",
+                  "  const json = pm.response.json();",
+                  "  pm.expect(json.data.taiKhoan.vaiTro).to.eql('STAFF');",
+                  "  pm.collectionVariables.set('staffToken', json.data.accessToken);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"staff_dalat\",\n  \"password\": \"123456\"\n}"
+            },
+            "url": "{{baseUrl}}/auth/login"
+          }
+        },
+        {
+          "name": "1.3 Login CUSTOMER (khanh_customer / 123456)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200 & Save customerToken', () => {",
+                  "  pm.response.to.have.status(200);",
+                  "  const json = pm.response.json();",
+                  "  pm.expect(json.data.taiKhoan.vaiTro).to.eql('CUSTOMER');",
+                  "  pm.collectionVariables.set('customerToken', json.data.accessToken);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"khanh_customer\",\n  \"password\": \"123456\"\n}"
+            },
+            "url": "{{baseUrl}}/auth/login"
+          }
+        },
+        {
+          "name": "1.4 Login LOCKED Account (locked_user -> 403)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 403 Forbidden for LOCKED account', () => {",
+                  "  pm.response.to.have.status(403);",
+                  "  pm.expect(pm.response.json().success).to.eql(false);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"locked_user\",\n  \"password\": \"123456\"\n}"
+            },
+            "url": "{{baseUrl}}/auth/login"
+          }
+        },
+        {
+          "name": "1.5 Get Current Session (GET /auth/me)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200 & Direct TaiKhoan object', () => {",
+                  "  pm.response.to.have.status(200);",
+                  "  const data = pm.response.json().data;",
+                  "  pm.expect(data).to.have.property('maTaiKhoan');",
+                  "  pm.expect(data).to.not.have.property('taiKhoan');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": "{{baseUrl}}/auth/me"
+          }
+        }
+      ]
+    },
+    {
+      "name": "PH1 - UC1.1 Quản lý Homestay",
+      "item": [
+        {
+          "name": "3.1 Get Homestay Info (GET /homestay)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200 & Save homestayId', () => {",
+                  "  pm.response.to.have.status(200);",
+                  "  const data = pm.response.json().data;",
+                  "  pm.expect(data).to.have.property('maHomestay');",
+                  "  pm.collectionVariables.set('homestayId', data.maHomestay);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/homestay"
+          }
+        },
+        {
+          "name": "3.2 Get Homestay Rooms (GET /homestay/rooms)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200 & Array of rooms', () => {",
+                  "  pm.response.to.have.status(200);",
+                  "  pm.expect(pm.response.json().data).to.be.an('array');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/homestay/rooms"
+          }
+        },
+        {
+          "name": "3.3 Update Homestay Info - Valid ADMIN (PUT /homestay)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200 OK', () => {",
+                  "  pm.response.to.have.status(200);",
+                  "  pm.expect(pm.response.json().data.maHomestay).to.eql(pm.collectionVariables.get('homestayId'));",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tenHomestay\": \"SweetHome Đà Lạt - Thung Lũng Mây\",\n  \"diaChi\": \"48 Khởi Nghĩa Bắc Sơn, Phường 10, TP. Đà Lạt, Lâm Đồng\",\n  \"hotline\": \"0901234567\",\n  \"email\": \"dalat@sweethome.vn\",\n  \"quyDinhChung\": \"Check-in từ 14:00, check-out trước 12:00. Nghiêm cấm hút thuốc trong phòng ngủ. Giữ yên tĩnh chung sau 22:00 để bảo đảm không gian nghỉ dưỡng.\"\n}"
+            },
+            "url": "{{baseUrl}}/homestay"
+          }
+        },
+        {
+          "name": "3.4 Update Homestay - Negative Empty Name & Invalid Email (400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 400 Bad Request', () => {",
+                  "  pm.response.to.have.status(400);",
+                  "  pm.expect(pm.response.json().success).to.eql(false);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tenHomestay\": \"\",\n  \"diaChi\": \"48 Khởi Nghĩa Bắc Sơn\",\n  \"hotline\": \"0901234567\",\n  \"email\": \"not-an-email\",\n  \"quyDinhChung\": \"Check-in 14:00\"\n}"
+            },
+            "url": "{{baseUrl}}/homestay"
+          }
+        },
+        {
+          "name": "3.5 Update Homestay - RBAC STAFF Forbidden (403)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 403 Forbidden for STAFF', () => {",
+                  "  pm.response.to.have.status(403);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{staffToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tenHomestay\": \"Unauthorized Change\",\n  \"diaChi\": \"Test\",\n  \"hotline\": \"0901234567\",\n  \"email\": \"test@sweethome.vn\",\n  \"quyDinhChung\": \"Test\"\n}"
+            },
+            "url": "{{baseUrl}}/homestay"
+          }
+        }
+      ]
+    },
+    {
+      "name": "PH1 - UC1.2 & UC1.3 Quản lý Loại phòng (LoaiPhong)",
+      "item": [
+        {
+          "name": "4.1 Get All Room Types (GET /room-types)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200 & Save seededRoomTypeId', () => {",
+                  "  pm.response.to.have.status(200);",
+                  "  const list = pm.response.json().data;",
+                  "  pm.expect(list.length).to.be.above(0);",
+                  "  pm.collectionVariables.set('seededRoomTypeId', list[0].maLoaiPhong);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/room-types"
+          }
+        },
+        {
+          "name": "4.2 Create Room Type - Valid (POST /room-types)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 201 & Save roomTypeId', () => {",
+                  "  pm.response.to.have.status(201);",
+                  "  const data = pm.response.json().data;",
+                  "  pm.collectionVariables.set('roomTypeId', data.maLoaiPhong);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tenLoaiPhong\": \"Postman QA Pine Villa Suite\",\n  \"sucChuaToiDa\": 6,\n  \"giaNgayThuong\": 1200000,\n  \"giaCuoiTuan\": 1500000,\n  \"moTa\": \"Loại phòng tạo từ Postman collection để kiểm thử CRUD.\"\n}"
+            },
+            "url": "{{baseUrl}}/room-types"
+          }
+        },
+        {
+          "name": "4.3 Create Room Type - Boundary Negative Price & Empty Name (400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 400 Bad Request', () => {",
+                  "  pm.response.to.have.status(400);",
+                  "  pm.expect(pm.response.json().details).to.be.an('array').that.is.not.empty;",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tenLoaiPhong\": \"\",\n  \"sucChuaToiDa\": 0,\n  \"giaNgayThuong\": -500000,\n  \"giaCuoiTuan\": 0,\n  \"moTa\": \"Invalid\"\n}"
+            },
+            "url": "{{baseUrl}}/room-types"
+          }
+        },
+        {
+          "name": "4.4 Get Room Type Detail (GET /room-types/:id)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200 OK', () => {",
+                  "  pm.response.to.have.status(200);",
+                  "  pm.expect(pm.response.json().data.maLoaiPhong).to.eql(pm.collectionVariables.get('roomTypeId'));",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/room-types/{{roomTypeId}}"
+          }
+        },
+        {
+          "name": "4.5 Update Room Type (PUT /room-types/:id)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200 OK & Updated values', () => {",
+                  "  pm.response.to.have.status(200);",
+                  "  pm.expect(pm.response.json().data.giaCuoiTuan).to.eql(1600000);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tenLoaiPhong\": \"Postman QA Pine Villa Suite (Updated)\",\n  \"sucChuaToiDa\": 6,\n  \"giaNgayThuong\": 1250000,\n  \"giaCuoiTuan\": 1600000,\n  \"moTa\": \"Đã cập nhật bảng giá cuối tuần.\"\n}"
+            },
+            "url": "{{baseUrl}}/room-types/{{roomTypeId}}"
+          }
+        },
+        {
+          "name": "4.6 Delete Room Type In Use - Conflict (DELETE seeded -> 409)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 409 Conflict when rooms reference RoomType', () => {",
+                  "  pm.response.to.have.status(409);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": "{{baseUrl}}/room-types/{{seededRoomTypeId}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "PH1 - UC1.2 Quản lý Tiện nghi (TienNghi)",
+      "item": [
+        {
+          "name": "5.1 Get All Amenities (GET /amenities)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200 & Save seededAmenityId', () => {",
+                  "  pm.response.to.have.status(200);",
+                  "  const list = pm.response.json().data;",
+                  "  pm.expect(list.length).to.be.above(0);",
+                  "  pm.collectionVariables.set('seededAmenityId', list[0].maTienNghi);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/amenities"
+          }
+        },
+        {
+          "name": "5.2 Filter Amenities by Category (GET /amenities?loaiTienNghi=Giải trí)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200 & Filtered list', () => {",
+                  "  pm.response.to.have.status(200);",
+                  "  const list = pm.response.json().data;",
+                  "  pm.expect(list.every(x => x.loaiTienNghi === 'Giải trí')).to.eql(true);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/amenities?loaiTienNghi=Giải trí",
+              "host": ["{{baseUrl}}"],
+              "path": ["amenities"],
+              "query": [{ "key": "loaiTienNghi", "value": "Giải trí" }]
+            }
+          }
+        },
+        {
+          "name": "5.3 Create Amenity - Valid (POST /amenities)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 201 & Save amenityId', () => {",
+                  "  pm.response.to.have.status(201);",
+                  "  pm.collectionVariables.set('amenityId', pm.response.json().data.maTienNghi);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tenTienNghi\": \"Bồn sục Jacuzzi QA\",\n  \"loaiTienNghi\": \"PhongTam\"\n}"
+            },
+            "url": "{{baseUrl}}/amenities"
+          }
+        },
+        {
+          "name": "5.4 Create Amenity - Boundary Empty Fields (400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 400 Bad Request', () => {",
+                  "  pm.response.to.have.status(400);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tenTienNghi\": \"\",\n  \"loaiTienNghi\": \"\"\n}"
+            },
+            "url": "{{baseUrl}}/amenities"
+          }
+        },
+        {
+          "name": "5.5 Get Amenity Detail (GET /amenities/:id)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200 OK', () => {",
+                  "  pm.response.to.have.status(200);",
+                  "  pm.expect(pm.response.json().data.maTienNghi).to.eql(pm.collectionVariables.get('amenityId'));",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/amenities/{{amenityId}}"
+          }
+        },
+        {
+          "name": "5.6 Update Amenity (PUT /amenities/:id)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200 OK', () => {",
+                  "  pm.response.to.have.status(200);",
+                  "  pm.expect(pm.response.json().data.tenTienNghi).to.eql('Bồn sục Jacuzzi QA Pro');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tenTienNghi\": \"Bồn sục Jacuzzi QA Pro\",\n  \"loaiTienNghi\": \"PhongTam\"\n}"
+            },
+            "url": "{{baseUrl}}/amenities/{{amenityId}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "PH1 - UC1.3 & UC1.4 Quản lý Phòng & Trạng thái (Phong)",
+      "item": [
+        {
+          "name": "6.1 Get All Rooms (GET /rooms)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200 & Save seededBookedRoomId (P101)', () => {",
+                  "  pm.response.to.have.status(200);",
+                  "  const list = pm.response.json().data;",
+                  "  pm.expect(list.length).to.be.above(0);",
+                  "  const p101 = list.find(r => r.soPhong === 'P101') || list[0];",
+                  "  pm.collectionVariables.set('seededBookedRoomId', p101.maPhong);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/rooms"
+          }
+        },
+        {
+          "name": "6.2 Filter Rooms by Floor & Status (GET /rooms?tang=1&trangThai=TRONG)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200 & All items match tang=1 & trangThai=TRONG', () => {",
+                  "  pm.response.to.have.status(200);",
+                  "  const list = pm.response.json().data;",
+                  "  pm.expect(list.every(r => r.tang === 1 && r.trangThai === 'TRONG')).to.eql(true);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/rooms?tang=1&trangThai=TRONG",
+              "host": ["{{baseUrl}}"],
+              "path": ["rooms"],
+              "query": [
+                { "key": "tang", "value": "1" },
+                { "key": "trangThai", "value": "TRONG" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "6.3 Create Room & Assign Amenities (POST /rooms -> 201)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 201 & Save roomId', () => {",
+                  "  pm.response.to.have.status(201);",
+                  "  const data = pm.response.json().data;",
+                  "  pm.expect(data.trangThai).to.eql('TRONG');",
+                  "  pm.expect(data.tienNghis).to.have.lengthOf(2);",
+                  "  pm.collectionVariables.set('roomId', data.maPhong);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"soPhong\": \"PM-909\",\n  \"tang\": 9,\n  \"maHomestay\": \"{{homestayId}}\",\n  \"maLoaiPhong\": \"{{roomTypeId}}\",\n  \"trangThai\": \"TRONG\",\n  \"maTienNghis\": [\"{{seededAmenityId}}\", \"{{amenityId}}\"]\n}"
+            },
+            "url": "{{baseUrl}}/rooms"
+          }
+        },
+        {
+          "name": "6.4 Create Room - Duplicate soPhong (POST /rooms -> 409)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 409 Conflict on duplicate soPhong', () => {",
+                  "  pm.response.to.have.status(409);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"soPhong\": \"PM-909\",\n  \"tang\": 9,\n  \"maHomestay\": \"{{homestayId}}\",\n  \"maLoaiPhong\": \"{{roomTypeId}}\",\n  \"trangThai\": \"TRONG\",\n  \"maTienNghis\": []\n}"
+            },
+            "url": "{{baseUrl}}/rooms"
+          }
+        },
+        {
+          "name": "6.5 Create Room - Boundary Invalid Floor & Empty Room No (400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 400 Bad Request', () => {",
+                  "  pm.response.to.have.status(400);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"soPhong\": \"\",\n  \"tang\": 0,\n  \"maHomestay\": \"{{homestayId}}\",\n  \"maLoaiPhong\": \"{{roomTypeId}}\",\n  \"maTienNghis\": [\"{{amenityId}}\", \"{{amenityId}}\"]\n}"
+            },
+            "url": "{{baseUrl}}/rooms"
+          }
+        },
+        {
+          "name": "6.6 Get Room Detail (GET /rooms/:id)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200 & Includes loaiPhong, tienNghis, homestay', () => {",
+                  "  pm.response.to.have.status(200);",
+                  "  const data = pm.response.json().data;",
+                  "  pm.expect(data).to.have.property('loaiPhong');",
+                  "  pm.expect(data).to.have.property('tienNghis');",
+                  "  pm.expect(data).to.have.property('homestay');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/rooms/{{roomId}}"
+          }
+        },
+        {
+          "name": "6.7 Update Room & Reassign Amenities (PUT /rooms/:id)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200 OK', () => {",
+                  "  pm.response.to.have.status(200);",
+                  "  pm.expect(pm.response.json().data.soPhong).to.eql('PM-909-UPD');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"soPhong\": \"PM-909-UPD\",\n  \"tang\": 8,\n  \"maLoaiPhong\": \"{{roomTypeId}}\",\n  \"trangThai\": \"TRONG\",\n  \"maTienNghis\": [\"{{seededAmenityId}}\", \"{{amenityId}}\"]\n}"
+            },
+            "url": "{{baseUrl}}/rooms/{{roomId}}"
+          }
+        },
+        {
+          "name": "6.8 Update Room Status TRONG -> BAO_TRI as STAFF (PATCH /rooms/:id/status)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200 & trangThai = BAO_TRI', () => {",
+                  "  pm.response.to.have.status(200);",
+                  "  pm.expect(pm.response.json().data.trangThai).to.eql('BAO_TRI');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{staffToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"trangThai\": \"BAO_TRI\"\n}"
+            },
+            "url": "{{baseUrl}}/rooms/{{roomId}}/status"
+          }
+        },
+        {
+          "name": "6.9 Update Room Status BAO_TRI -> TRONG as ADMIN (Inheritance)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200 & trangThai = TRONG', () => {",
+                  "  pm.response.to.have.status(200);",
+                  "  pm.expect(pm.response.json().data.trangThai).to.eql('TRONG');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"trangThai\": \"TRONG\"\n}"
+            },
+            "url": "{{baseUrl}}/rooms/{{roomId}}/status"
+          }
+        },
+        {
+          "name": "6.10 Update Room Status - Invalid Transition TRONG -> DANG_SU_DUNG (400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 400 Bad Request on invalid manual transition', () => {",
+                  "  pm.response.to.have.status(400);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{staffToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"trangThai\": \"DANG_SU_DUNG\"\n}"
+            },
+            "url": "{{baseUrl}}/rooms/{{roomId}}/status"
+          }
+        },
+        {
+          "name": "6.11 Update Room Status - RBAC CUSTOMER Forbidden (403)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 403 Forbidden for CUSTOMER', () => {",
+                  "  pm.response.to.have.status(403);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{customerToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"trangThai\": \"BAO_TRI\"\n}"
+            },
+            "url": "{{baseUrl}}/rooms/{{roomId}}/status"
+          }
+        },
+        {
+          "name": "6.12 Delete Room With Booking History - Conflict (P101 -> 409)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 409 Conflict when room has booking history', () => {",
+                  "  pm.response.to.have.status(409);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": "{{baseUrl}}/rooms/{{seededBookedRoomId}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "PH2 - UC2.1 Tìm phòng trống (SD01 Phase 1)",
+      "item": [
+        {
+          "name": "7.1 Search Available Rooms - Valid + Amenities (GET /rooms/available)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200 & Room matches with 30% deposit calculation', () => {",
+                  "  pm.response.to.have.status(200);",
+                  "  const list = pm.response.json().data;",
+                  "  pm.expect(list).to.be.an('array').that.is.not.empty;",
+                  "  const first = list[0];",
+                  "  pm.expect(first.tienCoc).to.eql(Math.round(first.tongTienDuKien * 0.3));",
+                  "  pm.collectionVariables.set('availRoomId', first.maPhong);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/rooms/available?ngayNhan=2035-11-15&ngayTra=2035-11-18&soKhach=2&tienNghiIds={{seededAmenityId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["rooms", "available"],
+              "query": [
+                { "key": "ngayNhan", "value": "2035-11-15" },
+                { "key": "ngayTra", "value": "2035-11-18" },
+                { "key": "soKhach", "value": "2" },
+                { "key": "tienNghiIds", "value": "{{seededAmenityId}}" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "7.2 Search Available Rooms - Invalid Date Range (ngayTra <= ngayNhan -> 400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 400 Bad Request', () => {",
+                  "  pm.response.to.have.status(400);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/rooms/available?ngayNhan=2035-11-18&ngayTra=2035-11-15&soKhach=2",
+              "host": ["{{baseUrl}}"],
+              "path": ["rooms", "available"],
+              "query": [
+                { "key": "ngayNhan", "value": "2035-11-18" },
+                { "key": "ngayTra", "value": "2035-11-15" },
+                { "key": "soKhach", "value": "2" }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "PH2 - UC2.2 & UC2.3 Đặt phòng & Thanh toán cọc QR (SD01 Phase 2-3)",
+      "item": [
+        {
+          "name": "8.1 Create Booking & QR (POST /bookings -> 201)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 201 & Save booking/QR variables', () => {",
+                  "  pm.response.to.have.status(201);",
+                  "  const d = pm.response.json().data;",
+                  "  pm.expect(d.datPhong.trangThai).to.eql('CHO_COC');",
+                  "  pm.collectionVariables.set('bookingId', d.datPhong.maDatPhong);",
+                  "  pm.collectionVariables.set('maGiaoDich', d.paymentQr.maGiaoDich);",
+                  "  pm.collectionVariables.set('soTienCoc', String(d.paymentQr.soTienCoc));",
+                  "  pm.collectionVariables.set('idempotencyKey', d.paymentQr.idempotencyKey);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"maPhong\": \"{{availRoomId}}\",\n  \"ngayNhan\": \"2035-11-15\",\n  \"ngayTra\": \"2035-11-18\",\n  \"soKhach\": 2,\n  \"hoTen\": \"Nguyễn Văn Postman\",\n  \"soDienThoai\": \"0908889999\",\n  \"email\": \"postman@sweethome.vn\",\n  \"ghiChu\": \"Tạo từ Postman Collection SH-12\"\n}"
+            },
+            "url": "{{baseUrl}}/bookings"
+          }
+        },
+        {
+          "name": "8.2 Create Booking - Double-Booking Conflict (409)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 409 Conflict on overlapping booking', () => {",
+                  "  pm.response.to.have.status(409);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"maPhong\": \"{{availRoomId}}\",\n  \"ngayNhan\": \"2035-11-16\",\n  \"ngayTra\": \"2035-11-17\",\n  \"soKhach\": 2,\n  \"hoTen\": \"Khách Trùng Lịch\",\n  \"soDienThoai\": \"0908889998\",\n  \"email\": \"conflict@sweethome.vn\"\n}"
+            },
+            "url": "{{baseUrl}}/bookings"
+          }
+        },
+        {
+          "name": "8.3 Create Booking - Exceed Capacity (soKhach=99 -> 400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 400 Bad Request when soKhach > sucChuaToiDa', () => {",
+                  "  pm.response.to.have.status(400);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"maPhong\": \"{{availRoomId}}\",\n  \"ngayNhan\": \"2035-12-01\",\n  \"ngayTra\": \"2035-12-03\",\n  \"soKhach\": 99,\n  \"hoTen\": \"Khách Quá Tải\",\n  \"soDienThoai\": \"0908889997\",\n  \"email\": \"over@sweethome.vn\"\n}"
+            },
+            "url": "{{baseUrl}}/bookings"
+          }
+        },
+        {
+          "name": "9.1 Recreate QR for CHO_COC Booking (POST /payments/create-qr)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200 & QR payload', () => {",
+                  "  pm.response.to.have.status(200);",
+                  "  pm.expect(pm.response.json().data.maDatPhong).to.eql(pm.collectionVariables.get('bookingId'));",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"maDatPhong\": \"{{bookingId}}\"\n}"
+            },
+            "url": "{{baseUrl}}/payments/create-qr"
+          }
+        },
+        {
+          "name": "9.2 Payment Webhook - Missing Secret (401)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 401 Unauthorized without x-webhook-secret', () => {",
+                  "  pm.response.to.have.status(401);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"maDatPhong\": \"{{bookingId}}\",\n  \"maGiaoDich\": \"{{maGiaoDich}}\",\n  \"soTien\": {{soTienCoc}},\n  \"trangThaiGiaoDich\": \"THANH_CONG\"\n}"
+            },
+            "url": "{{baseUrl}}/payments/webhook"
+          }
+        },
+        {
+          "name": "9.3 Payment Webhook - Valid Confirmation (POST /payments/webhook -> 200)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200 & Booking DA_XAC_NHAN, Room DA_DAT, idempotentReplay=false', () => {",
+                  "  pm.response.to.have.status(200);",
+                  "  const d = pm.response.json().data;",
+                  "  pm.expect(d.idempotentReplay).to.eql(false);",
+                  "  pm.expect(d.datPhong.trangThai).to.eql('DA_XAC_NHAN');",
+                  "  pm.expect(d.phong.trangThai).to.eql('DA_DAT');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Idempotency-Key", "value": "{{idempotencyKey}}" },
+              { "key": "x-webhook-secret", "value": "{{webhookSecret}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"maDatPhong\": \"{{bookingId}}\",\n  \"maGiaoDich\": \"{{maGiaoDich}}\",\n  \"soTien\": {{soTienCoc}},\n  \"trangThaiGiaoDich\": \"THANH_CONG\"\n}"
+            },
+            "url": "{{baseUrl}}/payments/webhook"
+          }
+        },
+        {
+          "name": "9.4 Payment Webhook - Idempotent Replay (200)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200 & idempotentReplay=true', () => {",
+                  "  pm.response.to.have.status(200);",
+                  "  pm.expect(pm.response.json().data.idempotentReplay).to.eql(true);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Idempotency-Key", "value": "{{idempotencyKey}}" },
+              { "key": "x-webhook-secret", "value": "{{webhookSecret}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"maDatPhong\": \"{{bookingId}}\",\n  \"maGiaoDich\": \"{{maGiaoDich}}\",\n  \"soTien\": {{soTienCoc}},\n  \"trangThaiGiaoDich\": \"THANH_CONG\"\n}"
+            },
+            "url": "{{baseUrl}}/payments/webhook"
+          }
+        }
+      ]
+    },
+    {
+      "name": "PH2 - UC2.4 & UC2.5 Tra cứu & Hủy đơn hoàn cọc (SD02)",
+      "item": [
+        {
+          "name": "10.1 Lookup Bookings (GET /bookings/lookup?tuKhoa=...)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200 & Found booking', () => {",
+                  "  pm.response.to.have.status(200);",
+                  "  const list = pm.response.json().data;",
+                  "  pm.expect(list.some(x => x.maDatPhong === pm.collectionVariables.get('bookingId'))).to.eql(true);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/bookings/lookup?tuKhoa={{bookingId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["bookings", "lookup"],
+              "query": [{ "key": "tuKhoa", "value": "{{bookingId}}" }]
+            }
+          }
+        },
+        {
+          "name": "10.2 Get Booking Detail (GET /bookings/:id)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200 OK', () => {",
+                  "  pm.response.to.have.status(200);",
+                  "  pm.expect(pm.response.json().data.maDatPhong).to.eql(pm.collectionVariables.get('bookingId'));",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/bookings/{{bookingId}}"
+          }
+        },
+        {
+          "name": "10.3 Refund Preview (GET /bookings/:id/refund-preview)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200 & 100% refund rate (>= 72h)', () => {",
+                  "  pm.response.to.have.status(200);",
+                  "  const d = pm.response.json().data;",
+                  "  pm.expect(d.tyLeHoanPhanTram).to.eql(100);",
+                  "  pm.expect(d.soTienHoan).to.eql(Number(pm.collectionVariables.get('soTienCoc')));",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/bookings/{{bookingId}}/refund-preview"
+          }
+        },
+        {
+          "name": "10.4 Cancel Booking & Refund (POST /bookings/:id/cancel)",
+          "description": "Lưu ý QA: Cần PAYMENT_GATEWAY_MODE=mock hoặc cấu hình PAYMENT_REFUND_URL & PAYMENT_API_KEY ở Backend để bước hoàn tiền 100%/50% trả 200 OK.",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200 OK (with mock gateway) or 503 if refund URL unconfigured', () => {",
+                  "  pm.expect([200, 503]).to.include(pm.response.code);",
+                  "  if (pm.response.code === 200) {",
+                  "    const d = pm.response.json().data;",
+                  "    pm.expect(d.datPhong.trangThai).to.eql('DA_HUY');",
+                  "    pm.expect(d.phong.trangThai).to.eql('TRONG');",
+                  "  }",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"lyDo\": \"Khách thay đổi lịch trình công tác\"\n}"
+            },
+            "url": "{{baseUrl}}/bookings/{{bookingId}}/cancel"
+          }
+        },
+        {
+          "name": "10.5 [Contract 8.2] List All Bookings (GET /bookings)",
+          "description": "Endpoint theo docs/API_CONTRACT_v1.md mục 8.2 (hiện chưa được triển khai trong BookingController SH-08).",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{staffToken}}" }],
+            "url": "{{baseUrl}}/bookings"
+          }
+        },
+        {
+          "name": "10.6 [Contract 8.4] Customer Booking History (GET /bookings/my-history)",
+          "description": "Endpoint theo docs/API_CONTRACT_v1.md mục 8.4 (hiện chưa được triển khai trong BookingController SH-08).",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{customerToken}}" }],
+            "url": "{{baseUrl}}/bookings/my-history"
+          }
+        }
+      ]
+    },
+    {
+      "name": "99 - Cleanup Temp Resources (DELETE)",
+      "item": [
+        {
+          "name": "99.1 Delete Temp Room (DELETE /rooms/:id)",
+          "description": "Xóa phòng tạm đã tạo trong PH1 (200 OK).",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200 OK & deleted: true', () => {",
+                  "  pm.response.to.have.status(200);",
+                  "  pm.expect(pm.response.json().data.deleted).to.eql(true);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": "{{baseUrl}}/rooms/{{roomId}}"
+          }
+        },
+        {
+          "name": "99.2 Delete Temp RoomType (DELETE /room-types/:id)",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": "{{baseUrl}}/room-types/{{roomTypeId}}"
+          }
+        },
+        {
+          "name": "99.3 Delete Temp Amenity (DELETE /amenities/:id)",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+            "url": "{{baseUrl}}/amenities/{{amenityId}}"
+          }
+        }
+      ]
+    }
+  ]
+}
