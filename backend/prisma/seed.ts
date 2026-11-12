@@ -29,6 +29,8 @@ async function main() {
     prisma.danhGia.deleteMany(),
     prisma.hoaDon.deleteMany(),
     prisma.suDungDichVu.deleteMany(),
+    prisma.hoanCoc.deleteMany(),
+    prisma.thanhToanCoc.deleteMany(),
     prisma.datPhong.deleteMany(),
     prisma.phong.deleteMany(),
     prisma.khachHang.deleteMany(),
@@ -713,7 +715,7 @@ async function main() {
   // --------------------------------------------------------------------------
   const ngayNhan4 = new Date(now.getTime() + 4 * 24 * 60 * 60 * 1000);
   const ngayTra4 = new Date(now.getTime() + 6 * 24 * 60 * 60 * 1000);
-  await prisma.datPhong.create({
+  const dp4 = await prisma.datPhong.create({
     data: {
       maKH: khLap.maKH,
       maPhong: phong102.maPhong,
@@ -756,7 +758,7 @@ async function main() {
   // --------------------------------------------------------------------------
   const ngayNhan6 = new Date(now.getTime() + 15 * 24 * 60 * 60 * 1000);
   const ngayTra6 = new Date(now.getTime() + 17 * 24 * 60 * 60 * 1000);
-  await prisma.datPhong.create({
+  const dp6 = await prisma.datPhong.create({
     data: {
       maKH: khKhanh.maKH,
       maPhong: phong101.maPhong,
@@ -769,6 +771,31 @@ async function main() {
       trangThai: TrangThaiDatPhong.DA_HUY,
       ghiChu:
         'Khách báo thay đổi lịch công tác. Hủy trước giờ nhận phòng > 72 giờ: Đã hoàn 100% tiền cọc (300.000 VNĐ) qua PaymentGateway.',
+    },
+  });
+
+  // Chứng từ thanh toán cọc (ThanhToanCoc) và hoàn cọc (HoanCoc) đồng bộ với SH-08
+  await prisma.thanhToanCoc.createMany({
+    data: [dp1, dp2, dp3, dp4, dp6].map((dp) => ({
+      maGiaoDich: `PAY_${dp.maDatPhong}`,
+      idempotencyKey: `idem-${dp.maDatPhong}`,
+      maDatPhong: dp.maDatPhong,
+      soTien: dp.tienCoc,
+    })),
+  });
+
+  await prisma.hoanCoc.create({
+    data: {
+      maDatPhong: dp6.maDatPhong,
+      maGiaoDichHoan: `REFUND_${dp6.maDatPhong}`,
+      maGiaoDich: `PAY_${dp6.maDatPhong}`,
+      soTienHoan: 300000,
+      tienCocDaDong: 300000,
+      deltaHours: 360,
+      tyLeHoanPhanTram: 100,
+      chinhSachApDung: 'Hủy trước giờ nhận phòng >= 72 giờ (3 ngày): Hoàn 100% tiền cọc.',
+      lyDo: 'Khách báo thay đổi lịch công tác.',
+      trangThai: 'THANH_CONG',
     },
   });
 

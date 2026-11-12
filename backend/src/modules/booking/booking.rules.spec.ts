@@ -30,8 +30,9 @@ describe('SD01/SD02 business rules', () => {
     [12, 0, 0],
     [-1, 0, 0],
   ])('refund at %s hours', (hours, rate, amount) => {
-    const now = new Date('2026-11-01T00:00:00Z');
-    expect(tinhTienHoanCoc(new Date(+now + hours * 3600000), 840000, now)).toMatchObject({
+    const arrival = new Date('2026-11-05T00:00:00Z');
+    const now = new Date(+new Date('2026-11-05T07:00:00Z') - hours * 3600000);
+    expect(tinhTienHoanCoc(arrival, 840000, now)).toMatchObject({
       tyLeHoanPhanTram: rate,
       soTienHoan: amount,
     });

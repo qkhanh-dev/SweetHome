@@ -1,6 +1,5 @@
 import { BadRequestException } from '@nestjs/common';
-
-const DAY = 86400000;
+import { tinhGiaPhongChiTiet } from '../room-types/price';
 
 export function stayDates(ngayNhan: string, ngayTra: string) {
   const start = new Date(`${ngayNhan}T00:00:00.000Z`);
@@ -20,16 +19,14 @@ export function stayDates(ngayNhan: string, ngayTra: string) {
 }
 
 export function tinhGiaPhong(start: Date, end: Date, giaNgayThuong: number, giaCuoiTuan: number) {
-  let soDemNgayThuong = 0;
-  let soDemCuoiTuan = 0;
-  for (let time = +start; time < +end; time += DAY) {
-    const day = new Date(time).getUTCDay();
-    if (day >= 1 && day <= 4) soDemNgayThuong++;
-    else soDemCuoiTuan++;
-  }
-  const tongTienDuKien = Math.round(soDemNgayThuong * giaNgayThuong + soDemCuoiTuan * giaCuoiTuan);
+  const { soDemTong, soDemNgayThuong, soDemCuoiTuan, tongTienDuKien } = tinhGiaPhongChiTiet(
+    start,
+    end,
+    giaNgayThuong,
+    giaCuoiTuan,
+  );
   return {
-    soDemLuuTru: soDemNgayThuong + soDemCuoiTuan,
+    soDemLuuTru: soDemTong,
     soDemNgayThuong,
     soDemCuoiTuan,
     tongTienDuKien,
@@ -38,7 +35,19 @@ export function tinhGiaPhong(start: Date, end: Date, giaNgayThuong: number, giaC
 }
 
 export function tinhTienHoanCoc(ngayNhan: Date, tienCocDaDong: number, now = new Date()) {
-  const deltaHours = (+ngayNhan - +now) / 3600000;
+  if (tienCocDaDong === 0) {
+    return {
+      deltaHours: 0,
+      tyLeHoanPhanTram: 0,
+      tienCocDaDong: 0,
+      soTienHoan: 0,
+      chinhSachApDung: 'Đơn chưa thanh toán tiền cọc (CHO_COC) - Không phát sinh hoàn tiền.',
+    };
+  }
+  // Booking dates remain date-only UTC for nightly prices and overlap checks.
+  // Refund policy uses 14:00 Vietnam (07:00 UTC) on the arrival date.
+  const checkIn = new Date(`${ngayNhan.toISOString().slice(0, 10)}T07:00:00.000Z`);
+  const deltaHours = (+checkIn - +now) / 3600000;
   const tyLeHoanPhanTram = deltaHours >= 72 ? 100 : deltaHours >= 24 ? 50 : 0;
   const chinhSachApDung =
     tyLeHoanPhanTram === 100
