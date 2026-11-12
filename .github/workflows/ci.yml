@@ -1,0 +1,200 @@
+name: SweetHome CI
+
+on:
+  pull_request:
+    branches: [main, dev]
+  push:
+    branches: [main, dev, 'fix/**', 'feat/**', 'feature/**']
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  backend:
+    name: Backend (Lint, Build, Unit, PostgreSQL Integration & Live HTTP Smoke)
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: sweethome_user
+          POSTGRES_PASSWORD: sweethome_secret_2026
+          POSTGRES_DB: sweethome_db
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U sweethome_user -d sweethome_db"
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=10
+
+    env:
+      DATABASE_URL: postgresql://sweethome_user:sweethome_secret_2026@localhost:5432/sweethome_db?schema=public
+      SH08_TEST_DATABASE_URL: postgresql://sweethome_user:sweethome_secret_2026@localhost:5432/sweethome_db?schema=public
+      NODE_ENV: test
+      PORT: 3001
+      JWT_SECRET: sweethome_ci_jwt_secret_key_2026_v2_ooad_at_least_32_chars
+      JWT_EXPIRES_IN: 7d
+      CORS_ORIGIN: http://localhost:3000
+      PAYMENT_GATEWAY_MODE: mock
+      PAYMENT_WEBHOOK_SECRET: sweethome_ci_webhook_secret_2026
+      VIETQR_BANK_ID: MB
+      VIETQR_ACCOUNT_NO: '0987654321'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate Prisma Client
+        run: npm run prisma:generate --workspace=@sweethome/backend
+
+      - name: Deploy Prisma migrations
+        working-directory: backend
+        run: npx prisma migrate deploy
+
+      - name: Seed database and verify seed idempotency
+        run: |
+          npm run seed --workspace=@sweethome/backend
+          npm run seed --workspace=@sweethome/backend
+
+      - name: Build, lint, and typecheck backend
+        run: |
+          npm run build:backend
+          npm run lint:backend
+          npx tsc -p backend/tsconfig.json --noEmit --incremental false
+
+      - name: Run Jest unit and PostgreSQL integration tests
+        run: npm run test:backend -- --runInBand
+
+      - name: Run live HTTP smoke tests (SH-07 + seeded SH-08 flows)
+        run: |
+          node backend/dist/main.js > /tmp/sweethome-backend.log 2>&1 &
+          SERVER_PID=$!
+          cleanup() {
+            kill "$SERVER_PID" 2>/dev/null || true
+          }
+          trap cleanup EXIT
+
+          for i in $(seq 1 30); do
+            if curl -fsS http://localhost:3001/api/health >/dev/null 2>&1; then
+              break
+            fi
+            if [ "$i" -eq 30 ]; then
+              cat /tmp/sweethome-backend.log
+              exit 1
+            fi
+            sleep 1
+          done
+
+          SH07_ALLOW_MUTATING_TESTS=1 node backend/scripts/sh07-api-smoke.mjs
+
+          node --input-type=module << 'EOF'
+            import assert from "node:assert/strict";
+            const base = "http://localhost:3001/api";
+
+            const availRes = await fetch(`${base}/rooms/available?ngayNhan=2035-11-12&ngayTra=2035-11-15&soKhach=2`);
+            assert.equal(availRes.status, 200);
+            const availJson = await availRes.json();
+            assert.ok(availJson.data.length > 0, "expected seeded available rooms");
+
+            const confirmedLookup = await fetch(`${base}/bookings/lookup?tuKhoa=0945678901`);
+            assert.equal(confirmedLookup.status, 200);
+            const confirmedList = (await confirmedLookup.json()).data;
+            const confirmed = confirmedList.find((b) => b.trangThai === "DA_XAC_NHAN");
+            assert.ok(confirmed, "expected seeded DA_XAC_NHAN booking");
+
+            const cancelRes = await fetch(`${base}/bookings/${confirmed.maDatPhong}/cancel`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ lyDo: "CI seeded cancel check" }),
+            });
+            assert.equal(cancelRes.status, 200);
+            const cancelData = (await cancelRes.json()).data;
+            assert.equal(cancelData.datPhong.trangThai, "DA_HUY");
+            assert.equal(cancelData.hoanCoc.soTienHoan, 600000);
+
+            const pendingLookup = await fetch(`${base}/bookings/lookup?tuKhoa=0956789012`);
+            assert.equal(pendingLookup.status, 200);
+            const pending = (await pendingLookup.json()).data.find((b) => b.trangThai === "CHO_COC");
+            assert.ok(pending, "expected seeded CHO_COC booking");
+
+            const qrRes = await fetch(`${base}/payments/create-qr`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ maDatPhong: pending.maDatPhong }),
+            });
+            assert.equal(qrRes.status, 200);
+            const qr = (await qrRes.json()).data;
+
+            const webhookRes = await fetch(`${base}/payments/webhook`, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                "Idempotency-Key": qr.idempotencyKey,
+              },
+              body: JSON.stringify({
+                maDatPhong: pending.maDatPhong,
+                maGiaoDich: qr.maGiaoDich,
+                soTien: qr.soTienCoc,
+                trangThaiGiaoDich: "THANH_CONG",
+              }),
+            });
+            assert.equal(webhookRes.status, 200);
+            const webhookData = (await webhookRes.json()).data;
+            assert.equal(webhookData.datPhong.trangThai, "DA_XAC_NHAN");
+            assert.equal(webhookData.phong.trangThai, "DA_DAT");
+            console.log("PASS live seeded SH-08 cancel + mock webhook flows");
+          EOF
+
+          npm run seed --workspace=@sweethome/backend
+
+  frontend:
+    name: Frontend (Lint, Typecheck, Domain/Mock/Auth Checks & Next Build)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Prepare frontend environment
+        run: cp frontend/.env.example frontend/.env.local
+
+      - name: Lint and typecheck frontend
+        run: |
+          npm run lint --workspace=frontend
+          npm run typecheck --workspace=frontend
+
+      - name: Run frontend domain, API contract, mock, and auth regression checks
+        run: |
+          npm run check:fixtures --workspace=frontend
+          npm run check:mock --workspace=frontend
+          npm run check:auth-users --workspace=frontend
+          npm run check:catalog --workspace=frontend
+          npm run check:api-mock --workspace=frontend
+          npm run check:api-fetch --workspace=frontend
+          npm run check:sh09 --workspace=frontend
+          npm run check:sh10 --workspace=frontend
+
+      - name: Build Next.js production bundle
+        run: npm run build --workspace=frontend
