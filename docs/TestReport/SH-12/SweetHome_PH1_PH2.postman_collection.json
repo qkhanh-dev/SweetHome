@@ -1370,7 +1370,23 @@
         },
         {
           "name": "10.5 [Contract 8.2] List All Bookings (GET /bookings)",
-          "description": "Endpoint theo docs/API_CONTRACT_v1.md mục 8.2 (hiện chưa được triển khai trong BookingController SH-08).",
+          "description": "Endpoint theo docs/API_CONTRACT_v1.md mục 8.2 (triển khai đầy đủ trong BookingController SH-08/SH-12 Lần 2).",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200 OK & List Bookings array', () => {",
+                  "  pm.response.to.have.status(200);",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.success).to.eql(true);",
+                  "  pm.expect(body.data).to.be.an('array');",
+                  "});"
+                ]
+              }
+            }
+          ],
           "request": {
             "method": "GET",
             "header": [{ "key": "Authorization", "value": "Bearer {{staffToken}}" }],
@@ -1379,7 +1395,23 @@
         },
         {
           "name": "10.6 [Contract 8.4] Customer Booking History (GET /bookings/my-history)",
-          "description": "Endpoint theo docs/API_CONTRACT_v1.md mục 8.4 (hiện chưa được triển khai trong BookingController SH-08).",
+          "description": "Endpoint theo docs/API_CONTRACT_v1.md mục 8.4 (triển khai đầy đủ trong BookingController SH-08/SH-12 Lần 2).",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200 OK & My Booking History array', () => {",
+                  "  pm.response.to.have.status(200);",
+                  "  const body = pm.response.json();",
+                  "  pm.expect(body.success).to.eql(true);",
+                  "  pm.expect(body.data).to.be.an('array');",
+                  "});"
+                ]
+              }
+            }
+          ],
           "request": {
             "method": "GET",
             "header": [{ "key": "Authorization", "value": "Bearer {{customerToken}}" }],

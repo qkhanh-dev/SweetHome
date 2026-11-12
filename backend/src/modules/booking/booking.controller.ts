@@ -1,10 +1,28 @@
-import { Body, Controller, Get, Headers, HttpCode, Param, Post, Query } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import {
+  Body,
+  Controller,
+  Get,
+  Headers,
+  HttpCode,
+  Param,
+  Post,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import {
+  CurrentAccount,
+  CurrentAccountData,
+} from '../../common/decorators/current-account.decorator';
+import { Roles } from '../../common/decorators/roles.decorator';
+import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
+import { RolesGuard } from '../../common/guards/roles.guard';
 import {
   AvailableRoomsDto,
   CancelBookingDto,
   CreateBookingDto,
   CreateQrDto,
+  ListBookingsDto,
   LookupBookingDto,
   PaymentWebhookDto,
 } from './booking.dto';
@@ -21,9 +39,25 @@ export class BookingController {
     return this.bookings.create(dto);
   }
 
+  @Get()
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('STAFF', 'ADMIN')
+  @ApiBearerAuth()
+  list(@Query() query: ListBookingsDto) {
+    return this.bookings.list(query);
+  }
+
   @Get('lookup')
   lookup(@Query() query: LookupBookingDto) {
     return this.bookings.lookup(query);
+  }
+
+  @Get('my-history')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('CUSTOMER', 'STAFF', 'ADMIN')
+  @ApiBearerAuth()
+  myHistory(@CurrentAccount() user: CurrentAccountData) {
+    return this.bookings.myHistory(user);
   }
 
   @Get(':id/refund-preview')

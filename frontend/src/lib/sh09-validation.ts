@@ -35,7 +35,7 @@ export function createSearchSchema(now = new Date()) {
         .string()
         .trim()
         .min(1, "Vui lòng chọn ngày nhận phòng.")
-        .refine(isDateOnly, "Ngày nhận phòng không hợp lệ.")
+        .refine((val) => !val || isDateOnly(val), "Ngày nhận phòng không hợp lệ.")
         .refine(
           (value) => !isDateOnly(value) || value >= today,
           "Ngày nhận phòng không được ở quá khứ.",
@@ -44,7 +44,7 @@ export function createSearchSchema(now = new Date()) {
         .string()
         .trim()
         .min(1, "Vui lòng chọn ngày trả phòng.")
-        .refine(isDateOnly, "Ngày trả phòng không hợp lệ."),
+        .refine((val) => !val || isDateOnly(val), "Ngày trả phòng không hợp lệ."),
       soKhach: z
         .number({ error: "Vui lòng nhập số hợp lệ." })
         .finite("Số khách phải là số hữu hạn.")

@@ -22,7 +22,12 @@ export class RoomTypesService {
 
   async create(dto: CreateRoomTypeDto) {
     try {
-      return await this.prisma.loaiPhong.create({ data: dto });
+      return await this.prisma.loaiPhong.create({
+        data: {
+          ...dto,
+          moTa: dto.moTa ?? '',
+        },
+      });
     } catch (err) {
       rethrowPrismaError(err);
     }
@@ -32,7 +37,10 @@ export class RoomTypesService {
     try {
       return await this.prisma.loaiPhong.update({
         where: { maLoaiPhong: id },
-        data: dto,
+        data: {
+          ...dto,
+          ...(dto.moTa !== undefined ? { moTa: dto.moTa } : {}),
+        },
       });
     } catch (err) {
       rethrowPrismaError(err);

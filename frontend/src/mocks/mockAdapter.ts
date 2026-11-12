@@ -551,6 +551,10 @@ function persistMockBookingState(): void {
       processedPaymentKeys: [...processedPaymentKeys.entries()],
       processedPaymentTrades: [...processedPaymentTrades.entries()],
       generatedId,
+      catalogRooms: rooms,
+      catalogRoomTypes: roomTypes,
+      catalogAmenities: amenities,
+      catalogHomestay: homestay,
     }));
   } catch (error) {
     console.warn("Không thể lưu trạng thái đặt phòng mock vào trình duyệt.", error);
@@ -570,6 +574,10 @@ function restoreMockBookingState(): void {
       processedPaymentKeys?: unknown;
       processedPaymentTrades?: unknown;
       generatedId?: unknown;
+      catalogRooms?: unknown;
+      catalogRoomTypes?: unknown;
+      catalogAmenities?: unknown;
+      catalogHomestay?: unknown;
     };
     if (saved.version !== 1 || !Array.isArray(saved.bookings) || !Array.isArray(saved.customers)) {
       console.warn("Bỏ qua trạng thái đặt phòng mock có phiên bản hoặc cấu trúc không hợp lệ.");
@@ -582,6 +590,18 @@ function restoreMockBookingState(): void {
     if (saved.customers.some((item) => !item || typeof item !== "object" || typeof item.maKH !== "string")) {
       console.warn("Bỏ qua dữ liệu khách mock bị lỗi cấu trúc.");
       return;
+    }
+    if (saved.catalogHomestay && typeof saved.catalogHomestay === "object") {
+      homestay = structuredClone(saved.catalogHomestay as Homestay);
+    }
+    if (Array.isArray(saved.catalogRoomTypes) && saved.catalogRoomTypes.length > 0) {
+      roomTypes = structuredClone(saved.catalogRoomTypes as LoaiPhong[]);
+    }
+    if (Array.isArray(saved.catalogAmenities) && saved.catalogAmenities.length > 0) {
+      amenities = structuredClone(saved.catalogAmenities as TienNghi[]);
+    }
+    if (Array.isArray(saved.catalogRooms) && saved.catalogRooms.length > 0) {
+      rooms = structuredClone(saved.catalogRooms as Phong[]);
     }
     bookings = structuredClone(saved.bookings as DatPhong[]);
     customers = structuredClone(saved.customers as KhachHang[]);
@@ -826,6 +846,7 @@ const authAndCatalogApi = {
       fail(400, "Thông tin homestay không hợp lệ", "/api/homestay");
     }
     homestay = { ...homestay, ...payload, maHomestay: homestay.maHomestay };
+    persistMockBookingState();
     return respond("3.1", homestay, "Cập nhật thông tin homestay thành công");
   },
 
@@ -842,6 +863,7 @@ const authAndCatalogApi = {
     validateRoomType(payload, "/api/room-types");
     const roomType: LoaiPhong = { ...payload, maLoaiPhong: makeId("LP") };
     roomTypes.push(roomType);
+    persistMockBookingState();
     return respond("4.1", roomType, "Tạo loại phòng thành công", 201);
   },
 
@@ -857,6 +879,7 @@ const authAndCatalogApi = {
     for (const room of rooms) {
       if (room.maLoaiPhong === maLoaiPhong) room.loaiPhong = structuredClone(updated);
     }
+    persistMockBookingState();
     return respond("4.1", updated, "Cập nhật loại phòng thành công");
   },
 
@@ -867,6 +890,7 @@ const authAndCatalogApi = {
       fail(409, "Đang có phòng thuộc loại phòng này", `/api/room-types/${encodeURIComponent(maLoaiPhong)}`);
     }
     roomTypes = roomTypes.filter((item) => item.maLoaiPhong !== maLoaiPhong);
+    persistMockBookingState();
     return respond("4.1", { deleted: true, maLoaiPhong }, "Xóa loại phòng thành công");
   },
 
@@ -886,6 +910,7 @@ const authAndCatalogApi = {
     }
     const item = { ...payload, maTienNghi: makeId("TN") };
     amenities.push(item);
+    persistMockBookingState();
     return respond("5.1", item, "Tạo tiện nghi thành công", 201);
   },
 
@@ -903,6 +928,7 @@ const authAndCatalogApi = {
     for (const room of rooms) {
       room.tienNghis = (room.tienNghis ?? []).map((item) => item.maTienNghi === maTienNghi ? structuredClone(updated) : item);
     }
+    persistMockBookingState();
     return respond("5.1", updated, "Cập nhật tiện nghi thành công");
   },
 
@@ -912,6 +938,7 @@ const authAndCatalogApi = {
     }
     amenities = amenities.filter((item) => item.maTienNghi !== maTienNghi);
     rooms = rooms.map((room) => ({ ...room, tienNghis: (room.tienNghis ?? []).filter((item) => item.maTienNghi !== maTienNghi) }));
+    persistMockBookingState();
     return respond("5.1", { deleted: true, maTienNghi }, "Xóa tiện nghi thành công");
   },
 };
@@ -994,6 +1021,7 @@ const roomsApi = {
         .map((item) => structuredClone(item)),
     };
     rooms.push(room);
+    persistMockBookingState();
     return respond("6.1", roomWithAmenityIds(room), "Tạo phòng thành công", 201);
   },
 
@@ -1017,6 +1045,7 @@ const roomsApi = {
         : {}),
     };
     rooms = rooms.map((room) => room.maPhong === maPhong ? updated : room);
+    persistMockBookingState();
     return respond("6.1", roomWithAmenityIds(updated), "Cập nhật phòng thành công");
   },
 
@@ -1026,6 +1055,7 @@ const roomsApi = {
       fail(409, "Không thể xóa phòng đã có lịch sử đơn đặt phòng", `/api/rooms/${encodeURIComponent(maPhong)}`);
     }
     rooms = rooms.filter((room) => room.maPhong !== maPhong);
+    persistMockBookingState();
     return respond("6.1", { deleted: true, maPhong }, "Xóa phòng thành công");
   },
 
@@ -1046,6 +1076,7 @@ const roomsApi = {
       fail(400, `Không thể chuyển trạng thái phòng từ ${room.trangThai} sang ${trangThai}`, path);
     }
     updateRoomStatus(room, trangThai);
+    persistMockBookingState();
     return respond("6.6", roomSummary(room), "Cập nhật trạng thái phòng thành công");
   },
 
@@ -1056,6 +1087,7 @@ const roomsApi = {
       fail(400, "Chỉ phòng đang chờ dọn dẹp mới được xác nhận hoàn tất", path);
     }
     updateRoomStatus(room, TrangThaiPhong.TRONG);
+    persistMockBookingState();
     return respond("6.7", roomSummary(room), "Đã xác nhận hoàn tất dọn phòng, phòng sẵn sàng đón khách mới");
   },
 
@@ -1307,7 +1339,9 @@ const bookingApi = {
       fail(409, "Phòng đã có khách khác đặt trong khoảng thời gian này", path);
     }
     booking.trangThai = TrangThaiDatPhong.DA_XAC_NHAN;
-    updateRoomStatus(room, TrangThaiPhong.DA_DAT);
+    if (![TrangThaiPhong.CHO_DON_DEP, TrangThaiPhong.BAO_TRI, TrangThaiPhong.DANG_SU_DUNG].includes(room.trangThai)) {
+      updateRoomStatus(room, TrangThaiPhong.DA_DAT);
+    }
     if (idempotencyKey) processedPaymentKeys.set(idempotencyKey, booking.maDatPhong);
     processedPaymentTrades.set(payload.maGiaoDich, booking.maDatPhong);
     persistMockBookingState();
