@@ -1,10 +1,11 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsInt, IsNotEmpty, IsNumber, IsString, Min } from 'class-validator';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { IsInt, IsNotEmpty, IsNumber, IsOptional, IsString, Matches, Min } from 'class-validator';
 
 export class CreateRoomTypeDto {
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
+  @Matches(/\S/, { message: 'Tên loại phòng không được để trống hoặc chỉ chứa khoảng trắng' })
   tenLoaiPhong!: string;
 
   @ApiProperty({ minimum: 1 })
@@ -22,10 +23,10 @@ export class CreateRoomTypeDto {
   @Min(1)
   giaCuoiTuan!: number;
 
-  @ApiProperty()
+  @ApiPropertyOptional()
+  @IsOptional()
   @IsString()
-  @IsNotEmpty()
-  moTa!: string;
+  moTa?: string;
 }
 
 export class UpdateRoomTypeDto extends CreateRoomTypeDto {}

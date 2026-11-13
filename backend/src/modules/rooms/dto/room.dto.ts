@@ -9,6 +9,7 @@ import {
   IsNotEmpty,
   IsOptional,
   IsString,
+  Matches,
   Min,
 } from 'class-validator';
 
@@ -16,6 +17,7 @@ export class CreateRoomDto {
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
+  @Matches(/\S/, { message: 'Số phòng không được để trống hoặc chỉ chứa khoảng trắng' })
   soPhong!: string;
 
   @ApiProperty({ minimum: 1 })
@@ -49,6 +51,7 @@ export class UpdateRoomDto {
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
+  @Matches(/\S/, { message: 'Số phòng không được để trống hoặc chỉ chứa khoảng trắng' })
   soPhong!: string;
 
   @ApiProperty({ minimum: 1 })

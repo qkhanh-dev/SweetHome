@@ -11,6 +11,7 @@ import {
   TrangThaiDatPhong,
   TrangThaiHoaDon,
 } from '@prisma/client';
+import { tinhGiaPhongChiTiet } from '../src/modules/room-types/price';
 
 const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 const adapter = new PrismaPg(pool);
@@ -206,7 +207,7 @@ async function main() {
       sucChuaToiDa: 4,
       giaNgayThuong: 1400000,
       giaCuoiTuan: 1800000,
-      moTa: 'Căn suite 2 phòng ngủ rộng rãi kèm sân vườn riêng, lý tưởng cho gia đình hoặc nhóm bạn thân 4–5 người thư giãn.',
+      moTa: 'Căn suite 2 phòng ngủ rộng rãi kèm sân vườn riêng, lý tưởng cho gia đình 4 người thư giãn.',
     },
   });
 
@@ -499,24 +500,31 @@ async function main() {
 
   // Mốc thời gian tham chiếu hiện tại
   const now = new Date();
+  function toUtcMidnight(date: Date): Date {
+    const y = date.getUTCFullYear();
+    const m = String(date.getUTCMonth() + 1).padStart(2, '0');
+    const d = String(date.getUTCDate()).padStart(2, '0');
+    return new Date(`${y}-${m}-${d}T00:00:00.000Z`);
+  }
 
   // --------------------------------------------------------------------------
   // KỊCH BẢN 1: ĐƠN HOÀN TẤT (HOAN_TAT) - Đã Check-out, Quyết toán & Có Đánh giá có Host phản hồi
   // Khách: Cao Nguyên Quốc Khánh - Phòng: P201 (Deluxe Đà Lạt)
-  // Thời gian: 3 ngày trước đến hôm qua (2 đêm: 1 Thứ Năm [800k] + 1 Thứ Sáu [1000k]) -> Tổng 1.8M, Cọc 540k
   // --------------------------------------------------------------------------
-  const ngayNhan1 = new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000);
-  const ngayTra1 = new Date(now.getTime() - 1 * 24 * 60 * 60 * 1000);
+  const ngayNhan1 = toUtcMidnight(new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000));
+  const ngayTra1 = toUtcMidnight(new Date(now.getTime() - 1 * 24 * 60 * 60 * 1000));
+  const price1 = tinhGiaPhongChiTiet(ngayNhan1, ngayTra1, lpDeluxe.giaNgayThuong, lpDeluxe.giaCuoiTuan);
+  const tienCoc1 = Math.round(price1.tongTienDuKien * 0.3);
   const dp1 = await prisma.datPhong.create({
     data: {
       maKH: khKhanh.maKH,
       maPhong: phong201.maPhong,
-      ngayDat: new Date(now.getTime() - 10 * 24 * 60 * 60 * 1000),
+      ngayDat: toUtcMidnight(new Date(now.getTime() - 10 * 24 * 60 * 60 * 1000)),
       ngayNhan: ngayNhan1,
       ngayTra: ngayTra1,
       soKhach: 2,
-      tongTienDuKien: 1800000,
-      tienCoc: 540000, // 30% của 1.8M
+      tongTienDuKien: price1.tongTienDuKien,
+      tienCoc: tienCoc1,
       trangThai: TrangThaiDatPhong.HOAN_TAT,
       ghiChu: 'Khách đến nghỉ tuần trăng mật, chuẩn bị giúp phòng tầng cao view thoáng.',
     },
@@ -543,15 +551,15 @@ async function main() {
   });
 
   // Hóa đơn 1-1 với đơn 1:
-  // tongCanThanhToan = tienPhong (1.8M) + tienDichVu (500k) + phuPhi (0) - tienCocDaTra (540k) = 1,760,000
+  // tongCanThanhToan = tienPhong + tienDichVu + phuPhi - tienCocDaTra
   await prisma.hoaDon.create({
     data: {
       maDatPhong: dp1.maDatPhong,
-      tienPhong: 1800000,
+      tienPhong: price1.tongTienDuKien,
       tienDichVu: 500000,
       phuPhi: 0,
-      tienCocDaTra: 540000,
-      tongCanThanhToan: 1760000,
+      tienCocDaTra: tienCoc1,
+      tongCanThanhToan: price1.tongTienDuKien + 500000 - tienCoc1,
       ngayLap: ngayTra1,
       phuongThuc: 'CHUYEN_KHOAN_QR',
       trangThai: TrangThaiHoaDon.DA_THANH_TOAN,
@@ -574,20 +582,21 @@ async function main() {
   // --------------------------------------------------------------------------
   // KỊCH BẢN 2: ĐƠN HOÀN TẤT (HOAN_TAT) - Đã thanh toán & Đánh giá CHƯA có phản hồi host (phanHoiHost: null)
   // Khách: Trần Khải Hoàng - Phòng: P202 (Family Suite Đà Lạt)
-  // Thời gian: 2 đêm cuối tuần -> 2 * 1.8M = 3.6M, Cọc 1.08M
   // --------------------------------------------------------------------------
-  const ngayNhan2 = new Date(now.getTime() - 5 * 24 * 60 * 60 * 1000);
-  const ngayTra2 = new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000);
+  const ngayNhan2 = toUtcMidnight(new Date(now.getTime() - 5 * 24 * 60 * 60 * 1000));
+  const ngayTra2 = toUtcMidnight(new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000));
+  const price2 = tinhGiaPhongChiTiet(ngayNhan2, ngayTra2, lpFamily.giaNgayThuong, lpFamily.giaCuoiTuan);
+  const tienCoc2 = Math.round(price2.tongTienDuKien * 0.3);
   const dp2 = await prisma.datPhong.create({
     data: {
       maKH: khHoang.maKH,
       maPhong: phong202.maPhong,
-      ngayDat: new Date(now.getTime() - 15 * 24 * 60 * 60 * 1000),
+      ngayDat: toUtcMidnight(new Date(now.getTime() - 15 * 24 * 60 * 60 * 1000)),
       ngayNhan: ngayNhan2,
       ngayTra: ngayTra2,
       soKhach: 4,
-      tongTienDuKien: 3600000,
-      tienCoc: 1080000,
+      tongTienDuKien: price2.tongTienDuKien,
+      tienCoc: tienCoc2,
       trangThai: TrangThaiDatPhong.HOAN_TAT,
       ghiChu: 'Gia đình có trẻ nhỏ, xin thêm nệm phụ mỏng.',
     },
@@ -614,15 +623,15 @@ async function main() {
   });
 
   // Hóa đơn đơn 2:
-  // tongCanThanhToan = 3.6M + 830k + 50k (phụ thu check-out muộn 30p) - 1.08M = 3,400,000
+  // tongCanThanhToan = tienPhong + 830k + 50k (phụ thu check-out muộn 30p) - tienCoc
   await prisma.hoaDon.create({
     data: {
       maDatPhong: dp2.maDatPhong,
-      tienPhong: 3600000,
+      tienPhong: price2.tongTienDuKien,
       tienDichVu: 830000,
       phuPhi: 50000,
-      tienCocDaTra: 1080000,
-      tongCanThanhToan: 3400000,
+      tienCocDaTra: tienCoc2,
+      tongCanThanhToan: price2.tongTienDuKien + 830000 + 50000 - tienCoc2,
       ngayLap: ngayTra2,
       phuongThuc: 'TIEN_MAT',
       trangThai: TrangThaiHoaDon.DA_THANH_TOAN,
@@ -644,20 +653,21 @@ async function main() {
   // --------------------------------------------------------------------------
   // KỊCH BẢN 3: ĐƠN ĐANG LƯU TRÚ (DANG_LUU_TRU) - Khách đã Check-in bằng CCCD
   // Khách: Nguyễn Văn Thụy - Phòng: P302 (Family Vũng Tàu)
-  // Thời gian: Nhận hôm qua, trả ngày mai -> 2 đêm cuối tuần = 3.6M, Cọc 1.08M
   // --------------------------------------------------------------------------
-  const ngayNhan3 = new Date(now.getTime() - 1 * 24 * 60 * 60 * 1000);
-  const ngayTra3 = new Date(now.getTime() + 1 * 24 * 60 * 60 * 1000);
+  const ngayNhan3 = toUtcMidnight(new Date(now.getTime() - 1 * 24 * 60 * 60 * 1000));
+  const ngayTra3 = toUtcMidnight(new Date(now.getTime() + 1 * 24 * 60 * 60 * 1000));
+  const price3 = tinhGiaPhongChiTiet(ngayNhan3, ngayTra3, lpFamily.giaNgayThuong, lpFamily.giaCuoiTuan);
+  const tienCoc3 = Math.round(price3.tongTienDuKien * 0.3);
   const dp3 = await prisma.datPhong.create({
     data: {
       maKH: khThuy.maKH,
       maPhong: phong302.maPhong,
-      ngayDat: new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000),
+      ngayDat: toUtcMidnight(new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)),
       ngayNhan: ngayNhan3,
       ngayTra: ngayTra3,
       soKhach: 4,
-      tongTienDuKien: 3600000,
-      tienCoc: 1080000,
+      tongTienDuKien: price3.tongTienDuKien,
+      tienCoc: tienCoc3,
       trangThai: TrangThaiDatPhong.DANG_LUU_TRU,
       ghiChu: 'Khách yêu cầu chuẩn bị củi sưởi và hỗ trợ chỗ đậu ô tô 7 chỗ.',
     },
@@ -693,15 +703,15 @@ async function main() {
   });
 
   // Hóa đơn nháp khi chuẩn bị check-out (CHUA_THANH_TOAN):
-  // tongCanThanhToan = 3.6M + 500k - 1.08M = 3,020,000
+  // tongCanThanhToan = tienPhong + 500k - tienCoc
   await prisma.hoaDon.create({
     data: {
       maDatPhong: dp3.maDatPhong,
-      tienPhong: 3600000,
+      tienPhong: price3.tongTienDuKien,
       tienDichVu: 500000,
       phuPhi: 0,
-      tienCocDaTra: 1080000,
-      tongCanThanhToan: 3020000,
+      tienCocDaTra: tienCoc3,
+      tongCanThanhToan: price3.tongTienDuKien + 500000 - tienCoc3,
       ngayLap: now,
       phuongThuc: 'CHUYEN_KHOAN_QR',
       trangThai: TrangThaiHoaDon.CHUA_THANH_TOAN,
@@ -711,20 +721,24 @@ async function main() {
   // --------------------------------------------------------------------------
   // KỊCH BẢN 4: ĐƠN ĐÃ XÁC NHẬN CỌC (DA_XAC_NHAN) - Chờ khách đến nhận phòng
   // Khách: Phạm Tấn Lập - Phòng: P102 (Deluxe Đà Lạt)
-  // Thời gian: Đặt cho tuần tới (2 đêm cuối tuần): 2 * 1.0M = 2.0M, Cọc 600k
+  // Đảm bảo 2 đêm cuối tuần (Thứ Sáu & Thứ Bảy) và cách hiện tại >= 4 ngày (> 72h) -> 2.0M, Cọc 600k
   // --------------------------------------------------------------------------
-  const ngayNhan4 = new Date(now.getTime() + 4 * 24 * 60 * 60 * 1000);
-  const ngayTra4 = new Date(now.getTime() + 6 * 24 * 60 * 60 * 1000);
+  let daysUntilFriday4 = (5 - now.getUTCDay() + 7) % 7;
+  if (daysUntilFriday4 < 4) daysUntilFriday4 += 7;
+  const ngayNhan4 = toUtcMidnight(new Date(now.getTime() + daysUntilFriday4 * 24 * 60 * 60 * 1000));
+  const ngayTra4 = toUtcMidnight(new Date(ngayNhan4.getTime() + 2 * 24 * 60 * 60 * 1000));
+  const price4 = tinhGiaPhongChiTiet(ngayNhan4, ngayTra4, lpDeluxe.giaNgayThuong, lpDeluxe.giaCuoiTuan);
+  const tienCoc4 = Math.round(price4.tongTienDuKien * 0.3);
   const dp4 = await prisma.datPhong.create({
     data: {
       maKH: khLap.maKH,
       maPhong: phong102.maPhong,
-      ngayDat: new Date(now.getTime() - 1 * 24 * 60 * 60 * 1000),
+      ngayDat: toUtcMidnight(new Date(now.getTime() - 1 * 24 * 60 * 60 * 1000)),
       ngayNhan: ngayNhan4,
       ngayTra: ngayTra4,
       soKhach: 2,
-      tongTienDuKien: 2000000,
-      tienCoc: 600000, // 30%
+      tongTienDuKien: price4.tongTienDuKien,
+      tienCoc: tienCoc4,
       trangThai: TrangThaiDatPhong.DA_XAC_NHAN,
       ghiChu: 'Đã thanh toán 30% cọc qua VietQR chuyển khoản tự động.',
     },
@@ -733,10 +747,11 @@ async function main() {
   // --------------------------------------------------------------------------
   // KỊCH BẢN 5: ĐƠN CHỜ THANH TOÁN CỌC (CHO_COC) - Khách vừa tạo đơn
   // Khách: Huỳnh Nguyễn Khắc Huy - Phòng: P203 (Deluxe Vũng Tàu)
-  // Thời gian: 3 đêm ngày thường (Thứ Hai -> Thứ Năm): 3 * 800k = 2.4M, Cọc 720k
   // --------------------------------------------------------------------------
-  const ngayNhan5 = new Date(now.getTime() + 10 * 24 * 60 * 60 * 1000);
-  const ngayTra5 = new Date(now.getTime() + 13 * 24 * 60 * 60 * 1000);
+  const ngayNhan5 = toUtcMidnight(new Date(now.getTime() + 10 * 24 * 60 * 60 * 1000));
+  const ngayTra5 = toUtcMidnight(new Date(now.getTime() + 13 * 24 * 60 * 60 * 1000));
+  const price5 = tinhGiaPhongChiTiet(ngayNhan5, ngayTra5, lpDeluxe.giaNgayThuong, lpDeluxe.giaCuoiTuan);
+  const tienCoc5 = Math.round(price5.tongTienDuKien * 0.3);
   await prisma.datPhong.create({
     data: {
       maKH: khHuy.maKH,
@@ -745,10 +760,10 @@ async function main() {
       ngayNhan: ngayNhan5,
       ngayTra: ngayTra5,
       soKhach: 2,
-      tongTienDuKien: 2400000,
-      tienCoc: 720000,
+      tongTienDuKien: price5.tongTienDuKien,
+      tienCoc: tienCoc5,
       trangThai: TrangThaiDatPhong.CHO_COC,
-      ghiChu: 'Hệ thống đang chờ webhook VietQR xác nhận tiền cọc 30% (720.000đ).',
+      ghiChu: `Hệ thống đang chờ webhook VietQR xác nhận tiền cọc 30% (${tienCoc5.toLocaleString('vi-VN')}đ).`,
     },
   });
 
@@ -756,21 +771,23 @@ async function main() {
   // KỊCH BẢN 6: ĐƠN ĐÃ HỦY (DA_HUY) - Hủy trước > 72h và hoàn 100% tiền cọc
   // Khách: Cao Nguyên Quốc Khánh - Phòng: P101 (Standard)
   // --------------------------------------------------------------------------
-  const ngayNhan6 = new Date(now.getTime() + 15 * 24 * 60 * 60 * 1000);
-  const ngayTra6 = new Date(now.getTime() + 17 * 24 * 60 * 60 * 1000);
+  const ngayNhan6 = toUtcMidnight(new Date(now.getTime() + 15 * 24 * 60 * 60 * 1000));
+  const ngayTra6 = toUtcMidnight(new Date(now.getTime() + 17 * 24 * 60 * 60 * 1000));
+  const price6 = tinhGiaPhongChiTiet(ngayNhan6, ngayTra6, lpStandard.giaNgayThuong, lpStandard.giaCuoiTuan);
+  const tienCoc6 = Math.round(price6.tongTienDuKien * 0.3);
   const dp6 = await prisma.datPhong.create({
     data: {
       maKH: khKhanh.maKH,
       maPhong: phong101.maPhong,
-      ngayDat: new Date(now.getTime() - 4 * 24 * 60 * 60 * 1000),
+      ngayDat: toUtcMidnight(new Date(now.getTime() - 4 * 24 * 60 * 60 * 1000)),
       ngayNhan: ngayNhan6,
       ngayTra: ngayTra6,
       soKhach: 2,
-      tongTienDuKien: 1000000,
-      tienCoc: 300000,
+      tongTienDuKien: price6.tongTienDuKien,
+      tienCoc: tienCoc6,
       trangThai: TrangThaiDatPhong.DA_HUY,
       ghiChu:
-        'Khách báo thay đổi lịch công tác. Hủy trước giờ nhận phòng > 72 giờ: Đã hoàn 100% tiền cọc (300.000 VNĐ) qua PaymentGateway.',
+        `Khách báo thay đổi lịch công tác. Hủy trước giờ nhận phòng > 72 giờ: Đã hoàn 100% tiền cọc (${tienCoc6.toLocaleString('vi-VN')} VNĐ) qua PaymentGateway.`,
     },
   });
 
@@ -789,8 +806,8 @@ async function main() {
       maDatPhong: dp6.maDatPhong,
       maGiaoDichHoan: `REFUND_${dp6.maDatPhong}`,
       maGiaoDich: `PAY_${dp6.maDatPhong}`,
-      soTienHoan: 300000,
-      tienCocDaDong: 300000,
+      soTienHoan: tienCoc6,
+      tienCocDaDong: tienCoc6,
       deltaHours: 360,
       tyLeHoanPhanTram: 100,
       chinhSachApDung: 'Hủy trước giờ nhận phòng >= 72 giờ (3 ngày): Hoàn 100% tiền cọc.',

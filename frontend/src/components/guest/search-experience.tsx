@@ -10,7 +10,6 @@ import { apiClient } from "@/services/apiClient";
 import { apiErrorMessage, applyZodIssues, createSearchSchema, minCheckoutDate, toLocalDateInput } from "@/lib/sh09-validation";
 import { LatestRequestGate } from "@/lib/latest-request";
 import { FormField, inputClassName } from "@/components/ui/form-field";
-import { StatusBadge } from "@/components/status-badge";
 
 type SearchValues = {
   ngayNhan: string;
@@ -48,7 +47,9 @@ function RoomCard({ room, bookingUrl }: { room: AvailableRoomResult; bookingUrl:
               {room.loaiPhong?.tenLoaiPhong ?? "Phòng SweetHome"}
             </h3>
           </div>
-          <StatusBadge status={room.trangThai} />
+          <span className="inline-flex items-center rounded-full border border-emerald-300 bg-emerald-100 px-2.5 py-0.5 text-xs font-medium text-emerald-800">
+            Còn trống trong kỳ này
+          </span>
         </div>
 
         <div className="flex flex-wrap gap-x-4 gap-y-2 text-sm text-muted-foreground">

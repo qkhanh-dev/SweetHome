@@ -123,7 +123,7 @@ jobs:
             assert.equal(cancelRes.status, 200);
             const cancelData = (await cancelRes.json()).data;
             assert.equal(cancelData.datPhong.trangThai, "DA_HUY");
-            assert.equal(cancelData.hoanCoc.soTienHoan, 600000);
+            assert.equal(cancelData.hoanCoc.soTienHoan, confirmed.tienCoc);
 
             const pendingLookup = await fetch(`${base}/bookings/lookup?tuKhoa=0956789012`);
             assert.equal(pendingLookup.status, 200);

@@ -6,10 +6,12 @@ import {
 } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { ACTIVE_BOOKING_STATUSES } from '../../common/constants/booking.constants';
+import { CurrentAccountData } from '../../common/decorators/current-account.decorator';
 import { PrismaService } from '../../prisma/prisma.service';
 import {
   AvailableRoomsDto,
   CreateBookingDto,
+  ListBookingsDto,
   LookupBookingDto,
   PaymentWebhookDto,
 } from './booking.dto';
@@ -199,6 +201,34 @@ export class BookingService {
     void _payment;
     void _refund;
     return publicBooking;
+  }
+
+  async list(query: ListBookingsDto) {
+    const where: Prisma.DatPhongWhereInput = {};
+    if (query.trangThai) where.trangThai = query.trangThai;
+    if (query.maPhong) where.maPhong = query.maPhong;
+    if (query.tuNgay || query.denNgay) {
+      where.ngayNhan = {};
+      if (query.tuNgay) where.ngayNhan.gte = new Date(`${query.tuNgay}T00:00:00.000Z`);
+      if (query.denNgay) where.ngayNhan.lte = new Date(`${query.denNgay}T23:59:59.999Z`);
+    }
+    return this.prisma.datPhong.findMany({
+      where,
+      include: details,
+      orderBy: { ngayDat: 'desc' },
+    });
+  }
+
+  async myHistory(user: CurrentAccountData) {
+    const customer = await this.prisma.khachHang.findFirst({
+      where: { maTaiKhoan: user.maTaiKhoan },
+    });
+    if (!customer) return [];
+    return this.prisma.datPhong.findMany({
+      where: { maKH: customer.maKH },
+      include: details,
+      orderBy: { ngayDat: 'desc' },
+    });
   }
 
   async lookup(query: LookupBookingDto) {

@@ -1,15 +1,17 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString, Matches } from 'class-validator';
 
 export class CreateAmenityDto {
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
+  @Matches(/\S/, { message: 'Tên tiện nghi không được để trống hoặc chỉ chứa khoảng trắng' })
   tenTienNghi!: string;
 
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
+  @Matches(/\S/, { message: 'Loại tiện nghi không được để trống hoặc chỉ chứa khoảng trắng' })
   loaiTienNghi!: string;
 }
 
