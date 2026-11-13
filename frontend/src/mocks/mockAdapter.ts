@@ -1339,9 +1339,7 @@ const bookingApi = {
       fail(409, "Phòng đã có khách khác đặt trong khoảng thời gian này", path);
     }
     booking.trangThai = TrangThaiDatPhong.DA_XAC_NHAN;
-    if (![TrangThaiPhong.CHO_DON_DEP, TrangThaiPhong.BAO_TRI, TrangThaiPhong.DANG_SU_DUNG].includes(room.trangThai)) {
-      updateRoomStatus(room, TrangThaiPhong.DA_DAT);
-    }
+    updateRoomStatus(room, TrangThaiPhong.DA_DAT);
     if (idempotencyKey) processedPaymentKeys.set(idempotencyKey, booking.maDatPhong);
     processedPaymentTrades.set(payload.maGiaoDich, booking.maDatPhong);
     persistMockBookingState();

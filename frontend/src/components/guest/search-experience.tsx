@@ -10,7 +10,6 @@ import { apiClient } from "@/services/apiClient";
 import { apiErrorMessage, applyZodIssues, createSearchSchema, minCheckoutDate, toLocalDateInput } from "@/lib/sh09-validation";
 import { LatestRequestGate } from "@/lib/latest-request";
 import { FormField, inputClassName } from "@/components/ui/form-field";
-import { StatusBadge } from "@/components/status-badge";
 
 type SearchValues = {
   ngayNhan: string;

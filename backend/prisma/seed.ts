@@ -721,9 +721,12 @@ async function main() {
   // --------------------------------------------------------------------------
   // KỊCH BẢN 4: ĐƠN ĐÃ XÁC NHẬN CỌC (DA_XAC_NHAN) - Chờ khách đến nhận phòng
   // Khách: Phạm Tấn Lập - Phòng: P102 (Deluxe Đà Lạt)
+  // Đảm bảo 2 đêm cuối tuần (Thứ Sáu & Thứ Bảy) và cách hiện tại >= 4 ngày (> 72h) -> 2.0M, Cọc 600k
   // --------------------------------------------------------------------------
-  const ngayNhan4 = toUtcMidnight(new Date(now.getTime() + 4 * 24 * 60 * 60 * 1000));
-  const ngayTra4 = toUtcMidnight(new Date(now.getTime() + 6 * 24 * 60 * 60 * 1000));
+  let daysUntilFriday4 = (5 - now.getUTCDay() + 7) % 7;
+  if (daysUntilFriday4 < 4) daysUntilFriday4 += 7;
+  const ngayNhan4 = toUtcMidnight(new Date(now.getTime() + daysUntilFriday4 * 24 * 60 * 60 * 1000));
+  const ngayTra4 = toUtcMidnight(new Date(ngayNhan4.getTime() + 2 * 24 * 60 * 60 * 1000));
   const price4 = tinhGiaPhongChiTiet(ngayNhan4, ngayTra4, lpDeluxe.giaNgayThuong, lpDeluxe.giaCuoiTuan);
   const tienCoc4 = Math.round(price4.tongTienDuKien * 0.3);
   const dp4 = await prisma.datPhong.create({
