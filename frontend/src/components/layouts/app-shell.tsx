@@ -44,11 +44,13 @@ const staffLinks = [
 ];
 
 const adminLinks = [
-  { href: "/admin", label: "Tổng quan" },
-  { href: "/admin/homestay", label: "Homestay" },
+  { href: "/admin", label: "Dashboard thống kê" },
+  { href: "/admin/services", label: "Quản lý dịch vụ" },
+  { href: "/admin/users", label: "Quản lý tài khoản" },
+  { href: "/admin/rooms", label: "Quản lý phòng" },
   { href: "/admin/room-types", label: "Loại phòng & giá" },
   { href: "/admin/amenities", label: "Tiện nghi" },
-  { href: "/admin/rooms", label: "Quản lý phòng" },
+  { href: "/admin/homestay", label: "Homestay" },
   ...staffLinks,
 ];
 
