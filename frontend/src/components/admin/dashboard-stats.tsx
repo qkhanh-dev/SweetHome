@@ -74,6 +74,12 @@ const ROOM_STATUS_CONFIG: Record<
 
 const PIE_COLORS = ["#059669", "#d97706", "#7c3aed"]; // Room, Service, Surcharge
 
+function formatAxisMoney(val: number): string {
+  if (val === 0) return "0";
+  if (Math.abs(val) >= 1_000_000) return `${(val / 1_000_000).toFixed(1)}M`;
+  return `${Math.round(val / 1000)}k`;
+}
+
 function formatDateInput(d: Date): string {
   const year = d.getFullYear();
   const month = String(d.getMonth() + 1).padStart(2, "0");
@@ -104,6 +110,11 @@ export function DashboardStats() {
   }, []);
 
   async function fetchData(overrideTuNgay = tuNgay, overrideDenNgay = denNgay, overrideGroup = groupBy) {
+    if (overrideDenNgay < overrideTuNgay) {
+      setError("Ngày kết thúc phải lớn hơn hoặc bằng ngày bắt đầu.");
+      setLoading(false);
+      return;
+    }
     setLoading(true);
     setError(null);
     try {
@@ -363,6 +374,9 @@ export function DashboardStats() {
               <Receipt className="h-3.5 w-3.5 inline" />
               {revenueData?.tongHop?.soHoaDonDaThanhToan ?? 0} hóa đơn đã quyết toán
             </p>
+            <p className="mt-1 text-[11px] text-muted-foreground">
+              Cọc: {formatVND(revenueData?.tongHop?.tongTienCocDaThu ?? 0)} · Check-out: {formatVND(revenueData?.tongHop?.tongThuKhiCheckOut ?? 0)}
+            </p>
           </div>
         </div>
 
@@ -525,7 +539,7 @@ export function DashboardStats() {
                         tick={{ fontSize: 12, fill: "#64748b" }}
                         tickLine={false}
                         axisLine={false}
-                        tickFormatter={(val) => (val >= 1_000_000 ? `${(val / 1_000_000).toFixed(1)}M` : `${val / 1000}k`)}
+                        tickFormatter={formatAxisMoney}
                       />
                       <Tooltip
                         formatter={(value: unknown, name: unknown) => [
@@ -586,7 +600,7 @@ export function DashboardStats() {
                         tick={{ fontSize: 12, fill: "#64748b" }}
                         tickLine={false}
                         axisLine={false}
-                        tickFormatter={(val) => (val >= 1_000_000 ? `${(val / 1_000_000).toFixed(1)}M` : `${val / 1000}k`)}
+                        tickFormatter={formatAxisMoney}
                       />
                       <Tooltip
                         formatter={(value: unknown, name: unknown) => [

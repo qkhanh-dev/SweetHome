@@ -661,7 +661,7 @@ function validateService(payload: Omit<DichVu, "maDichVu">, path: string): void 
     typeof payload.donViTinh !== "string" ||
     !payload.donViTinh.trim() ||
     !Number.isFinite(payload.donGia) ||
-    payload.donGia < 0
+    payload.donGia <= 0
   ) {
     mockRecordError(400, "Thông tin dịch vụ hoặc đơn giá không hợp lệ", path);
   }

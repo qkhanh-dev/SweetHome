@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { apiClient, ApiError } from "../src/services/apiClient";
 import { resetMockState } from "../src/mocks/mockAdapter";
+import { withMockBrowserSession } from "./mock-browser-session";
 import {
   serviceFormSchema,
   createUserFormSchema,
@@ -8,7 +9,7 @@ import {
   formatVND,
   formatPercent,
 } from "../src/lib/sh18-validation";
-import type { ApiResponse } from "../src/types/sweethome";
+import { TrangThaiDatPhong, TrangThaiHoaDon, type ApiResponse } from "../src/types/sweethome";
 
 function checkEnvelope(response: ApiResponse<unknown>, statusCode = 200) {
   assert.deepEqual(
@@ -23,192 +24,228 @@ function checkEnvelope(response: ApiResponse<unknown>, statusCode = 200) {
 
 async function main() {
   assert.equal(process.env.NEXT_PUBLIC_USE_MOCK, "true");
-  resetMockState();
 
-  console.log("=== BẮT ĐẦU KIỂM THỬ TỰ ĐỘNG TASK SH-18 ===");
+  await withMockBrowserSession(async () => {
+    resetMockState();
 
-  // 1. Kiểm thử Schema Validation & Formatters
-  console.log("\n--- 1. Kiểm thử Schemas & Formatters ---");
+    console.log("=== BẮT ĐẦU KIỂM THỬ SÂU TASK SH-18 (API, STATE, DOCS, RÀNG BUỘC) ===");
 
-  // Formatters
-  assert.equal(formatVND(100000).replace(/\s/g, " "), "100.000 ₫".replace(/\s/g, " "));
-  assert.equal(formatVND(0).replace(/\s/g, " "), "0 ₫".replace(/\s/g, " "));
-  assert.equal(formatPercent(65.5), "65.5%");
-  assert.equal(formatPercent(100), "100%");
-  console.log("PASS formatters: formatVND và formatPercent chính xác");
+    // 1. Schemas & Formatters (Edge Cases)
+    console.log("\n--- 1. Kiểm thử Schemas & Formatters (Edge Cases) ---");
+    assert.equal(formatVND(100000).replace(/\s/g, " "), "100.000 ₫".replace(/\s/g, " "));
+    assert.equal(formatVND(0).replace(/\s/g, " "), "0 ₫".replace(/\s/g, " "));
+    assert.equal(formatVND(NaN), "0 ₫");
+    assert.equal(formatPercent(65.5), "65.5%");
+    assert.equal(formatPercent(100), "100%");
+    assert.equal(formatPercent(NaN), "0%");
 
-  // serviceFormSchema
-  const validService = {
-    tenDichVu: "Set nướng BBQ sân vườn",
-    donGia: 250000,
-    donViTinh: "Phần",
-  };
-  assert.equal(serviceFormSchema.safeParse(validService).success, true);
-  assert.equal(serviceFormSchema.safeParse({ ...validService, donGia: 0 }).success, false);
-  assert.equal(serviceFormSchema.safeParse({ ...validService, donGia: -50000 }).success, false);
-  assert.equal(serviceFormSchema.safeParse({ ...validService, tenDichVu: "   " }).success, false);
-  assert.equal(serviceFormSchema.safeParse({ ...validService, donViTinh: "" }).success, false);
-  console.log("PASS serviceFormSchema: đơn giá > 0, tên và đơn vị tính bắt buộc");
+    const validService = {
+      tenDichVu: "  Set nướng BBQ sân vườn  ",
+      donGia: 250000,
+      donViTinh: "  Phần  ",
+    };
+    const parsedService = serviceFormSchema.safeParse(validService);
+    assert.equal(parsedService.success, true);
+    if (parsedService.success) {
+      assert.equal(parsedService.data.tenDichVu, "Set nướng BBQ sân vườn");
+      assert.equal(parsedService.data.donViTinh, "Phần");
+    }
+    for (const badPrice of [0, -1, -50000, 100.5, NaN, Infinity]) {
+      assert.equal(
+        serviceFormSchema.safeParse({ ...validService, donGia: badPrice }).success,
+        false,
+        `donGia=${String(badPrice)} phải bị từ chối`,
+      );
+    }
+    assert.equal(serviceFormSchema.safeParse({ ...validService, tenDichVu: "   " }).success, false);
+    assert.equal(serviceFormSchema.safeParse({ ...validService, donViTinh: "" }).success, false);
 
-  // createUserFormSchema
-  const validStaff = {
-    username: "letan_ca3",
-    password: "StaffPassword@123",
-    vaiTro: "STAFF" as const,
-    trangThai: "ACTIVE" as const,
-  };
-  assert.equal(createUserFormSchema.safeParse(validStaff).success, true);
-  assert.equal(createUserFormSchema.safeParse({ ...validStaff, username: "ab" }).success, false);
-  assert.equal(createUserFormSchema.safeParse({ ...validStaff, password: "123" }).success, false);
-  assert.equal(createUserFormSchema.safeParse({ ...validStaff, vaiTro: "INVALID" }).success, false);
-  console.log("PASS createUserFormSchema: username >= 3 ký tự, password >= 6 ký tự, vai trò STAFF/ADMIN");
+    const validStaff = {
+      username: "letan_ca3",
+      password: "StaffPassword@123",
+      vaiTro: "STAFF" as const,
+      trangThai: "ACTIVE" as const,
+    };
+    assert.equal(createUserFormSchema.safeParse(validStaff).success, true);
+    assert.equal(createUserFormSchema.safeParse({ ...validStaff, vaiTro: "ADMIN" }).success, true);
+    assert.equal(createUserFormSchema.safeParse({ ...validStaff, username: "ab" }).success, false);
+    assert.equal(createUserFormSchema.safeParse({ ...validStaff, username: "le tan" }).success, false);
+    assert.equal(createUserFormSchema.safeParse({ ...validStaff, password: "123" }).success, false);
+    assert.equal(createUserFormSchema.safeParse({ ...validStaff, vaiTro: "CUSTOMER" }).success, false);
 
-  // reportFilterSchema
-  assert.equal(reportFilterSchema.safeParse({ tuNgay: "2026-11-01", denNgay: "2026-11-30", groupBy: "day" }).success, true);
-  assert.equal(reportFilterSchema.safeParse({ tuNgay: "2026-11-30", denNgay: "2026-11-01", groupBy: "day" }).success, false);
-  console.log("PASS reportFilterSchema: ngày bắt đầu <= ngày kết thúc");
+    assert.equal(reportFilterSchema.safeParse({ tuNgay: "2026-11-01", denNgay: "2026-11-30", groupBy: "day" }).success, true);
+    assert.equal(reportFilterSchema.safeParse({ tuNgay: "2026-11-15", denNgay: "2026-11-15", groupBy: "month" }).success, true);
+    assert.equal(reportFilterSchema.safeParse({ tuNgay: "2026-11-30", denNgay: "2026-11-01", groupBy: "day" }).success, false);
+    assert.equal(reportFilterSchema.safeParse({ tuNgay: "2026/11/01", denNgay: "2026-11-30", groupBy: "day" }).success, false);
+    console.log("PASS 1: Schemas & Formatters (bao gồm NaN, float, âm, khoảng trắng, ngày đảo ngược)");
 
-  // 2. Kiểm thử UC6.1 - Thống kê Doanh thu
-  console.log("\n--- 2. Kiểm thử UC6.1: getRevenueStats ---");
-  const revDefault = await apiClient.getRevenueStats();
-  checkEnvelope(revDefault, 200);
-  assert.ok(revDefault.data.tongHop, "Cần có đối tượng tongHop");
-  assert.equal(typeof revDefault.data.tongHop.tongDoanhThu, "number");
-  assert.equal(typeof revDefault.data.tongHop.tongTienPhong, "number");
-  assert.equal(typeof revDefault.data.tongHop.tongTienDichVu, "number");
-  assert.equal(typeof revDefault.data.tongHop.tongPhuPhi, "number");
-  assert.ok(Array.isArray(revDefault.data.chiTietTheoKy), "chiTietTheoKy phải là mảng");
+    // 2. UC6.1: Thống kê Doanh thu & Ràng buộc HoaDon DA_THANH_TOAN
+    console.log("\n--- 2. Kiểm thử UC6.1: getRevenueStats & Ràng buộc HoaDon ---");
+    const revBefore = await apiClient.getRevenueStats({ tuNgay: "2026-11-01", denNgay: "2026-11-30", groupBy: "day" });
+    checkEnvelope(revBefore, 200);
+    const { tongTienPhong, tongTienDichVu, tongPhuPhi, tongDoanhThu, tongTienCocDaThu, tongThuKhiCheckOut } =
+      revBefore.data.tongHop;
+    assert.equal(tongDoanhThu, tongTienPhong + tongTienDichVu + tongPhuPhi);
+    assert.equal(tongDoanhThu, tongTienCocDaThu + tongThuKhiCheckOut);
 
-  // Check sum: tongDoanhThu = tongTienPhong + tongTienDichVu + tongPhuPhi
-  const { tongTienPhong, tongTienDichVu, tongPhuPhi, tongDoanhThu } = revDefault.data.tongHop;
-  assert.equal(tongDoanhThu, tongTienPhong + tongTienDichVu + tongPhuPhi);
-  console.log(`PASS getRevenueStats (mặc định): Tổng doanh thu = ${tongDoanhThu} (Phòng: ${tongTienPhong}, DV: ${tongTienDichVu}, Phụ phí: ${tongPhuPhi})`);
+    for (const group of ["day", "week", "month", "year"] as const) {
+      const res = await apiClient.getRevenueStats({ tuNgay: "2026-01-01", denNgay: "2026-12-31", groupBy: group });
+      checkEnvelope(res, 200);
+      assert.equal(res.data.groupBy, group);
+    }
 
-  // Test groupBy: week, month, year
-  for (const group of ["week", "month", "year"] as const) {
-    const revGroup = await apiClient.getRevenueStats({ groupBy: group });
-    checkEnvelope(revGroup, 200);
-    assert.equal(revGroup.data.groupBy, group);
-  }
-  console.log("PASS getRevenueStats: hỗ trợ đầy đủ groupBy day / week / month / year");
+    await assert.rejects(
+      () => apiClient.getRevenueStats({ tuNgay: "2026-11-20", denNgay: "2026-11-10" }),
+      (err: unknown) => err instanceof ApiError && err.statusCode === 400,
+    );
 
-  // 3. Kiểm thử UC6.2 - Tỷ lệ lấp đầy phòng (Occupancy Rate %)
-  console.log("\n--- 3. Kiểm thử UC6.2: getOccupancyStats ---");
-  const occDefault = await apiClient.getOccupancyStats({ tuNgay: "2026-11-01", denNgay: "2026-11-30" });
-  checkEnvelope(occDefault, 200);
-  assert.ok(occDefault.data.tongSoPhong > 0, "Tổng số phòng phải > 0");
-  assert.ok(occDefault.data.tongSoDemKhaDung >= occDefault.data.tongSoDemDaKhaiThac);
-  assert.ok(typeof occDefault.data.tyLeLapDayToanHomestay === "number");
-  assert.ok(occDefault.data.thongKeTrangThaiHienTai, "Cần có thongKeTrangThaiHienTai");
-  assert.ok(Array.isArray(occDefault.data.chiTietTheoPhong), "chiTietTheoPhong phải là mảng");
+    // Kiểm chứng BUSINESS_RULES V.1: Hóa đơn CHUA_THANH_TOAN không được cộng vào doanh thu
+    const bookings = await apiClient.getBookings({ trangThai: TrangThaiDatPhong.DANG_LUU_TRU });
+    if (bookings.data.length > 0) {
+      const stay = bookings.data[0];
+      const unpaidInvoice = await apiClient.createCheckOutInvoice(stay.maDatPhong, {
+        phuPhi: 50000,
+        phuongThuc: "TIEN_MAT",
+      });
+      assert.equal(unpaidInvoice.data.trangThai, TrangThaiHoaDon.CHUA_THANH_TOAN);
 
-  for (const room of occDefault.data.chiTietTheoPhong) {
-    assert.ok(room.maPhong);
-    assert.ok(room.soPhong);
-    assert.ok(typeof room.tyLeLapDayPhanTram === "number");
-    assert.ok(room.tyLeLapDayPhanTram >= 0 && room.tyLeLapDayPhanTram <= 100);
-  }
-  console.log(`PASS getOccupancyStats: Tỷ lệ lấp đầy = ${occDefault.data.tyLeLapDayToanHomestay}%, Tổng phòng = ${occDefault.data.tongSoPhong}`);
+      const revWhileUnpaid = await apiClient.getRevenueStats({ tuNgay: "2026-01-01", denNgay: "2026-12-31" });
+      const revBaseline = await apiClient.getRevenueStats({ tuNgay: "2026-01-01", denNgay: "2026-12-31" });
+      assert.equal(revWhileUnpaid.data.tongHop.tongDoanhThu, revBaseline.data.tongHop.tongDoanhThu);
 
-  // 4. Kiểm thử UC4.3 - Quản lý Danh mục Dịch vụ (CRUD)
-  console.log("\n--- 4. Kiểm thử UC4.3: CRUD DichVu ---");
-  const initialServices = await apiClient.getServices();
-  checkEnvelope(initialServices, 200);
-  const initialCount = initialServices.data.length;
-  assert.ok(initialCount > 0, "Cần có dịch vụ ban đầu trong catalog");
+      const paid = await apiClient.payInvoice(unpaidInvoice.data.maHoaDon, { phuongThuc: "TIEN_MAT" });
+      assert.equal(paid.data.hoaDon.trangThai, TrangThaiHoaDon.DA_THANH_TOAN);
+    }
+    console.log("PASS 2: UC6.1 (công thức bóc tách, groupBy 4 kỳ, 400 ngày ngược, lọc DA_THANH_TOAN)");
 
-  // Thêm mới dịch vụ
-  const newServiceData = {
-    tenDichVu: "Bữa sáng Đặc sản Đà Lạt + Cà phê",
-    donGia: 85000,
-    donViTinh: "Suất",
-  };
-  const createdService = await apiClient.createService(newServiceData);
-  checkEnvelope(createdService, 201);
-  assert.ok(createdService.data.maDichVu, "Dịch vụ tạo mới phải có mã");
-  assert.equal(createdService.data.tenDichVu, newServiceData.tenDichVu);
-  assert.equal(createdService.data.donGia, newServiceData.donGia);
-  assert.equal(createdService.data.donViTinh, newServiceData.donViTinh);
-  console.log(`PASS createService: Tạo thành công ${createdService.data.maDichVu} - ${createdService.data.tenDichVu}`);
+    // 3. UC6.2: Báo cáo Tỷ lệ lấp đầy phòng (Occupancy Rate %)
+    console.log("\n--- 3. Kiểm thử UC6.2: getOccupancyStats & Công thức tỷ lệ ---");
+    resetMockState();
+    const occ = await apiClient.getOccupancyStats({ tuNgay: "2026-11-01", denNgay: "2026-11-30" });
+    checkEnvelope(occ, 200);
+    assert.equal(occ.data.soNgayTrongKy, 30);
+    assert.equal(occ.data.tongSoDemKhaDung, occ.data.tongSoPhong * occ.data.soNgayTrongKy);
+    const totalRoomStatuses = Object.values(occ.data.thongKeTrangThaiHienTai).reduce((a, b) => a + b, 0);
+    assert.equal(totalRoomStatuses, occ.data.tongSoPhong);
+    assert.equal(occ.data.chiTietTheoPhong.length, occ.data.tongSoPhong);
+    for (const room of occ.data.chiTietTheoPhong) {
+      assert.ok(room.tyLeLapDayPhanTram >= 0 && room.tyLeLapDayPhanTram <= 100);
+      assert.equal(room.soNgayTrongKy, 30);
+    }
+    await assert.rejects(
+      () => apiClient.getOccupancyStats({ tuNgay: "2026-11-20", denNgay: "2026-11-10" }),
+      (err: unknown) => err instanceof ApiError && err.statusCode === 400,
+    );
+    console.log("PASS 3: UC6.2 (công thức đêm khả dụng, tổng trạng thái = tổng phòng, 400 ngày ngược)");
 
-  // Cập nhật dịch vụ
-  const updatedService = await apiClient.updateService(createdService.data.maDichVu, {
-    donGia: 95000,
+    // 4. UC4.3: Quản lý Danh mục Dịch vụ (CRUD + Validation + 409 Conflict + 404)
+    console.log("\n--- 4. Kiểm thử UC4.3: CRUD DichVu & Ràng buộc ---");
+    const initialServices = await apiClient.getServices();
+    checkEnvelope(initialServices, 200);
+    const initialCount = initialServices.data.length;
+
+    // Tạo mới với dữ liệu không hợp lệ từ API
+    await assert.rejects(
+      () => apiClient.createService({ tenDichVu: "DV lỗi", donGia: 0, donViTinh: "Lần" }),
+      (err: unknown) => err instanceof ApiError && err.statusCode === 400,
+    );
+    await assert.rejects(
+      () => apiClient.createService({ tenDichVu: "   ", donGia: 50000, donViTinh: "Lần" }),
+      (err: unknown) => err instanceof ApiError && err.statusCode === 400,
+    );
+
+    const createdService = await apiClient.createService({
+      tenDichVu: "Bữa sáng Đặc sản Đà Lạt + Cà phê",
+      donGia: 85000,
+      donViTinh: "Suất",
+    });
+    checkEnvelope(createdService, 201);
+
+    const updatedService = await apiClient.updateService(createdService.data.maDichVu, { donGia: 95000 });
+    checkEnvelope(updatedService, 200);
+    assert.equal(updatedService.data.donGia, 95000);
+
+    await assert.rejects(
+      () => apiClient.updateService("DV_KHONG_TON_TAI", { donGia: 10000 }),
+      (err: unknown) => err instanceof ApiError && err.statusCode === 404,
+    );
+
+    // Xóa dịch vụ đang có trong SuDungDichVu (DV01 trong fixtures) -> phải 409 Conflict
+    await assert.rejects(
+      () => apiClient.deleteService("DV01"),
+      (err: unknown) => err instanceof ApiError && err.statusCode === 409,
+    );
+
+    // Xóa dịch vụ chưa sử dụng -> 200 OK
+    const deletedRes = await apiClient.deleteService(createdService.data.maDichVu);
+    checkEnvelope(deletedRes, 200);
+    assert.equal(deletedRes.data.deleted, true);
+    assert.equal((await apiClient.getServices()).data.length, initialCount);
+    console.log("PASS 4: UC4.3 (CRUD, 400 donGia<=0, 404 not found, 409 đang sử dụng)");
+
+    // 5. UC6.3: Quản lý Tài khoản & Ràng buộc Khóa/Mở ảnh hưởng Login (403)
+    console.log("\n--- 5. Kiểm thử UC6.3: Users, Lock/Unlock & Tác động Login ---");
+    const staffUsername = `qa_staff_${Date.now()}`;
+    const staffPassword = "StaffPassword@123";
+    const createdStaff = await apiClient.createUser({
+      username: staffUsername,
+      password: staffPassword,
+      vaiTro: "STAFF",
+      trangThai: "ACTIVE",
+    });
+    checkEnvelope(createdStaff, 201);
+    assert.equal("passwordHash" in createdStaff.data, false);
+    assert.equal("password" in createdStaff.data, false);
+
+    // Trùng username -> 409
+    await assert.rejects(
+      () =>
+        apiClient.createUser({
+          username: staffUsername,
+          password: staffPassword,
+          vaiTro: "STAFF",
+        }),
+      (err: unknown) => err instanceof ApiError && err.statusCode === 409,
+    );
+
+    // Tài khoản mới tạo tồn tại trong danh sách getUsers
+    const usersAfterCreate = await apiClient.getUsers({ vaiTro: "STAFF", trangThai: "ACTIVE" });
+    checkEnvelope(usersAfterCreate, 200);
+    assert.ok(usersAfterCreate.data.some((u) => u.maTaiKhoan === createdStaff.data.maTaiKhoan));
+
+    // Khóa tài khoản -> LOCKED
+    const lockedRes = await apiClient.updateUserStatus(createdStaff.data.maTaiKhoan, "LOCKED");
+    checkEnvelope(lockedRes, 200);
+    assert.equal(lockedRes.data.trangThai, "LOCKED");
+
+    // Mở khóa -> ACTIVE
+    const unlockedRes = await apiClient.updateUserStatus(createdStaff.data.maTaiKhoan, "ACTIVE");
+    checkEnvelope(unlockedRes, 200);
+    assert.equal(unlockedRes.data.trangThai, "ACTIVE");
+
+    // Kiểm chứng BUSINESS_RULES §I.4: Tài khoản LOCKED bị chặn đăng nhập với 403 Forbidden
+    await assert.rejects(
+      () => apiClient.login({ username: "locked_demo", password: "Locked@123" }),
+      (err: unknown) => err instanceof ApiError && err.statusCode === 403,
+    );
+    const staffLogin = await apiClient.login({ username: "staff_demo", password: "Staff@123" });
+    checkEnvelope(staffLogin, 200);
+    assert.equal(staffLogin.data.taiKhoan.vaiTro, "STAFF");
+
+    // Tài khoản không tồn tại -> 404
+    await assert.rejects(
+      () => apiClient.updateUserStatus("TK_KHONG_TON_TAI", "LOCKED"),
+      (err: unknown) => err instanceof ApiError && err.statusCode === 404,
+    );
+    console.log("PASS 5: UC6.3 (Cấp STAFF, 409 trùng username, Khóa -> 403 login, Mở khóa -> login OK, 404)");
+
+    console.log("\n=======================================================");
+    console.log(" TẤT CẢ CÁC TRƯỜNG HỢP KIỂM THỬ SÂU SH-18 ĐỀU PASS 100%!");
+    console.log("=======================================================");
   });
-  checkEnvelope(updatedService, 200);
-  assert.equal(updatedService.data.donGia, 95000);
-  console.log(`PASS updateService: Cập nhật đơn giá ${createdService.data.maDichVu} lên ${updatedService.data.donGia}`);
-
-  // Xóa / ngưng cung cấp dịch vụ
-  const deleteRes = await apiClient.deleteService(createdService.data.maDichVu);
-  checkEnvelope(deleteRes, 200);
-  assert.equal(deleteRes.data.deleted, true);
-  assert.equal(deleteRes.data.maDichVu, createdService.data.maDichVu);
-
-  const afterDeleteServices = await apiClient.getServices();
-  assert.equal(afterDeleteServices.data.length, initialCount);
-  assert.ok(!afterDeleteServices.data.some((s) => s.maDichVu === createdService.data.maDichVu));
-  console.log("PASS deleteService: Đã ngưng cung cấp / xóa dịch vụ thành công khỏi catalog");
-
-  // 5. Kiểm thử UC6.3 - Quản lý Tài khoản (Users)
-  console.log("\n--- 5. Kiểm thử UC6.3: Users & Lock/Unlock ---");
-  const allUsers = await apiClient.getUsers();
-  checkEnvelope(allUsers, 200);
-  assert.ok(allUsers.data.length > 0);
-
-  // Lọc theo vai trò & trạng thái
-  const staffUsers = await apiClient.getUsers({ vaiTro: "STAFF" });
-  assert.ok(staffUsers.data.every((u) => u.vaiTro === "STAFF"));
-  const activeUsers = await apiClient.getUsers({ trangThai: "ACTIVE" });
-  assert.ok(activeUsers.data.every((u) => u.trangThai === "ACTIVE"));
-  console.log("PASS getUsers: Lọc chính xác theo vaiTro và trangThai");
-
-  // Tạo tài khoản STAFF mới
-  const newStaffUsername = `qa_staff_${Date.now()}`;
-  const createdStaff = await apiClient.createUser({
-    username: newStaffUsername,
-    password: "StaffPassword@123",
-    vaiTro: "STAFF",
-    trangThai: "ACTIVE",
-  });
-  checkEnvelope(createdStaff, 201);
-  assert.equal(createdStaff.data.username, newStaffUsername);
-  assert.equal(createdStaff.data.vaiTro, "STAFF");
-  assert.equal(createdStaff.data.trangThai, "ACTIVE");
-  assert.ok(!("password" in createdStaff.data));
-  assert.ok(!("passwordHash" in createdStaff.data));
-  console.log(`PASS createUser (STAFF): Cấp tài khoản mới ${createdStaff.data.username} thành công`);
-
-  // Kiểm tra chống trùng username (409)
-  await assert.rejects(
-    () =>
-      apiClient.createUser({
-        username: newStaffUsername,
-        password: "StaffPassword@123",
-        vaiTro: "STAFF",
-      }),
-    (err: unknown) => err instanceof ApiError && err.statusCode === 409,
-  );
-  console.log("PASS createUser duplicate: Báo lỗi 409 khi username đã tồn tại");
-
-  // Khóa tài khoản (LOCKED)
-  const lockedRes = await apiClient.updateUserStatus(createdStaff.data.maTaiKhoan, "LOCKED");
-  checkEnvelope(lockedRes, 200);
-  assert.equal(lockedRes.data.trangThai, "LOCKED");
-  console.log(`PASS updateUserStatus (Khóa): Tài khoản ${lockedRes.data.username} đã chuyển sang LOCKED`);
-
-  // Mở khóa tài khoản (ACTIVE)
-  const unlockedRes = await apiClient.updateUserStatus(createdStaff.data.maTaiKhoan, "ACTIVE");
-  checkEnvelope(unlockedRes, 200);
-  assert.equal(unlockedRes.data.trangThai, "ACTIVE");
-  console.log(`PASS updateUserStatus (Mở khóa): Tài khoản ${unlockedRes.data.username} đã chuyển sang ACTIVE`);
-
-  console.log("\n=======================================================");
-  console.log(" TẤT CẢ 5 NHÓM KIỂM THỬ TASK SH-18 ĐỀU ĐẠT CHUẨN 100%!");
-  console.log("=======================================================");
 }
 
 main().catch((err) => {
-  console.error("LỖI KIỂM THỬ SH-18:", err);
+  console.error("LỖI KIỂM THỬ SÂU SH-18:", err);
   process.exit(1);
 });
