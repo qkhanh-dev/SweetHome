@@ -166,6 +166,40 @@ export class RoomsService {
     );
   }
 
+  async completeCleaning(id: string) {
+    return this.prisma.$transaction(
+      async (tx) => {
+        const room = await this.lockRoomForUpdate(tx, id);
+        if (room.trangThai !== TrangThaiPhong.CHO_DON_DEP) {
+          throw new BadRequestException(
+            `Chỉ phòng đang ở trạng thái CHO_DON_DEP mới được xác nhận hoàn tất dọn phòng (hiện tại: ${room.trangThai})`,
+          );
+        }
+
+        const changed = await tx.phong.updateMany({
+          where: { maPhong: id, trangThai: TrangThaiPhong.CHO_DON_DEP },
+          data: { trangThai: TrangThaiPhong.TRONG },
+        });
+        if (changed.count !== 1) {
+          throw new ConflictException('Trạng thái phòng đã thay đổi; hãy tải lại dữ liệu');
+        }
+
+        return tx.phong.findUniqueOrThrow({
+          where: { maPhong: id },
+          select: {
+            maPhong: true,
+            soPhong: true,
+            tang: true,
+            trangThai: true,
+            maHomestay: true,
+            maLoaiPhong: true,
+          },
+        });
+      },
+      { timeout: 15000 },
+    );
+  }
+
   private async lockRoomForUpdate(tx: Prisma.TransactionClient, id: string) {
     // SH-08 booking creation locks the same room row before inserting CHO_COC.
     // Sharing this lock order prevents a pending booking from being stranded by maintenance.
