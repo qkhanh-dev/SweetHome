@@ -54,6 +54,7 @@ pids
 
 # Testing & Coverage
 coverage/
+.qa/
 **/coverage/
 .nyc_output/
 
