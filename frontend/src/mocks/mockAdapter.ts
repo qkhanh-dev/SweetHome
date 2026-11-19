@@ -266,6 +266,14 @@ function findRoom(maPhong: string): Phong {
   return room;
 }
 
+// Node-only fixture checks keep their existing trusted harness. Browser mutations
+// use the verified account restored by /api/auth/me.
+function requireStayRole(path: string, adminOnly = false): void {
+  if (typeof window === "undefined") return;
+  if (!browserSessionAccount) fail(401, "Vui lòng đăng nhập.", path);
+  if (browserSessionAccount.vaiTro !== "ADMIN" && (adminOnly || browserSessionAccount.vaiTro !== "STAFF")) fail(403, "Bạn không có quyền thực hiện thao tác này.", path);
+}
+
 function findBooking(maDatPhong: string): DatPhong {
   const booking = bookings.find((item) => item.maDatPhong === maDatPhong);
   if (!booking) {
@@ -347,7 +355,7 @@ function usageView(usage: SuDungDichVu): SuDungDichVu {
   const service = services.find((item) => item.maDichVu === usage.maDichVu);
   return {
     ...structuredClone(usage),
-    ...(service ? { dichVu: structuredClone(service) } : { dichVu: undefined }),
+    ...(usage.dichVu ? { dichVu: structuredClone(usage.dichVu) } : service ? { dichVu: structuredClone(service) } : {}),
   };
 }
 
@@ -555,6 +563,10 @@ function persistMockBookingState(): void {
       catalogRoomTypes: roomTypes,
       catalogAmenities: amenities,
       catalogHomestay: homestay,
+      stayUsages: usages,
+      stayInvoices: invoices,
+      stayReviews: reviews,
+      catalogServices: services,
     }));
   } catch (error) {
     console.warn("Không thể lưu trạng thái đặt phòng mock vào trình duyệt.", error);
@@ -578,6 +590,10 @@ function restoreMockBookingState(): void {
       catalogRoomTypes?: unknown;
       catalogAmenities?: unknown;
       catalogHomestay?: unknown;
+      stayUsages?: unknown;
+      stayInvoices?: unknown;
+      stayReviews?: unknown;
+      catalogServices?: unknown;
     };
     if (saved.version !== 1 || !Array.isArray(saved.bookings) || !Array.isArray(saved.customers)) {
       console.warn("Bỏ qua trạng thái đặt phòng mock có phiên bản hoặc cấu trúc không hợp lệ.");
@@ -604,6 +620,10 @@ function restoreMockBookingState(): void {
       rooms = structuredClone(saved.catalogRooms as Phong[]);
     }
     bookings = structuredClone(saved.bookings as DatPhong[]);
+    if (Array.isArray(saved.stayUsages)) usages = structuredClone(saved.stayUsages as SuDungDichVu[]);
+    if (Array.isArray(saved.stayInvoices)) invoices = structuredClone(saved.stayInvoices as HoaDon[]);
+    if (Array.isArray(saved.stayReviews)) reviews = structuredClone(saved.stayReviews as DanhGia[]);
+    if (Array.isArray(saved.catalogServices)) services = structuredClone(saved.catalogServices as DichVu[]);
     customers = structuredClone(saved.customers as KhachHang[]);
     if (Array.isArray(saved.roomStatuses)) {
       for (const entry of saved.roomStatuses) {
@@ -1082,6 +1102,7 @@ const roomsApi = {
 
   completeRoomCleaning: async (maPhong: string): Promise<ApiResponse<Phong>> => {
     const path = `/api/rooms/${encodeURIComponent(maPhong)}/complete-cleaning`;
+    requireStayRole(path);
     const room = findRoom(maPhong);
     if (room.trangThai !== TrangThaiPhong.CHO_DON_DEP) {
       fail(400, "Chỉ phòng đang chờ dọn dẹp mới được xác nhận hoàn tất", path);
@@ -1426,6 +1447,7 @@ const stayApi = {
     payload: { soCCCD: string; ghiChuCheckIn?: string },
   ): Promise<ApiResponse<CheckInResult>> => {
     const path = `/api/stays/${encodeURIComponent(maDatPhong)}/check-in`;
+    requireStayRole(path);
     const booking = findBooking(maDatPhong);
     if (booking.trangThai !== TrangThaiDatPhong.DA_XAC_NHAN) {
       fail(400, "Chỉ đơn đã xác nhận mới được làm thủ tục check-in", path);
@@ -1439,6 +1461,7 @@ const stayApi = {
     const room = findRoom(booking.maPhong);
     updateRoomStatus(room, TrangThaiPhong.DANG_SU_DUNG);
     void payload.ghiChuCheckIn;
+    persistMockBookingState();
     return respond("11.1", { datPhong: bookingView(booking) }, "Check-in thành công, đã cập nhật thông tin CCCD");
   },
 
@@ -1449,6 +1472,7 @@ const stayApi = {
     validateService(payload, "/api/services");
     const service: DichVu = { ...payload, maDichVu: makeId("DV") };
     services.push(service);
+    persistMockBookingState();
     return respond("12.1", service, "Tạo dịch vụ thành công", 201);
   },
 
@@ -1462,6 +1486,7 @@ const stayApi = {
     const updated = { ...services[index], ...patch, maDichVu };
     validateService(updated, path);
     services[index] = updated;
+    persistMockBookingState();
     return respond("12.1", updated, "Cập nhật dịch vụ thành công");
   },
 
@@ -1472,10 +1497,12 @@ const stayApi = {
       fail(409, "Dịch vụ đã được ghi nhận trong đơn lưu trú", path);
     }
     services = services.filter((item) => item.maDichVu !== maDichVu);
+    persistMockBookingState();
     return respond("12.1", { deleted: true, maDichVu }, "Xóa dịch vụ thành công");
   },
 
   getStayServices: async (maDatPhong: string): Promise<ApiResponse<StayServicesResult>> => {
+    requireStayRole(`/api/stays/${maDatPhong}/services`);
     findBooking(maDatPhong);
     const result = {
       maDatPhong,
@@ -1490,6 +1517,7 @@ const stayApi = {
     payload: { maDichVu: string; soLuong: number },
   ): Promise<ApiResponse<AddStayServiceResult>> => {
     const path = `/api/stays/${encodeURIComponent(maDatPhong)}/services`;
+    requireStayRole(path);
     const booking = findBooking(maDatPhong);
     if (booking.trangThai !== TrangThaiDatPhong.DANG_LUU_TRU) {
       fail(400, "Chỉ đơn đang lưu trú mới được ghi nhận dịch vụ", path);
@@ -1508,6 +1536,7 @@ const stayApi = {
       dichVu: structuredClone(service),
     };
     usages.push(usage);
+    persistMockBookingState();
     return respond(
       "13.2",
       { suDungDichVu: usageView(usage), tongTienDichVuTamTinh: sumStayServices(maDatPhong) },
@@ -1518,12 +1547,14 @@ const stayApi = {
 
   removeStayService: async (maDatPhong: string, maSuDung: string): Promise<ApiResponse<RemoveStayServiceResult>> => {
     const path = `/api/stays/${encodeURIComponent(maDatPhong)}/services/${encodeURIComponent(maSuDung)}`;
+    requireStayRole(path);
     const booking = findBooking(maDatPhong);
     if (booking.trangThai !== TrangThaiDatPhong.DANG_LUU_TRU) {
       fail(400, "Chỉ đơn đang lưu trú mới được xóa mục dịch vụ", path);
     }
     findUsage(maDatPhong, maSuDung);
     usages = usages.filter((item) => !(item.maDatPhong === maDatPhong && item.maSuDung === maSuDung));
+    persistMockBookingState();
     return respond(
       "13.1",
       { deleted: true, maSuDung, tongTienDichVuTamTinh: sumStayServices(maDatPhong) },
@@ -1546,6 +1577,7 @@ const invoicesApi = {
     payload: { phuPhi: number; phuongThuc?: string; ghiChuPhuPhi?: string },
   ): Promise<ApiResponse<HoaDon>> => {
     const path = `/api/stays/${encodeURIComponent(maDatPhong)}/check-out-invoice`;
+    requireStayRole(path);
     const booking = findBooking(maDatPhong);
     if (booking.trangThai !== TrangThaiDatPhong.DANG_LUU_TRU) {
       fail(400, "Chỉ đơn đang lưu trú mới được lập hóa đơn check-out", path);
@@ -1554,7 +1586,7 @@ const invoicesApi = {
       fail(400, "Thông tin lập hóa đơn không hợp lệ", path);
     }
     const phuPhi = payload.phuPhi ?? 0;
-    if (!Number.isFinite(phuPhi) || phuPhi < 0) fail(400, "Phụ phí phải là số không âm", path);
+    if (!Number.isSafeInteger(phuPhi) || phuPhi < 0) fail(400, "Phụ phí phải là số nguyên không âm", path);
     const phuongThuc = payload.phuongThuc ?? "CHUYEN_KHOAN_QR";
     if (!["TIEN_MAT", "CHUYEN_KHOAN_QR"].includes(phuongThuc)) {
       fail(400, "Phương thức thanh toán không hợp lệ", path);
@@ -1586,19 +1618,26 @@ const invoicesApi = {
       invoices.push(invoice);
     }
     void payload.ghiChuPhuPhi;
+    persistMockBookingState();
     return respond("14.1", invoiceDetail(invoice), "Lập hóa đơn quyết toán thành công", 201);
   },
 
   getInvoiceById: async (maHoaDon: string): Promise<ApiResponse<HoaDon>> => {
     const invoice = findInvoice(maHoaDon);
+    if (typeof window !== "undefined" && browserSessionAccount?.vaiTro === "CUSTOMER") {
+      if (getVerifiedBrowserCustomer(`/api/invoices/${maHoaDon}`).maKH !== findBooking(invoice.maDatPhong).maKH) fail(403, "Bạn không được xem hóa đơn của đơn khác.", `/api/invoices/${maHoaDon}`);
+    } else requireStayRole(`/api/invoices/${maHoaDon}`);
     return respond("14.1", invoiceDetail(invoice), "Lấy chi tiết hóa đơn thành công");
   },
 
-  getInvoices: async (): Promise<ApiResponse<HoaDon[]>> =>
-    respond("14.1", invoices.map(invoiceDetail), "Lấy danh sách hóa đơn thành công"),
+  getInvoices: async (): Promise<ApiResponse<HoaDon[]>> => {
+    requireStayRole("/api/invoices");
+    return respond("14.1", invoices.map(invoiceDetail), "Lấy danh sách hóa đơn thành công");
+  },
 
   payInvoice: async (maHoaDon: string, payload: { phuongThuc: string }): Promise<ApiResponse<PayInvoiceResult>> => {
     const path = `/api/invoices/${encodeURIComponent(maHoaDon)}/pay`;
+    requireStayRole(path);
     const invoice = findInvoice(maHoaDon);
     if (invoice.trangThai !== TrangThaiHoaDon.CHUA_THANH_TOAN) {
       fail(400, "Hóa đơn không ở trạng thái chờ thanh toán", path);
@@ -1616,6 +1655,7 @@ const invoicesApi = {
     invoice.ngayLap = new Date().toISOString();
     booking.trangThai = TrangThaiDatPhong.HOAN_TAT;
     updateRoomStatus(room, TrangThaiPhong.CHO_DON_DEP);
+    persistMockBookingState();
     const result: PayInvoiceResult = {
       hoaDon: invoiceView(invoice),
       datPhong: { maDatPhong: booking.maDatPhong, trangThai: booking.trangThai },
@@ -1664,6 +1704,10 @@ const reviewsAndReportsApi = {
       fail(400, "Thông tin đánh giá không hợp lệ", path);
     }
     const booking = findBooking(payload.maDatPhong);
+    if (typeof window !== "undefined") {
+      const customer = getVerifiedBrowserCustomer(path);
+      if (customer.maKH !== booking.maKH) fail(403, "Bạn chỉ được đánh giá đơn của mình.", path);
+    }
     if (booking.trangThai !== TrangThaiDatPhong.HOAN_TAT) {
       fail(400, "Chỉ những đơn đặt phòng đã Hoàn tất mới được gửi đánh giá", path);
     }
@@ -1682,15 +1726,18 @@ const reviewsAndReportsApi = {
       phanHoiHost: null,
     };
     reviews.push(review);
+    persistMockBookingState();
     return respond("15.2", review, "Cảm ơn bạn đã gửi đánh giá trải nghiệm tại SweetHome", 201);
   },
 
   replyReview: async (maDanhGia: string, phanHoiHost: string): Promise<ApiResponse<DanhGia>> => {
     const path = `/api/reviews/${encodeURIComponent(maDanhGia)}/reply`;
+    requireStayRole(path, true);
     const review = reviews.find((item) => item.maDanhGia === maDanhGia);
     if (!review) fail(404, "Không tìm thấy đánh giá", path);
     if (typeof phanHoiHost !== "string" || !phanHoiHost.trim()) fail(400, "Nội dung phản hồi không được để trống", path);
     review.phanHoiHost = phanHoiHost;
+    persistMockBookingState();
     return respond("15.3", review, "Phản hồi đánh giá thành công");
   },
 

@@ -446,6 +446,24 @@ export const apiClient = {
   getInvoicePdfUrl: (maHoaDon: string): string =>
     `${API_BASE_URL}/invoices/${encodeURIComponent(maHoaDon)}/pdf`,
 
+  downloadInvoicePdf: async (maHoaDon: string): Promise<Blob> => {
+    if (USE_MOCK) throw new ApiError("Dùng In biên lai / Lưu thành PDF với dữ liệu mock.", 400, null);
+    const headers = new Headers({ Accept: "application/pdf" });
+    const token = getAccessToken();
+    if (token) headers.set("Authorization", `Bearer ${token}`);
+    const response = await fetch(apiClient.getInvoicePdfUrl(maHoaDon), { headers, cache: "no-store" });
+    if (!response.ok) {
+      let message = `Không tải được biên lai (HTTP ${response.status}).`;
+      try { const payload = await response.json(); if (typeof payload.message === "string") message = payload.message; } catch { /* The PDF endpoint may return a plain error. */ }
+      if (response.status === 401) clearBrowserSession();
+      throw new ApiError(message, response.status, null);
+    }
+    if (!response.headers.get("Content-Type")?.toLowerCase().includes("application/pdf")) throw new ApiError("Phản hồi không phải tệp PDF.", response.status, null);
+    const blob = await response.blob();
+    if ((await blob.slice(0, 5).text()) !== "%PDF-") throw new ApiError("Nội dung tệp PDF không hợp lệ.", response.status, null);
+    return blob;
+  },
+
   // Reviews and administrative reports.
   getReviews: (params?: { maPhong?: string; maLoaiPhong?: string; soSao?: number }): Promise<ApiResponse<DanhGia[]>> =>
     request(queryPath("/reviews", params), () => mockApi.getReviews(params)),

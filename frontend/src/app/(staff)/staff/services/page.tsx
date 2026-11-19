@@ -1,10 +1,4 @@
-﻿export default function Page() {
-  return (
-    <section className="p-6">
-      <h1 className="text-2xl font-semibold">ServiceUI</h1>
-      <p className="mt-2 text-muted-foreground">
-        Khung chức năng SweetHome.
-      </p>
-    </section>
-  );
+import { StayServices } from "@/components/staff/stay-services";
+export default function Page() {
+  return <StayServices />;
 }

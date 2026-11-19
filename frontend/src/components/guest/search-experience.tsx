@@ -38,6 +38,7 @@ function RoomCard({ room, bookingUrl }: { room: AvailableRoomResult; bookingUrl:
         </div>
       </div>
       <div className="space-y-4 p-5">
+        <Link className="text-sm font-medium underline" href={`/rooms/${encodeURIComponent(room.maPhong)}`}>Thông tin phòng và đánh giá</Link>
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
             <p className="text-xs uppercase tracking-wide text-muted-foreground">

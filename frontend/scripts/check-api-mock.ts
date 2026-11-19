@@ -305,11 +305,13 @@ async function main(): Promise<void> {
       ngayNhan: "2030-11-16",
       ngayTra: "2030-11-18",
       soKhach: 2,
-      hoTen: "Stay Guest",
-      soDienThoai: "0903333777",
-      email: "stay-guest@example.test",
+      maKH: "KH001",
+      hoTen: "Nguyễn Minh Anh",
+      soDienThoai: "0901234567",
+      email: "minhanh@gmail.com",
     });
     const stayBooking = checkedInBookingResponse.data.datPhong;
+    await apiClient.login({ username: "staff_demo", password: "Staff@123" });
     await apiClient.triggerPaymentWebhook(webhookPayload(stayBooking.maDatPhong, stayBooking.tienCoc));
     await errorStatus(() => apiClient.checkIn(stayBooking.maDatPhong, { soCCCD: "12" }), 400);
     const checkedIn = await apiClient.checkIn(stayBooking.maDatPhong, { soCCCD: "012345678901" });
@@ -359,6 +361,7 @@ async function main(): Promise<void> {
     await errorStatus(() => apiClient.completeRoomCleaning("P101").then(() => apiClient.completeRoomCleaning("P101")), 400);
     assert.equal((await apiClient.getRoomById("P101")).data.trangThai, "TRONG");
 
+    await apiClient.login({ username: "customer_demo", password: "Customer@123" });
     const review = await apiClient.createReview({ maDatPhong: stayBooking.maDatPhong, soSao: 5, noiDung: "Mock workflow review" });
     envelope(review, 201);
     assert.equal(review.data.phanHoiHost, null);
@@ -366,6 +369,7 @@ async function main(): Promise<void> {
     const filteredReviews = await apiClient.getReviews({ maPhong: "P101", maLoaiPhong: "LP01", soSao: 5 });
     envelope(filteredReviews);
     assert.ok(filteredReviews.data.some((item) => item.maDanhGia === review.data.maDanhGia));
+    await apiClient.login({ username: "admin_sweethome", password: "Admin@123" });
     const replied = await apiClient.replyReview(review.data.maDanhGia, "Cảm ơn bạn đã đánh giá.");
     envelope(replied);
     assert.equal((await apiClient.getReviews({ maPhong: "P101" })).data.find((item) => item.maDanhGia === review.data.maDanhGia)?.phanHoiHost, "Cảm ơn bạn đã đánh giá.");

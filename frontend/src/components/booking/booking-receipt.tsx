@@ -10,6 +10,11 @@ import { apiErrorMessage } from "@/lib/sh09-validation";
 import { LatestRequestGate } from "@/lib/latest-request";
 import { StatusBadge } from "@/components/status-badge";
 import { DepositDialog } from "@/components/booking/deposit-dialog";
+import { BookingReview } from "@/components/reviews/reviews";
+import { InvoiceReceipt } from "@/components/booking/invoice-receipt";
+import { ownsBooking } from "@/lib/sh17-validation";
+import { useAuthStore } from "@/stores/auth-store";
+import { printDocument } from "@/lib/print-document";
 
 const currency = new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND", maximumFractionDigits: 0 });
 
@@ -22,6 +27,7 @@ function dateLabel(value: string): string {
 }
 
 export function BookingReceipt({ maDatPhong }: { maDatPhong: string }) {
+  const user = useAuthStore((state) => state.user);
   const [booking, setBooking] = useState<DatPhong | null>(null);
   const [paymentQr, setPaymentQr] = useState<PaymentQrResult | null>(null);
   const [qrOpen, setQrOpen] = useState(false);
@@ -94,10 +100,10 @@ export function BookingReceipt({ maDatPhong }: { maDatPhong: string }) {
       <div className="mx-auto max-w-3xl">
         <div className="mb-5 flex flex-wrap items-center justify-between gap-3 print:hidden">
           <Link href="/booking/lookup" className="text-sm font-medium text-emerald-800 underline">← Tra cứu đơn</Link>
-          <button ref={modalFallbackRef} type="button" onClick={() => window.print()} className="min-h-10 rounded-md border px-4 py-2 text-sm font-medium hover:bg-muted">In phiếu xác nhận</button>
+          <button ref={modalFallbackRef} type="button" onClick={() => printDocument(`booking-confirmation-${booking.maDatPhong}`)} className="min-h-10 rounded-md border px-4 py-2 text-sm font-medium hover:bg-muted">In phiếu xác nhận</button>
         </div>
 
-        <article className="rounded-2xl border bg-card p-5 shadow-sm sm:p-8 print:border-0 print:shadow-none">
+        <article id={`booking-confirmation-${booking.maDatPhong}`} className="rounded-2xl border bg-card p-5 shadow-sm sm:p-8 print:border-0 print:shadow-none">
           <div className="flex flex-wrap items-start justify-between gap-4 border-b pb-5">
             <div>
               <p className="text-sm font-semibold uppercase tracking-[0.16em] text-emerald-800">SweetHome · Phiếu xác nhận</p>
@@ -145,6 +151,8 @@ export function BookingReceipt({ maDatPhong }: { maDatPhong: string }) {
             </div>
           ) : null}
         </article>
+        {ownsBooking(user, booking) && booking.hoaDon?.trangThai === "DA_THANH_TOAN" && <div className="mt-6"><InvoiceReceipt invoice={booking.hoaDon} /></div>}
+        <BookingReview key={booking.maDatPhong} booking={booking} />
 
         {paymentQr ? <DepositDialog open={qrOpen} onClose={() => setQrOpen(false)} booking={booking} paymentQr={paymentQr} returnFocusRef={modalFallbackRef} onBookingChange={(updated, updatedRoom) => setBooking((current) => {
           if (!current) return updated;

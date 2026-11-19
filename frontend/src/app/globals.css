@@ -2,6 +2,19 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer components {
+  .sh17-button { @apply min-h-11 rounded-md bg-emerald-800 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-60; }
+  .sh17-card { @apply rounded-xl border bg-card p-4 shadow-sm sm:p-6; }
+  .sh17-error { @apply rounded-md border border-rose-200 bg-rose-50 p-3 text-sm text-rose-800; }
+}
+@media print {
+  header, aside, nav { display: none !important; }
+  body { color: black; background: white; }
+  body[data-sh17-print] * { visibility: hidden; }
+  body[data-sh17-print] .sh17-print-active, body[data-sh17-print] .sh17-print-active * { visibility: visible; }
+  .sh17-print-active { position: absolute; top: 0; left: 0; width: 100%; border: 0; box-shadow: none; padding: 12mm; }
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
