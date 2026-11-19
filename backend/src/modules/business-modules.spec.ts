@@ -11,9 +11,15 @@ import { HomestayRoomsModule } from './homestay-rooms/homestay-rooms.module';
 import { HomestayModule } from './homestay/homestay.module';
 import { ReportsAdminModule } from './reports-admin/reports-admin.module';
 import { ReviewsModule } from './reviews/reviews.module';
+import { ReviewController } from './reviews/review.controller';
+import { ReviewsService } from './reviews/reviews.service';
 import { RoomTypesModule } from './room-types/room-types.module';
 import { RoomsModule } from './rooms/rooms.module';
 import { StayOperationsModule } from './stay-operations/stay-operations.module';
+import { StayController } from './stay-operations/stay.controller';
+import { ServiceController } from './stay-operations/service.controller';
+import { StayService } from './stay-operations/stay.service';
+import { StayServiceUsageService } from './stay-operations/service-usage.service';
 import { UsersModule } from './users/users.module';
 
 describe('SweetHome Business Module Graph', () => {
@@ -22,17 +28,30 @@ describe('SweetHome Business Module Graph', () => {
   };
 
   describe('SH-04 - Modules chưa triển khai nghiệp vụ', () => {
-    const scaffoldModules = [
-      StayOperationsModule,
-      BillingPaymentModule,
-      ReviewsModule,
-      ReportsAdminModule,
-    ];
+    const scaffoldModules = [BillingPaymentModule, ReportsAdminModule];
 
     it.each(scaffoldModules)('%p remains an empty scaffold', (moduleClass) => {
       expect(getModuleMetadata(moduleClass, MODULE_METADATA.IMPORTS)).toEqual([]);
       expect(getModuleMetadata(moduleClass, MODULE_METADATA.PROVIDERS)).toEqual([]);
       expect(getModuleMetadata(moduleClass, MODULE_METADATA.CONTROLLERS)).toEqual([]);
+    });
+  });
+
+  describe('SH-15 - Stay Operations & Reviews Modules', () => {
+    it('registers StayController, ServiceController and services in StayOperationsModule', () => {
+      const controllers = getModuleMetadata(StayOperationsModule, MODULE_METADATA.CONTROLLERS);
+      const providers = getModuleMetadata(StayOperationsModule, MODULE_METADATA.PROVIDERS);
+
+      expect(controllers).toEqual(expect.arrayContaining([StayController, ServiceController]));
+      expect(providers).toEqual(expect.arrayContaining([StayService, StayServiceUsageService]));
+    });
+
+    it('registers ReviewController and ReviewsService in ReviewsModule', () => {
+      const controllers = getModuleMetadata(ReviewsModule, MODULE_METADATA.CONTROLLERS);
+      const providers = getModuleMetadata(ReviewsModule, MODULE_METADATA.PROVIDERS);
+
+      expect(controllers).toContain(ReviewController);
+      expect(providers).toContain(ReviewsService);
     });
   });
 
