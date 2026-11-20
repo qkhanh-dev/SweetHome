@@ -44,6 +44,7 @@ const staffLinks = [
 ];
 
 const adminLinks = [
+  { href: "/admin/reviews", label: "Đánh giá & phản hồi" },
   { href: "/admin", label: "Dashboard thống kê" },
   { href: "/admin/services", label: "Quản lý dịch vụ" },
   { href: "/admin/users", label: "Quản lý tài khoản" },
