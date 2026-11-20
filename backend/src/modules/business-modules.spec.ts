@@ -9,7 +9,9 @@ import { BillingPaymentModule } from './billing-payment/billing-payment.module';
 import { CustomersModule } from './customers/customers.module';
 import { HomestayRoomsModule } from './homestay-rooms/homestay-rooms.module';
 import { HomestayModule } from './homestay/homestay.module';
+import { ReportsAdminController } from './reports-admin/reports-admin.controller';
 import { ReportsAdminModule } from './reports-admin/reports-admin.module';
+import { ReportsAdminService } from './reports-admin/reports-admin.service';
 import { ReportQueryRepository } from './reports-admin/repositories/report-query.repository';
 import { ReviewsModule } from './reviews/reviews.module';
 import { ReviewController } from './reviews/review.controller';
@@ -17,6 +19,9 @@ import { ReviewsService } from './reviews/reviews.service';
 import { RoomTypesModule } from './room-types/room-types.module';
 import { RoomsModule } from './rooms/rooms.module';
 import { StayOperationsModule } from './stay-operations/stay-operations.module';
+import { ServicesController } from './services/services.controller';
+import { ServicesModule } from './services/services.module';
+import { ServicesService } from './services/services.service';
 import { StayController } from './stay-operations/stay.controller';
 import { ServiceController } from './stay-operations/service.controller';
 import { StayService } from './stay-operations/stay.service';
@@ -38,15 +43,29 @@ describe('SweetHome Business Module Graph', () => {
     });
   });
 
-  describe('SH-14 - Reports & Admin Module', () => {
-    it('registers and exports ReportQueryRepository without controllers', () => {
+  describe('SH-14/SH-15 - Reports & Admin Module', () => {
+    it('registers the report controller/service and exports the existing SH-14 repository', () => {
       const providers = getModuleMetadata(ReportsAdminModule, MODULE_METADATA.PROVIDERS);
       const exportsList = getModuleMetadata(ReportsAdminModule, MODULE_METADATA.EXPORTS);
       const controllers = getModuleMetadata(ReportsAdminModule, MODULE_METADATA.CONTROLLERS);
 
-      expect(providers).toContain(ReportQueryRepository);
+      expect(providers).toEqual(
+        expect.arrayContaining([ReportQueryRepository, ReportsAdminService]),
+      );
       expect(exportsList).toContain(ReportQueryRepository);
-      expect(controllers).toEqual([]);
+      expect(controllers).toContain(ReportsAdminController);
+    });
+  });
+
+  describe('SH-15 - Services Catalog Module', () => {
+    it('registers ServicesController and ServicesService in ServicesModule', () => {
+      const controllers = getModuleMetadata(ServicesModule, MODULE_METADATA.CONTROLLERS);
+      const providers = getModuleMetadata(ServicesModule, MODULE_METADATA.PROVIDERS);
+      const exportsList = getModuleMetadata(ServicesModule, MODULE_METADATA.EXPORTS);
+
+      expect(controllers).toContain(ServicesController);
+      expect(providers).toContain(ServicesService);
+      expect(exportsList).toContain(ServicesService);
     });
   });
 

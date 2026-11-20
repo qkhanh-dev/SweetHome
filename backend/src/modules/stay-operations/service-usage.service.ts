@@ -1,11 +1,41 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
-import { TrangThaiDatPhong } from '@prisma/client';
+import { Prisma, TrangThaiDatPhong } from '@prisma/client';
 import { PrismaService } from '../../prisma/prisma.service';
 import { RecordServiceUsageDto } from './dto/service-usage.dto';
 
 @Injectable()
 export class StayServiceUsageService {
   constructor(private readonly prisma: PrismaService) {}
+
+  private async lockBookingForUpdate(
+    tx: Prisma.TransactionClient,
+    bookingId: string,
+  ): Promise<{ maDatPhong: string; trangThai: TrangThaiDatPhong }> {
+    // SH-16 check-out must acquire this same DatPhong row lock before calculating
+    // the invoice and changing the booking to HOAN_TAT. That makes service writes
+    // and deletions serialize with check-out instead of racing its service total.
+    const lockedRows = await tx.$queryRaw<Array<{ maDatPhong: string }>>`
+      SELECT "maDatPhong"
+      FROM "DatPhong"
+      WHERE "maDatPhong" = ${bookingId}
+      FOR UPDATE
+    `;
+
+    if (lockedRows.length === 0) {
+      throw new NotFoundException('Không tìm thấy đơn đặt phòng');
+    }
+
+    const booking = await tx.datPhong.findUnique({
+      where: { maDatPhong: bookingId },
+      select: { maDatPhong: true, trangThai: true },
+    });
+
+    if (!booking) {
+      throw new NotFoundException('Không tìm thấy đơn đặt phòng');
+    }
+
+    return booking;
+  }
 
   async getServiceUsages(bookingId: string) {
     const booking = await this.prisma.datPhong.findUnique({
@@ -37,19 +67,25 @@ export class StayServiceUsageService {
   async recordServiceUsage(bookingId: string, dto: RecordServiceUsageDto) {
     return this.prisma.$transaction(
       async (tx) => {
-        const booking = await tx.datPhong.findUnique({
-          where: { maDatPhong: bookingId },
-          select: { maDatPhong: true, trangThai: true },
-        });
-
-        if (!booking) {
-          throw new NotFoundException('Không tìm thấy đơn đặt phòng');
-        }
+        const booking = await this.lockBookingForUpdate(tx, bookingId);
 
         if (booking.trangThai !== TrangThaiDatPhong.DANG_LUU_TRU) {
           throw new BadRequestException(
             `Chỉ được ghi nhận dịch vụ phát sinh cho đơn ở trạng thái DANG_LUU_TRU (trạng thái hiện tại: ${booking.trangThai})`,
           );
+        }
+
+        // Hold a shared row lock while reading the catalog price and inserting the
+        // usage snapshot. Concurrent catalog updates/deletes wait for this short tx.
+        const lockedServices = await tx.$queryRaw<Array<{ maDichVu: string }>>`
+          SELECT "maDichVu"
+          FROM "DichVu"
+          WHERE "maDichVu" = ${dto.maDichVu}
+          FOR SHARE
+        `;
+
+        if (lockedServices.length === 0) {
+          throw new NotFoundException('Không tìm thấy dịch vụ trong danh mục');
         }
 
         const dichVu = await tx.dichVu.findUnique({
@@ -99,14 +135,7 @@ export class StayServiceUsageService {
   async removeServiceUsage(bookingId: string, usageId: string) {
     return this.prisma.$transaction(
       async (tx) => {
-        const booking = await tx.datPhong.findUnique({
-          where: { maDatPhong: bookingId },
-          select: { maDatPhong: true, trangThai: true },
-        });
-
-        if (!booking) {
-          throw new NotFoundException('Không tìm thấy đơn đặt phòng');
-        }
+        const booking = await this.lockBookingForUpdate(tx, bookingId);
 
         if (booking.trangThai !== TrangThaiDatPhong.DANG_LUU_TRU) {
           throw new BadRequestException(

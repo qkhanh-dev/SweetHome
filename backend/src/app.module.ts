@@ -8,6 +8,7 @@ import { HomestayRoomsModule } from './modules/homestay-rooms/homestay-rooms.mod
 import { ReportsAdminModule } from './modules/reports-admin/reports-admin.module';
 import { ReviewsModule } from './modules/reviews/reviews.module';
 import { StayOperationsModule } from './modules/stay-operations/stay-operations.module';
+import { ServicesModule } from './modules/services/services.module';
 import { PrismaModule } from './prisma/prisma.module';
 
 @Module({
@@ -22,6 +23,7 @@ import { PrismaModule } from './prisma/prisma.module';
     BookingModule,
     HomestayRoomsModule,
     StayOperationsModule,
+    ServicesModule,
     BillingPaymentModule,
     ReviewsModule,
     ReportsAdminModule,

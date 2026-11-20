@@ -9,6 +9,7 @@ export function createSwaggerDocument(app: INestApplication): OpenAPIObject {
     .addTag('Homestay & Rooms', 'Quản lý thông tin Homestay, Loại phòng, Phòng và Tiện nghi')
     .addTag('Booking', 'Tìm kiếm phòng trống, Đặt phòng trực tuyến và Thanh toán cọc')
     .addTag('Stay Operations', 'Vận hành lưu trú: Check-in, Dọn phòng và Ghi nhận dịch vụ')
+    .addTag('Services', 'Quản lý danh mục dịch vụ phụ trợ')
     .addTag('Billing & Payment', 'Quyết toán hóa đơn, Thanh toán trả phòng và Xuất biên lai PDF')
     .addTag('Reviews', 'Đánh giá trải nghiệm và Phản hồi từ Host')
     .addTag('Reports & Admin', 'Báo cáo doanh thu, Tỷ lệ lấp đầy và Quản trị tài khoản')
