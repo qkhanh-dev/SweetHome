@@ -5,6 +5,7 @@ import { AppModule } from './app.module';
 import { HealthModule } from './health/health.module';
 import { BookingModule } from './modules/booking/booking.module';
 import { HomestayRoomsModule } from './modules/homestay-rooms/homestay-rooms.module';
+import { ServicesModule } from './modules/services/services.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { PrismaService } from './prisma/prisma.service';
 
@@ -33,6 +34,12 @@ describe('AppModule', () => {
 
   it('keeps ConfigModule available', () => {
     expect(module.get(ConfigService)).toBeInstanceOf(ConfigService);
+  });
+
+  it('registers ServicesModule in the application graph', () => {
+    const imports = Reflect.getMetadata(MODULE_METADATA.IMPORTS, AppModule) as object[];
+
+    expect(imports).toContain(ServicesModule);
   });
 
   it('registers BookingModule before parameterized room routes for SH-08 compatibility', () => {

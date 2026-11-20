@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
   Param,
   Patch,
   Post,
@@ -72,6 +73,18 @@ export class RoomsController {
     return result(
       'Cập nhật trạng thái phòng thành công',
       await this.rooms.updateStatus(id, dto.trangThai),
+    );
+  }
+
+  @Post(':id/complete-cleaning')
+  @HttpCode(200)
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('STAFF', 'ADMIN')
+  async completeCleaning(@Param('id') id: string) {
+    return result(
+      'Đã xác nhận hoàn tất dọn phòng, phòng sẵn sàng đón khách mới',
+      await this.rooms.completeCleaning(id),
     );
   }
 }
