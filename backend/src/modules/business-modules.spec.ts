@@ -10,6 +10,7 @@ import { CustomersModule } from './customers/customers.module';
 import { HomestayRoomsModule } from './homestay-rooms/homestay-rooms.module';
 import { HomestayModule } from './homestay/homestay.module';
 import { ReportsAdminModule } from './reports-admin/reports-admin.module';
+import { ReportQueryRepository } from './reports-admin/repositories/report-query.repository';
 import { ReviewsModule } from './reviews/reviews.module';
 import { ReviewController } from './reviews/review.controller';
 import { ReviewsService } from './reviews/reviews.service';
@@ -28,12 +29,24 @@ describe('SweetHome Business Module Graph', () => {
   };
 
   describe('SH-04 - Modules chưa triển khai nghiệp vụ', () => {
-    const scaffoldModules = [BillingPaymentModule, ReportsAdminModule];
+    const scaffoldModules = [BillingPaymentModule];
 
     it.each(scaffoldModules)('%p remains an empty scaffold', (moduleClass) => {
       expect(getModuleMetadata(moduleClass, MODULE_METADATA.IMPORTS)).toEqual([]);
       expect(getModuleMetadata(moduleClass, MODULE_METADATA.PROVIDERS)).toEqual([]);
       expect(getModuleMetadata(moduleClass, MODULE_METADATA.CONTROLLERS)).toEqual([]);
+    });
+  });
+
+  describe('SH-14 - Reports & Admin Module', () => {
+    it('registers and exports ReportQueryRepository without controllers', () => {
+      const providers = getModuleMetadata(ReportsAdminModule, MODULE_METADATA.PROVIDERS);
+      const exportsList = getModuleMetadata(ReportsAdminModule, MODULE_METADATA.EXPORTS);
+      const controllers = getModuleMetadata(ReportsAdminModule, MODULE_METADATA.CONTROLLERS);
+
+      expect(providers).toContain(ReportQueryRepository);
+      expect(exportsList).toContain(ReportQueryRepository);
+      expect(controllers).toEqual([]);
     });
   });
 
