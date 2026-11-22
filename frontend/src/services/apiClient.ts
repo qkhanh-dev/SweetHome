@@ -46,7 +46,9 @@ import { ApiError } from "@/services/apiError";
 export { ApiError } from "@/services/apiError";
 
 const API_BASE_URL = (
-  process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api"
+  (typeof window === "undefined" ? process.env.INTERNAL_API_URL : undefined) ||
+  process.env.NEXT_PUBLIC_API_URL ||
+  "http://localhost:3001/api"
 ).replace(/\/+$/, "");
 const USE_MOCK = process.env.NEXT_PUBLIC_USE_MOCK === "true";
 
