@@ -61,6 +61,7 @@ const PAYMENT_SIMULATOR_ENABLED = paymentSimulatorEnabled(
 );
 
 let accessToken: string | null = null;
+let forbiddenSessionCheck: Promise<void> | null = null;
 export const isMockMode = USE_MOCK;
 export const isPaymentSimulatorEnabled = PAYMENT_SIMULATOR_ENABLED;
 
@@ -137,8 +138,12 @@ async function request<T>(
   }
 
   if (!response.ok || (isRecord(payload) && payload.success === false)) {
-    if (typeof window !== "undefined" && (response.status === 401 || response.status === 403)) {
+    if (typeof window !== "undefined" && response.status === 401) {
       clearBrowserSession();
+    } else if (typeof window !== "undefined" && response.status === 403) {
+      // 403 can mean either an expired/locked session or a valid user lacking
+      // the role for this resource. Revalidate /auth/me before deciding to log out.
+      await revalidateSessionAfterForbidden();
     }
     const message =
       isRecord(payload) && typeof payload.message === "string"
@@ -213,6 +218,32 @@ async function internalAuthRequest<T>(
   const restoredToken = response.headers.get("X-SweetHome-Access-Token");
   if (restoredToken) setAccessToken(restoredToken);
   return payload as unknown as ApiResponse<T>;
+}
+
+async function revalidateSessionAfterForbidden(): Promise<void> {
+  if (typeof window === "undefined") return;
+
+  // Several concurrent requests can receive 403 at once; share one session check.
+  if (!forbiddenSessionCheck) {
+    forbiddenSessionCheck = (async () => {
+      try {
+        await internalAuthRequest<TaiKhoan>("me", "GET");
+      } catch (error) {
+        // A role-level 403 from the original API is not a logout condition.
+        // /auth/me returns 401/403 only when the current session is invalid.
+        if (
+          error instanceof ApiError &&
+          (error.statusCode === 401 || error.statusCode === 403)
+        ) {
+          clearBrowserSession();
+        }
+      }
+    })().finally(() => {
+      forbiddenSessionCheck = null;
+    });
+  }
+
+  await forbiddenSessionCheck;
 }
 
 const json = (method: string, body?: unknown, headers?: HeadersInit): RequestInit => ({

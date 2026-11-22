@@ -32,34 +32,69 @@ async function main(): Promise<void> {
   process.env.NEXT_PUBLIC_USE_MOCK = "false";
   process.env.NEXT_PUBLIC_API_URL = "https://backend.example.test/api///";
   process.env.NEXT_PUBLIC_ENABLE_PAYMENT_SIMULATOR = "false";
-  const { apiClient, ApiError, setAccessToken, paymentSimulatorEnabled } = await import("@/services/apiClient");
+const {
+  apiClient,
+  ApiError,
+  setAccessToken,
+  getAccessToken,
+  paymentSimulatorEnabled,
+} = await import("@/services/apiClient");
   assert.equal(paymentSimulatorEnabled(false, false, "development"), false);
   assert.equal(paymentSimulatorEnabled(false, true, "development"), true);
   assert.equal(paymentSimulatorEnabled(false, true, "production"), false);
   assert.equal(paymentSimulatorEnabled(true, false, "production"), true);
-  const calls: Array<{ url: URL; init: RequestInit; headers: Headers; body?: string }> = [];
+const calls: Array<{ url: URL; init: RequestInit; headers: Headers; body?: string }> = [];
   let respond: (url: URL, init: RequestInit, headers: Headers, body?: string) => Response = () => jsonResponse(200, envelope(200, null));
+  let browserMeStatus = 200;
+  let browserMeChecks = 0;
+  let sessionDeleteCalls = 0;
+  let sessionInvalidationEvents = 0;
+const sampleAccount = {
+    maTaiKhoan: "TK_TEST",
+    username: "frontend_test",
+    vaiTro: "STAFF",
+    trangThai: "ACTIVE",
+    khachHang: null,
+  };
 
-  const originalFetch = globalThis.fetch;
+const originalFetch = globalThis.fetch;
   globalThis.fetch = async (input: RequestInfo | URL, init: RequestInit = {}) => {
-    const url = new URL(String(input), "https://frontend.example.test");
-    const headers = new Headers(init.headers);
-    const body = typeof init.body === "string" ? init.body : undefined;
+const url = new URL(String(input), "https://frontend.example.test");
+const headers = new Headers(init.headers);
+const body = typeof init.body === "string" ? init.body : undefined;
     calls.push({ url, init, headers, body });
     if (url.origin === "https://frontend.example.test") {
-      return jsonResponse(200, envelope(200, { loggedOut: true }));
+      if (url.pathname === "/api/auth/me") {
+        browserMeChecks += 1;
+        if (browserMeStatus === 200) {
+          return new Response(JSON.stringify(envelope(200, sampleAccount)), {
+            status: 200,
+            headers: {
+              "Content-Type": "application/json",
+              "X-SweetHome-Access-Token": "jwt-test-token",
+            },
+          });
+        }
+        return jsonResponse(browserMeStatus, {
+          success: false,
+          statusCode: browserMeStatus,
+          error: browserMeStatus === 401 ? "Unauthorized" : "Forbidden",
+          message: browserMeStatus === 401 ? "Session expired" : "Account is locked",
+          details: [],
+          path: "/api/auth/me",
+          timestamp: new Date().toISOString(),
+        });
+      }
+      if (url.pathname === "/api/auth/session" && init.method === "DELETE") {
+        sessionDeleteCalls += 1;
+        return jsonResponse(200, envelope(200, { loggedOut: true }));
+      }
+      return jsonResponse(404, { success: false, statusCode: 404, message: "Not found" });
     }
     return respond(url, init, headers, body);
   };
 
   try {
-    const sampleAccount = {
-      maTaiKhoan: "TK_TEST",
-      username: "frontend_test",
-      vaiTro: "CUSTOMER",
-      trangThai: "ACTIVE",
-      khachHang: null,
-    };
     respond = (url, init, headers, body) => {
       assert.equal(url.href, "https://backend.example.test/api/auth/login");
       assert.equal(init.method, "POST");
@@ -68,7 +103,7 @@ async function main(): Promise<void> {
       assert.deepEqual(JSON.parse(body ?? "{}"), { username: "frontend_test", password: "Pässword!" });
       return jsonResponse(200, envelope(200, { accessToken: "jwt-test-token", taiKhoan: sampleAccount }));
     };
-    const login = await apiClient.login({ username: "frontend_test", password: "Pässword!" });
+const login = await apiClient.login({ username: "frontend_test", password: "Pässword!" });
     assert.equal(login.data.accessToken, "jwt-test-token");
     assert.equal(calls.length, 1);
 
@@ -82,8 +117,82 @@ async function main(): Promise<void> {
 
     Object.defineProperty(globalThis, "window", {
       configurable: true,
-      value: { dispatchEvent: () => true },
+      value: {
+        dispatchEvent: () => {
+          sessionInvalidationEvents += 1;
+          return true;
+        },
+      },
     });
+    setAccessToken("jwt-test-token");
+
+    // A resource-level 403 must not log out a still-valid STAFF/CUSTOMER session.
+    browserMeStatus = 200;
+    respond = (url) => {
+      assert.equal(url.pathname, "/api/reports/revenue");
+      return jsonResponse(403, {
+        success: false,
+        statusCode: 403,
+        error: "Forbidden",
+        message: "Insufficient role",
+        details: [],
+        path: "/api/reports/revenue",
+        timestamp: new Date().toISOString(),
+      });
+    };
+    await assert.rejects(
+      () => apiClient.getRevenueStats(),
+      (error: unknown) => error instanceof ApiError && error.statusCode === 403,
+    );
+    assert.equal(getAccessToken(), "jwt-test-token");
+    assert.equal(browserMeChecks, 1);
+    assert.equal(sessionDeleteCalls, 0);
+    assert.equal(sessionInvalidationEvents, 0);
+
+    // If /auth/me also returns 403, the account/session itself is no longer valid.
+    browserMeStatus = 403;
+    respond = () =>
+      jsonResponse(403, {
+        success: false,
+        statusCode: 403,
+        error: "Forbidden",
+        message: "Account is locked",
+        details: [],
+        path: "/api/reports/revenue",
+        timestamp: new Date().toISOString(),
+      });
+    await assert.rejects(
+      () => apiClient.getRevenueStats(),
+      (error: unknown) => error instanceof ApiError && error.statusCode === 403,
+    );
+    assert.equal(getAccessToken(), null);
+    assert.equal(browserMeChecks, 2);
+    assert.equal(sessionDeleteCalls, 1);
+    assert.equal(sessionInvalidationEvents, 1);
+
+    // A direct 401 still clears immediately without an extra /auth/me round-trip.
+    browserMeStatus = 200;
+    setAccessToken("jwt-test-token");
+    const meChecksBefore401 = browserMeChecks;
+    respond = () =>
+      jsonResponse(401, {
+        success: false,
+        statusCode: 401,
+        error: "Unauthorized",
+        message: "Token expired",
+        details: [],
+        path: "/api/reports/revenue",
+        timestamp: new Date().toISOString(),
+      });
+    await assert.rejects(
+      () => apiClient.getRevenueStats(),
+      (error: unknown) => error instanceof ApiError && error.statusCode === 401,
+    );
+    assert.equal(getAccessToken(), null);
+    assert.equal(browserMeChecks, meChecksBefore401);
+    assert.equal(sessionDeleteCalls, 2);
+    assert.equal(sessionInvalidationEvents, 2);
+
     setAccessToken("jwt-test-token");
 
     respond = (url, _init, headers) => {
@@ -161,7 +270,7 @@ async function main(): Promise<void> {
       trangThaiGiaoDich: "THANH_CONG",
     }, "idem-DP42");
 
-    const bookingDto = {
+const bookingDto = {
       maPhong: "P201",
       ngayNhan: "2026-11-12",
       ngayTra: "2026-11-15",
@@ -300,7 +409,7 @@ async function main(): Promise<void> {
       (error: unknown) => error instanceof ApiError && error.statusCode === 200,
     );
 
-    const pdfUrl = apiClient.getInvoicePdfUrl("HD 01/+");
+const pdfUrl = apiClient.getInvoicePdfUrl("HD 01/+");
     assert.equal(pdfUrl, "https://backend.example.test/api/invoices/HD%2001%2F%2B/pdf");
 
     console.log(`PASS fetch adapter: ${calls.length} requests, URL/query/body/headers/token/errors/envelope`);
