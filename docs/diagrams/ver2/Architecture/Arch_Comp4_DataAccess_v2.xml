@@ -1,0 +1,77 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="app.diagrams.net" pages="1">
+  <diagram id="arch_dataaccess_v2" name="Arch_Comp4_DataAccess_v2">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1060" pageHeight="540" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="da_pmod" value="&amp;lt;&amp;lt;@Global module&amp;gt;&amp;gt;&lt;br&gt;&lt;b&gt;PrismaModule (prisma.module.ts)&lt;/b&gt;" style="swimlane;fontStyle=0;align=center;verticalAlign=middle;startSize=38;rounded=0;collapsible=0;fillColor=#FFFFFF;fontColor=#000000;strokeColor=#000000;strokeWidth=1.5;fontSize=13;html=1;" vertex="1" parent="1">
+          <mxGeometry x="30" y="30" width="300" height="85" as="geometry" />
+        </mxCell>
+        <mxCell id="da_pmod_body" value="• Cung cấp PrismaService toàn cục&lt;br&gt;• Inject ConfigService (DATABASE_URL)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=8;fontSize=13;fontColor=#000000;whiteSpace=wrap;" vertex="1" parent="da_pmod">
+          <mxGeometry y="38" width="300" height="47" as="geometry" />
+        </mxCell>
+        <mxCell id="da_psvc" value="&amp;lt;&amp;lt;service / singleton&amp;gt;&amp;gt;&lt;br&gt;&lt;b&gt;PrismaService (extends PrismaClient)&lt;/b&gt;" style="swimlane;fontStyle=0;align=center;verticalAlign=middle;startSize=38;rounded=0;collapsible=0;fillColor=#FFFFFF;fontColor=#000000;strokeColor=#000000;strokeWidth=1.5;fontSize=13;html=1;" vertex="1" parent="1">
+          <mxGeometry x="375" y="30" width="320" height="115" as="geometry" />
+        </mxCell>
+        <mxCell id="da_psvc_body" value="• Adapter: PrismaPg (@prisma/adapter-pg)&lt;br&gt;+ onModuleInit(): $connect()&lt;br&gt;+ onModuleDestroy(): $disconnect()&lt;br&gt;• Hỗ trợ $transaction(Serializable) &amp;amp; $queryRaw" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=8;fontSize=13;fontColor=#000000;whiteSpace=wrap;" vertex="1" parent="da_psvc">
+          <mxGeometry y="38" width="320" height="77" as="geometry" />
+        </mxCell>
+        <mxCell id="da_repo" value="&amp;lt;&amp;lt;repository&amp;gt;&amp;gt;&lt;br&gt;&lt;b&gt;ReportQueryRepository&lt;/b&gt;" style="swimlane;fontStyle=0;align=center;verticalAlign=middle;startSize=38;rounded=0;collapsible=0;fillColor=#FFFFFF;fontColor=#000000;strokeColor=#000000;strokeWidth=1.5;fontSize=13;html=1;" vertex="1" parent="1">
+          <mxGeometry x="740" y="30" width="290" height="115" as="geometry" />
+        </mxCell>
+        <mxCell id="da_repo_body" value="- prisma: PrismaService&lt;br&gt;+ getRevenueStats(tuNgay, denNgay, groupBy)&lt;br&gt;+ getOccupancyStats(tuNgay, denNgay)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=8;fontSize=13;fontColor=#000000;whiteSpace=wrap;" vertex="1" parent="da_repo">
+          <mxGeometry y="38" width="290" height="77" as="geometry" />
+        </mxCell>
+        <mxCell id="da_err" value="&amp;lt;&amp;lt;utility&amp;gt;&amp;gt;&lt;br&gt;&lt;b&gt;PrismaErrorsUtil (prisma-errors.ts)&lt;/b&gt;" style="swimlane;fontStyle=0;align=center;verticalAlign=middle;startSize=38;rounded=0;collapsible=0;fillColor=#FFFFFF;fontColor=#000000;strokeColor=#000000;strokeWidth=1.5;fontSize=13;html=1;" vertex="1" parent="1">
+          <mxGeometry x="30" y="195" width="325" height="115" as="geometry" />
+        </mxCell>
+        <mxCell id="da_err_body" value="+ rethrowPrismaError(err, conflictMsg)&lt;br&gt;• Ánh xạ mã lỗi Prisma P2002/P2003/P2025&lt;br&gt;  → ConflictException / NotFoundException" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=8;fontSize=13;fontColor=#000000;whiteSpace=wrap;" vertex="1" parent="da_err">
+          <mxGeometry y="38" width="325" height="77" as="geometry" />
+        </mxCell>
+        <mxCell id="da_pg" value="&amp;lt;&amp;lt;database&amp;gt;&amp;gt;&lt;br&gt;&lt;b&gt;PostgreSQL 16 (sweethome_db)&lt;/b&gt;" style="swimlane;fontStyle=0;align=center;verticalAlign=middle;startSize=38;rounded=0;collapsible=0;fillColor=#FFFFFF;fontColor=#000000;strokeColor=#000000;strokeWidth=1.5;fontSize=13;html=1;" vertex="1" parent="1">
+          <mxGeometry x="375" y="215" width="320" height="95" as="geometry" />
+        </mxCell>
+        <mxCell id="da_pg_body" value="• 14 bảng quan hệ &amp;amp; 3 kiểu ENUM&lt;br&gt;• Khóa dòng bi quan SELECT ... FOR UPDATE&lt;br&gt;• Ràng buộc UNIQUE chống trùng &amp;amp; lũy đẳng" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=8;fontSize=13;fontColor=#000000;whiteSpace=wrap;" vertex="1" parent="da_pg">
+          <mxGeometry y="38" width="320" height="57" as="geometry" />
+        </mxCell>
+        <mxCell id="da_rules" value="&amp;lt;&amp;lt;domain rules&amp;gt;&amp;gt;&lt;br&gt;&lt;b&gt;BookingRules &amp;amp; PriceCalculator&lt;/b&gt;" style="swimlane;fontStyle=0;align=center;verticalAlign=middle;startSize=38;rounded=0;collapsible=0;fillColor=#FFFFFF;fontColor=#000000;strokeColor=#000000;strokeWidth=1.5;fontSize=13;html=1;" vertex="1" parent="1">
+          <mxGeometry x="30" y="365" width="480" height="145" as="geometry" />
+        </mxCell>
+        <mxCell id="da_rules_body" value="• booking.rules.ts: stayDates(), tinhGiaPhong(), tinhTienHoanCoc()&lt;br&gt;• price.ts: tinhGiaPhongChiTiet() (T2–T5 vs T6–CN)&lt;br&gt;• booking.constants.ts: ACTIVE_BOOKING_STATUSES" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=8;fontSize=13;fontColor=#000000;whiteSpace=wrap;" vertex="1" parent="da_rules">
+          <mxGeometry y="38" width="480" height="107" as="geometry" />
+        </mxCell>
+        <mxCell id="da_roomrules" value="&amp;lt;&amp;lt;domain rules&amp;gt;&amp;gt;&lt;br&gt;&lt;b&gt;RoomStatusRules (room-status.ts)&lt;/b&gt;" style="swimlane;fontStyle=0;align=center;verticalAlign=middle;startSize=38;rounded=0;collapsible=0;fillColor=#FFFFFF;fontColor=#000000;strokeColor=#000000;strokeWidth=1.5;fontSize=13;html=1;" vertex="1" parent="1">
+          <mxGeometry x="550" y="365" width="480" height="145" as="geometry" />
+        </mxCell>
+        <mxCell id="da_roomrules_body" value="• MANUAL_ROOM_TRANSITIONS:&lt;br&gt;  TRONG ↔ BAO_TRI, CHO_DON_DEP → BAO_TRI&lt;br&gt;+ assertManualRoomTransition(from, to)&lt;br&gt;• Chặn chuyển thủ công khi phòng DA_DAT / DANG_SU_DUNG" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=8;fontSize=13;fontColor=#000000;whiteSpace=wrap;" vertex="1" parent="da_roomrules">
+          <mxGeometry y="38" width="480" height="107" as="geometry" />
+        </mxCell>
+        <mxCell id="e_da_1" value="exports" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;endSize=9;strokeColor=#000000;strokeWidth=1.35;fontColor=#000000;fontSize=13;labelBackgroundColor=#FFFFFF;dashed=1;dashPattern=5 4;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="330" y="72" as="sourcePoint" />
+            <mxPoint x="375" y="72" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_da_2" value="uses" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;endSize=9;strokeColor=#000000;strokeWidth=1.35;fontColor=#000000;fontSize=13;labelBackgroundColor=#FFFFFF;dashed=1;dashPattern=5 4;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="740" y="87" as="sourcePoint" />
+            <mxPoint x="695" y="87" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_da_3" value="SQL / PrismaPg" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;endSize=9;strokeColor=#000000;strokeWidth=1.35;fontColor=#000000;fontSize=13;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="535" y="145" as="sourcePoint" />
+            <mxPoint x="535" y="215" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_da_4" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;endSize=9;strokeColor=#000000;strokeWidth=1.35;fontColor=#000000;fontSize=13;labelBackgroundColor=#FFFFFF;dashed=1;dashPattern=5 4;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="180" y="115" as="sourcePoint" />
+            <mxPoint x="180" y="195" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

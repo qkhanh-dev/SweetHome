@@ -1,0 +1,101 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="app.diagrams.net" pages="1">
+  <diagram id="arch_security_v2" name="Arch_Comp2_SecurityPipeline_v2">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1060" pageHeight="560" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="sec_setup" value="&amp;lt;&amp;lt;config&amp;gt;&amp;gt;&lt;br&gt;&lt;b&gt;AppSetup (app.setup.ts)&lt;/b&gt;" style="swimlane;fontStyle=0;align=center;verticalAlign=middle;startSize=38;rounded=0;collapsible=0;fillColor=#FFFFFF;fontColor=#000000;strokeColor=#000000;strokeWidth=1.5;fontSize=13;html=1;" vertex="1" parent="1">
+          <mxGeometry x="30" y="30" width="310" height="105" as="geometry" />
+        </mxCell>
+        <mxCell id="sec_setup_body" value="+ configureHttpApp(app, options)&lt;br&gt;+ setupSwagger(app)&lt;br&gt;• Thiết lập prefix /api &amp;amp; CORS (cors.config.ts)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=8;fontSize=13;fontColor=#000000;whiteSpace=wrap;" vertex="1" parent="sec_setup">
+          <mxGeometry y="38" width="310" height="67" as="geometry" />
+        </mxCell>
+        <mxCell id="sec_pipe" value="&amp;lt;&amp;lt;pipe&amp;gt;&amp;gt;&lt;br&gt;&lt;b&gt;ValidationPipe (Global)&lt;/b&gt;" style="swimlane;fontStyle=0;align=center;verticalAlign=middle;startSize=38;rounded=0;collapsible=0;fillColor=#FFFFFF;fontColor=#000000;strokeColor=#000000;strokeWidth=1.5;fontSize=13;html=1;" vertex="1" parent="1">
+          <mxGeometry x="375" y="30" width="310" height="105" as="geometry" />
+        </mxCell>
+        <mxCell id="sec_pipe_body" value="• whitelist: true&lt;br&gt;• forbidNonWhitelisted: true&lt;br&gt;• transform: true (class-validator DTO)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=8;fontSize=13;fontColor=#000000;whiteSpace=wrap;" vertex="1" parent="sec_pipe">
+          <mxGeometry y="38" width="310" height="67" as="geometry" />
+        </mxCell>
+        <mxCell id="sec_env" value="&amp;lt;&amp;lt;interceptor&amp;gt;&amp;gt;&lt;br&gt;&lt;b&gt;ResponseEnvelopeInterceptor&lt;/b&gt;" style="swimlane;fontStyle=0;align=center;verticalAlign=middle;startSize=38;rounded=0;collapsible=0;fillColor=#FFFFFF;fontColor=#000000;strokeColor=#000000;strokeWidth=1.5;fontSize=13;html=1;" vertex="1" parent="1">
+          <mxGeometry x="720" y="30" width="310" height="105" as="geometry" />
+        </mxCell>
+        <mxCell id="sec_env_body" value="+ intercept(context, next)&lt;br&gt;- shouldBypassEnvelope() (StreamableFile PDF)&lt;br&gt;• Bọc chuẩn { success, statusCode, message, data }" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=8;fontSize=13;fontColor=#000000;whiteSpace=wrap;" vertex="1" parent="sec_env">
+          <mxGeometry y="38" width="310" height="67" as="geometry" />
+        </mxCell>
+        <mxCell id="sec_jwt_guard" value="&amp;lt;&amp;lt;guard&amp;gt;&amp;gt;&lt;br&gt;&lt;b&gt;JwtAuthGuard / OptionalJwtAuthGuard&lt;/b&gt;" style="swimlane;fontStyle=0;align=center;verticalAlign=middle;startSize=38;rounded=0;collapsible=0;fillColor=#FFFFFF;fontColor=#000000;strokeColor=#000000;strokeWidth=1.5;fontSize=13;html=1;" vertex="1" parent="1">
+          <mxGeometry x="30" y="215" width="310" height="95" as="geometry" />
+        </mxCell>
+        <mxCell id="sec_jwt_guard_body" value="• AuthGuard('jwt') bảo vệ route cần đăng nhập&lt;br&gt;• OptionalJwtAuthGuard cho route công khai" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=8;fontSize=13;fontColor=#000000;whiteSpace=wrap;" vertex="1" parent="sec_jwt_guard">
+          <mxGeometry y="38" width="310" height="57" as="geometry" />
+        </mxCell>
+        <mxCell id="sec_strategy" value="&amp;lt;&amp;lt;strategy&amp;gt;&amp;gt;&lt;br&gt;&lt;b&gt;JwtStrategy (PassportStrategy)&lt;/b&gt;" style="swimlane;fontStyle=0;align=center;verticalAlign=middle;startSize=38;rounded=0;collapsible=0;fillColor=#FFFFFF;fontColor=#000000;strokeColor=#000000;strokeWidth=1.5;fontSize=13;html=1;" vertex="1" parent="1">
+          <mxGeometry x="30" y="385" width="310" height="105" as="geometry" />
+        </mxCell>
+        <mxCell id="sec_strategy_body" value="+ validate(payload): CurrentAccountData&lt;br&gt;• Trích xuất Bearer JWT từ Header&lt;br&gt;• Gọi AuthService.findActiveAccount(sub)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=8;fontSize=13;fontColor=#000000;whiteSpace=wrap;" vertex="1" parent="sec_strategy">
+          <mxGeometry y="38" width="310" height="67" as="geometry" />
+        </mxCell>
+        <mxCell id="sec_roles" value="&amp;lt;&amp;lt;guard&amp;gt;&amp;gt;&lt;br&gt;&lt;b&gt;RolesGuard (roles.guard.ts)&lt;/b&gt;" style="swimlane;fontStyle=0;align=center;verticalAlign=middle;startSize=38;rounded=0;collapsible=0;fillColor=#FFFFFF;fontColor=#000000;strokeColor=#000000;strokeWidth=1.5;fontSize=13;html=1;" vertex="1" parent="1">
+          <mxGeometry x="375" y="215" width="310" height="115" as="geometry" />
+        </mxCell>
+        <mxCell id="sec_roles_body" value="+ canActivate(context): boolean&lt;br&gt;+ roleAllows(actual, required): boolean&lt;br&gt;• Đọc @Roles() &amp;amp; @CurrentAccount()&lt;br&gt;• ADMIN kế thừa toàn bộ quyền STAFF" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=8;fontSize=13;fontColor=#000000;whiteSpace=wrap;" vertex="1" parent="sec_roles">
+          <mxGeometry y="38" width="310" height="77" as="geometry" />
+        </mxCell>
+        <mxCell id="sec_filter" value="&amp;lt;&amp;lt;exception filter&amp;gt;&amp;gt;&lt;br&gt;&lt;b&gt;HttpExceptionFilter&lt;/b&gt;" style="swimlane;fontStyle=0;align=center;verticalAlign=middle;startSize=38;rounded=0;collapsible=0;fillColor=#FFFFFF;fontColor=#000000;strokeColor=#000000;strokeWidth=1.5;fontSize=13;html=1;" vertex="1" parent="1">
+          <mxGeometry x="720" y="215" width="310" height="115" as="geometry" />
+        </mxCell>
+        <mxCell id="sec_filter_body" value="+ catch(exception, host): void&lt;br&gt;- normalizeExceptionResponse()&lt;br&gt;- createSafeServerError() (ẩn lỗi 5xx)&lt;br&gt;• Chuẩn hóa JSON lỗi trả về Client" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=8;fontSize=13;fontColor=#000000;whiteSpace=wrap;" vertex="1" parent="sec_filter">
+          <mxGeometry y="38" width="310" height="77" as="geometry" />
+        </mxCell>
+        <mxCell id="sec_authsvc" value="&amp;lt;&amp;lt;service&amp;gt;&amp;gt;&lt;br&gt;&lt;b&gt;AuthService (auth.service.ts)&lt;/b&gt;" style="swimlane;fontStyle=0;align=center;verticalAlign=middle;startSize=38;rounded=0;collapsible=0;fillColor=#FFFFFF;fontColor=#000000;strokeColor=#000000;strokeWidth=1.5;fontSize=13;html=1;" vertex="1" parent="1">
+          <mxGeometry x="375" y="385" width="310" height="105" as="geometry" />
+        </mxCell>
+        <mxCell id="sec_authsvc_body" value="+ findActiveAccount(maTaiKhoan)&lt;br&gt;• Kiểm tra ACTIVE vs LOCKED (403 Forbidden)&lt;br&gt;• Kiểm tra vaiTro ∈ {ADMIN, STAFF, CUSTOMER}" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=8;fontSize=13;fontColor=#000000;whiteSpace=wrap;" vertex="1" parent="sec_authsvc">
+          <mxGeometry y="38" width="310" height="67" as="geometry" />
+        </mxCell>
+        <mxCell id="e_s_1" value="đăng ký" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;endSize=9;strokeColor=#000000;strokeWidth=1.35;fontColor=#000000;fontSize=13;labelBackgroundColor=#FFFFFF;dashed=1;dashPattern=5 4;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="340" y="82" as="sourcePoint" />
+            <mxPoint x="375" y="82" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_s_2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;endSize=9;strokeColor=#000000;strokeWidth=1.35;fontColor=#000000;fontSize=13;labelBackgroundColor=#FFFFFF;dashed=1;dashPattern=5 4;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="685" y="82" as="sourcePoint" />
+            <mxPoint x="720" y="82" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_s_3" value="gắn Guard" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;endSize=9;strokeColor=#000000;strokeWidth=1.35;fontColor=#000000;fontSize=13;labelBackgroundColor=#FFFFFF;dashed=1;dashPattern=5 4;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="185" y="135" as="sourcePoint" />
+            <mxPoint x="185" y="215" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_s_4" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;endSize=9;strokeColor=#000000;strokeWidth=1.35;fontColor=#000000;fontSize=13;labelBackgroundColor=#FFFFFF;dashed=1;dashPattern=5 4;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="340" y="262" as="sourcePoint" />
+            <mxPoint x="375" y="262" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_s_5" value="xác thực JWT" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;endSize=9;strokeColor=#000000;strokeWidth=1.35;fontColor=#000000;fontSize=13;labelBackgroundColor=#FFFFFF;dashed=1;dashPattern=5 4;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="185" y="310" as="sourcePoint" />
+            <mxPoint x="185" y="385" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_s_6" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;endSize=9;strokeColor=#000000;strokeWidth=1.35;fontColor=#000000;fontSize=13;labelBackgroundColor=#FFFFFF;dashed=1;dashPattern=5 4;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="340" y="437" as="sourcePoint" />
+            <mxPoint x="375" y="437" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_s_7" value="đăng ký global" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;endSize=9;strokeColor=#000000;strokeWidth=1.35;fontColor=#000000;fontSize=13;labelBackgroundColor=#FFFFFF;dashed=1;dashPattern=5 4;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="875" y="135" as="sourcePoint" />
+            <mxPoint x="875" y="215" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

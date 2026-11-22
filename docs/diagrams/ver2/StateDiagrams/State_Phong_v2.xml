@@ -1,0 +1,113 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="app.diagrams.net" pages="1">
+  <diagram id="state_phong_v2" name="State_Phong_v2">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1140" pageHeight="760" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="ph_init" value="" style="ellipse;html=1;shape=startState;fillColor=#000000;strokeColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="309" y="28" width="22" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="ph_trong" value="TRONG (Trống)" style="swimlane;fontStyle=1;align=center;verticalAlign=middle;startSize=30;rounded=1;arcSize=12;collapsible=0;fillColor=#FFFFFF;fontColor=#000000;strokeColor=#000000;strokeWidth=1.6;fontSize=13;html=1;" vertex="1" parent="1">
+          <mxGeometry x="190" y="120" width="260" height="76" as="geometry" />
+        </mxCell>
+        <mxCell id="ph_trong_body" value="do / sẵn sàng tìm kiếm &amp;amp; đặt phòng" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=10;spacingRight=8;fontSize=13;fontColor=#000000;whiteSpace=wrap;" vertex="1" parent="ph_trong">
+          <mxGeometry y="30" width="260" height="46" as="geometry" />
+        </mxCell>
+        <mxCell id="ph_bao_tri" value="BAO_TRI (Bảo trì)" style="swimlane;fontStyle=1;align=center;verticalAlign=middle;startSize=30;rounded=1;arcSize=12;collapsible=0;fillColor=#FFFFFF;fontColor=#000000;strokeColor=#000000;strokeWidth=1.6;fontSize=13;html=1;" vertex="1" parent="1">
+          <mxGeometry x="790" y="120" width="310" height="76" as="geometry" />
+        </mxCell>
+        <mxCell id="ph_bao_tri_body" value="do / loại trừ khỏi kết quả tìm phòng" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=10;spacingRight=8;fontSize=13;fontColor=#000000;whiteSpace=wrap;" vertex="1" parent="ph_bao_tri">
+          <mxGeometry y="30" width="310" height="46" as="geometry" />
+        </mxCell>
+        <mxCell id="ph_da_dat" value="DA_DAT (Đã đặt)" style="swimlane;fontStyle=1;align=center;verticalAlign=middle;startSize=30;rounded=1;arcSize=12;collapsible=0;fillColor=#FFFFFF;fontColor=#000000;strokeColor=#000000;strokeWidth=1.6;fontSize=13;html=1;" vertex="1" parent="1">
+          <mxGeometry x="190" y="345" width="260" height="76" as="geometry" />
+        </mxCell>
+        <mxCell id="ph_da_dat_body" value="do / giữ cho đơn DA_XAC_NHAN" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=10;spacingRight=8;fontSize=13;fontColor=#000000;whiteSpace=wrap;" vertex="1" parent="ph_da_dat">
+          <mxGeometry y="30" width="260" height="46" as="geometry" />
+        </mxCell>
+        <mxCell id="ph_dang_su_dung" value="DANG_SU_DUNG (Đang sử dụng)" style="swimlane;fontStyle=1;align=center;verticalAlign=middle;startSize=30;rounded=1;arcSize=12;collapsible=0;fillColor=#FFFFFF;fontColor=#000000;strokeColor=#000000;strokeWidth=1.6;fontSize=13;html=1;" vertex="1" parent="1">
+          <mxGeometry x="170" y="585" width="300" height="76" as="geometry" />
+        </mxCell>
+        <mxCell id="ph_dang_su_dung_body" value="do / khách đang lưu trú (DANG_LUU_TRU)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=10;spacingRight=8;fontSize=13;fontColor=#000000;whiteSpace=wrap;" vertex="1" parent="ph_dang_su_dung">
+          <mxGeometry y="30" width="300" height="46" as="geometry" />
+        </mxCell>
+        <mxCell id="ph_cho_don_dep" value="CHO_DON_DEP (Chờ dọn dẹp)" style="swimlane;fontStyle=1;align=center;verticalAlign=middle;startSize=30;rounded=1;arcSize=12;collapsible=0;fillColor=#FFFFFF;fontColor=#000000;strokeColor=#000000;strokeWidth=1.6;fontSize=13;html=1;" vertex="1" parent="1">
+          <mxGeometry x="790" y="585" width="310" height="76" as="geometry" />
+        </mxCell>
+        <mxCell id="ph_cho_don_dep_body" value="do / chờ nhân viên vệ sinh phòng" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=10;spacingRight=8;fontSize=13;fontColor=#000000;whiteSpace=wrap;" vertex="1" parent="ph_cho_don_dep">
+          <mxGeometry y="30" width="310" height="46" as="geometry" />
+        </mxCell>
+        <mxCell id="e_ph_init" value="RoomsService.create() / mặc định TRONG" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;endSize=10;strokeColor=#000000;strokeWidth=1.4;fontColor=#000000;fontSize=13;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="ph_init" target="ph_trong">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="320" y="50" as="sourcePoint" />
+            <mxPoint x="320" y="120" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_ph_trong_dadat" value="webhook() → refreshRoom()&lt;br&gt;[có đơn DA_XAC_NHAN]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;endSize=10;strokeColor=#000000;strokeWidth=1.4;fontColor=#000000;fontSize=13;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="ph_trong" target="ph_da_dat">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="255" y="196" as="sourcePoint" />
+            <mxPoint x="255" y="345" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_ph_dadat_trong" value="cancel() → refreshRoom()&lt;br&gt;[không còn đơn DA_XAC_NHAN / DANG_LUU_TRU]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;endSize=10;strokeColor=#000000;strokeWidth=1.4;fontColor=#000000;fontSize=13;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="ph_da_dat" target="ph_trong">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="395" y="345" as="sourcePoint" />
+            <mxPoint x="395" y="196" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_ph_dadat_sudung" value="StayService.checkIn()&lt;br&gt;[đơn DA_XAC_NHAN]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;endSize=10;strokeColor=#000000;strokeWidth=1.4;fontColor=#000000;fontSize=13;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="ph_da_dat" target="ph_dang_su_dung">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="320" y="421" as="sourcePoint" />
+            <mxPoint x="320" y="585" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_ph_trong_sudung" value="StayService.checkIn()&lt;br&gt;[đã dọn xong &amp;amp;&lt;br&gt;có đơn DA_XAC_NHAN]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;endSize=10;strokeColor=#000000;strokeWidth=1.4;fontColor=#000000;fontSize=13;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="ph_trong" target="ph_dang_su_dung">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="190" y="158" as="sourcePoint" />
+            <mxPoint x="170" y="623" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="22" y="158" />
+              <mxPoint x="22" y="623" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_ph_sudung_dondep" value="BillingPaymentService.payInvoice()&lt;br&gt;[thanh toán hóa đơn Check-out thành công]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;endSize=10;strokeColor=#000000;strokeWidth=1.4;fontColor=#000000;fontSize=13;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="ph_dang_su_dung" target="ph_cho_don_dep">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="470" y="623" as="sourcePoint" />
+            <mxPoint x="790" y="623" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_ph_dondep_trong" value="RoomsService.completeCleaning()&lt;br&gt;[POST /api/rooms/:id/complete-cleaning]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;endSize=10;strokeColor=#000000;strokeWidth=1.4;fontColor=#000000;fontSize=13;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="ph_cho_don_dep" target="ph_trong">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="860" y="585" as="sourcePoint" />
+            <mxPoint x="450" y="180" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="860" y="480" />
+              <mxPoint x="505" y="480" />
+              <mxPoint x="505" y="180" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_ph_trong_baotri" value="updateStatus('BAO_TRI')&lt;br&gt;[không có đơn ACTIVE:&lt;br&gt;CHO_COC, DA_XAC_NHAN, DANG_LUU_TRU]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;endSize=10;strokeColor=#000000;strokeWidth=1.4;fontColor=#000000;fontSize=13;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="ph_trong" target="ph_bao_tri">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="450" y="138" as="sourcePoint" />
+            <mxPoint x="790" y="138" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_ph_baotri_trong" value="updateStatus('TRONG') [hoàn tất bảo dưỡng]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;endSize=10;strokeColor=#000000;strokeWidth=1.4;fontColor=#000000;fontSize=13;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="ph_bao_tri" target="ph_trong">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="790" y="174" as="sourcePoint" />
+            <mxPoint x="450" y="174" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_ph_dondep_baotri" value="updateStatus('BAO_TRI')&lt;br&gt;[không có đơn ACTIVE]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;endSize=10;strokeColor=#000000;strokeWidth=1.4;fontColor=#000000;fontSize=13;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="ph_cho_don_dep" target="ph_bao_tri">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1005" y="585" as="sourcePoint" />
+            <mxPoint x="1005" y="196" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
