@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Pencil, Plus, Trash2 } from "lucide-react";
 import { Controller, useForm } from "react-hook-form";
 import type { CreateRoomDto } from "@/types/api";
@@ -11,6 +11,7 @@ import { apiErrorMessage, applyZodIssues, roomFormSchema } from "@/lib/sh09-vali
 import { AccessibleDialog } from "@/components/ui/accessible-dialog";
 import { FormField, inputClassName } from "@/components/ui/form-field";
 import { StatusBadge } from "@/components/status-badge";
+import { toast } from "@/components/ui/toast";
 
 type RoomValues = {
   soPhong: string;
@@ -34,10 +35,12 @@ export function RoomManagement() {
   const [editing, setEditing] = useState<Phong | null>(null);
   const [dialogError, setDialogError] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const lastFetchedAtRef = useRef(0);
   const form = useForm<RoomValues>({ defaultValues: emptyValues });
   const errors = form.formState.errors;
 
-  async function loadData() {
+  const loadData = useCallback(async () => {
+    lastFetchedAtRef.current = Date.now();
     setLoading(true);
     setLoadError(null);
     try {
@@ -52,15 +55,40 @@ export function RoomManagement() {
       setAmenities(amenityResponse.data);
       setMaHomestay(homestayResponse.data.maHomestay);
     } catch (error) {
-      setLoadError(apiErrorMessage(error));
+      const message = apiErrorMessage(error);
+      setLoadError(message);
+      toast.error(message);
     } finally {
       setLoading(false);
     }
-  }
+  }, []);
+
+  const refreshRooms = useCallback(async () => {
+    lastFetchedAtRef.current = Date.now();
+    try {
+      setRooms((await apiClient.getRooms()).data);
+    } catch {
+      /* Preserve current list if background refresh fails. */
+    }
+  }, []);
 
   useEffect(() => {
     void loadData();
-  }, []);
+  }, [loadData]);
+
+  useEffect(() => {
+    const refreshIfStale = () => {
+      if (document.visibilityState === "visible" && Date.now() - lastFetchedAtRef.current > 1000) {
+        void refreshRooms();
+      }
+    };
+    document.addEventListener("visibilitychange", refreshIfStale);
+    window.addEventListener("focus", refreshIfStale);
+    return () => {
+      document.removeEventListener("visibilitychange", refreshIfStale);
+      window.removeEventListener("focus", refreshIfStale);
+    };
+  }, [refreshRooms]);
 
   useEffect(() => {
     if (!dialogOpen) return;
@@ -120,10 +148,15 @@ export function RoomManagement() {
         ? current.map((room) => room.maPhong === editing.maPhong ? normalized : room)
         : [...current, normalized]);
       setDialogOpen(false);
-      setSuccess(editing ? `Đã cập nhật phòng ${response.data.soPhong}.` : `Đã thêm phòng ${response.data.soPhong}.`);
+      const msg = editing ? `Đã cập nhật phòng ${response.data.soPhong}.` : `Đã thêm phòng ${response.data.soPhong}.`;
+      setSuccess(msg);
+      toast.success(msg);
       setPageError(null);
+      void refreshRooms();
     } catch (error) {
-      setDialogError(apiErrorMessage(error));
+      const message = apiErrorMessage(error);
+      setDialogError(message);
+      toast.error(message);
     }
   });
 
@@ -135,9 +168,14 @@ export function RoomManagement() {
     try {
       await apiClient.deleteRoom(room.maPhong);
       setRooms((current) => current.filter((candidate) => candidate.maPhong !== room.maPhong));
-      setSuccess(`Đã xóa phòng ${room.soPhong}.`);
+      const msg = `Đã xóa phòng ${room.soPhong}.`;
+      setSuccess(msg);
+      toast.success(msg);
+      void refreshRooms();
     } catch (error) {
-      setPageError(apiErrorMessage(error));
+      const message = apiErrorMessage(error);
+      setPageError(message);
+      toast.error(message);
     } finally {
       setDeletingId(null);
     }

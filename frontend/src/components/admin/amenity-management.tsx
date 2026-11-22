@@ -8,6 +8,7 @@ import { apiClient } from "@/services/apiClient";
 import { amenityFormSchema, apiErrorMessage, applyZodIssues } from "@/lib/sh09-validation";
 import { AccessibleDialog } from "@/components/ui/accessible-dialog";
 import { FormField, inputClassName } from "@/components/ui/form-field";
+import { toast } from "@/components/ui/toast";
 
 type AmenityValues = { tenTienNghi: string; loaiTienNghi: string };
 const emptyValues: AmenityValues = { tenTienNghi: "", loaiTienNghi: "" };
@@ -31,9 +32,19 @@ export function AmenityManagement() {
     try {
       setItems((await apiClient.getAmenities()).data);
     } catch (error) {
-      setLoadError(apiErrorMessage(error));
+      const message = apiErrorMessage(error);
+      setLoadError(message);
+      toast.error(message);
     } finally {
       setLoading(false);
+    }
+  }
+
+  async function refreshItems() {
+    try {
+      setItems((await apiClient.getAmenities()).data);
+    } catch {
+      /* Preserve optimistic update if background refresh fails. */
     }
   }
 
@@ -76,10 +87,15 @@ export function AmenityManagement() {
         ? current.map((item) => item.maTienNghi === editing.maTienNghi ? response.data : item)
         : [...current, response.data]);
       setDialogOpen(false);
-      setSuccess(editing ? `Đã cập nhật ${response.data.tenTienNghi}.` : `Đã thêm ${response.data.tenTienNghi}.`);
+      const msg = editing ? `Đã cập nhật ${response.data.tenTienNghi}.` : `Đã thêm ${response.data.tenTienNghi}.`;
+      setSuccess(msg);
+      toast.success(msg);
       setPageError(null);
+      void refreshItems();
     } catch (error) {
-      setDialogError(apiErrorMessage(error));
+      const message = apiErrorMessage(error);
+      setDialogError(message);
+      toast.error(message);
     }
   });
 
@@ -91,9 +107,14 @@ export function AmenityManagement() {
     try {
       await apiClient.deleteAmenity(item.maTienNghi);
       setItems((current) => current.filter((candidate) => candidate.maTienNghi !== item.maTienNghi));
-      setSuccess(`Đã xóa tiện nghi ${item.tenTienNghi}.`);
+      const msg = `Đã xóa tiện nghi ${item.tenTienNghi}.`;
+      setSuccess(msg);
+      toast.success(msg);
+      void refreshItems();
     } catch (error) {
-      setPageError(apiErrorMessage(error));
+      const message = apiErrorMessage(error);
+      setPageError(message);
+      toast.error(message);
     } finally {
       setDeletingId(null);
     }

@@ -1,12 +1,13 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ArrowRightLeft, DoorOpen, RefreshCw } from "lucide-react";
 import type { Phong, TrangThaiPhong as RoomStatus } from "@/types/sweethome";
 import { TrangThaiPhong } from "@/types/sweethome";
 import { apiClient } from "@/services/apiClient";
 import { apiErrorMessage } from "@/lib/sh09-validation";
 import { StatusBadge } from "@/components/status-badge";
+import { toast } from "@/components/ui/toast";
 
 const statusLabels: Record<RoomStatus, string> = {
   [TrangThaiPhong.TRONG]: "Trống",
@@ -32,22 +33,44 @@ export function RoomStatusBoard() {
   const [loadError, setLoadError] = useState<string | null>(null);
   const [updatingIds, setUpdatingIds] = useState<Set<string>>(() => new Set());
   const [roomErrors, setRoomErrors] = useState<Record<string, string>>({});
+  const lastFetchedAtRef = useRef(0);
 
-  async function loadRooms() {
-    setLoading(true);
-    setLoadError(null);
+  const loadRooms = useCallback(async (silent = false) => {
+    lastFetchedAtRef.current = Date.now();
+    if (!silent) {
+      setLoading(true);
+      setLoadError(null);
+    }
     try {
       setRooms((await apiClient.getRooms()).data);
     } catch (error) {
-      setLoadError(apiErrorMessage(error));
+      if (!silent) {
+        const message = apiErrorMessage(error);
+        setLoadError(message);
+        toast.error(message);
+      }
     } finally {
-      setLoading(false);
+      if (!silent) setLoading(false);
     }
-  }
+  }, []);
 
   useEffect(() => {
     void loadRooms();
-  }, []);
+  }, [loadRooms]);
+
+  useEffect(() => {
+    const refreshIfStale = () => {
+      if (document.visibilityState === "visible" && Date.now() - lastFetchedAtRef.current > 1000) {
+        void loadRooms(true);
+      }
+    };
+    document.addEventListener("visibilitychange", refreshIfStale);
+    window.addEventListener("focus", refreshIfStale);
+    return () => {
+      document.removeEventListener("visibilitychange", refreshIfStale);
+      window.removeEventListener("focus", refreshIfStale);
+    };
+  }, [loadRooms]);
 
   const floors = useMemo(() => {
     const grouped = new Map<number, Phong[]>();
@@ -83,8 +106,11 @@ export function RoomStatusBoard() {
         tienNghis: updated.tienNghis ?? item.tienNghis,
         homestay: updated.homestay ?? item.homestay,
       } : item));
+      toast.success(`Phòng ${room.soPhong} đã chuyển sang ${statusLabels[nextStatus]}.`);
     } catch (error) {
-      setRoomErrors((current) => ({ ...current, [room.maPhong]: apiErrorMessage(error) }));
+      const message = apiErrorMessage(error);
+      setRoomErrors((current) => ({ ...current, [room.maPhong]: message }));
+      toast.error(message);
     } finally {
       setUpdatingIds((current) => {
         const next = new Set(current);

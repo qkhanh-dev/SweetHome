@@ -7,6 +7,7 @@ import { useAuthStore } from "@/stores/auth-store";
 import { ownsBooking, reviewSchema } from "@/lib/sh17-validation";
 import { apiErrorMessage } from "@/lib/sh09-validation";
 import { FormField, inputClassName } from "@/components/ui/form-field";
+import { toast } from "@/components/ui/toast";
 
 export function ReviewCard({ review }: { review: DanhGia }) {
   return (
@@ -80,14 +81,14 @@ export function BookingReview({ booking }: { booking: DatPhong }) {
     setBusy(true);
     setError("");
     try {
-      setReview(
-        (
-          await apiClient.createReview({
-            maDatPhong: booking.maDatPhong,
-            ...parsed.data,
-          })
-        ).data,
-      );
+      const created = (
+        await apiClient.createReview({
+          maDatPhong: booking.maDatPhong,
+          ...parsed.data,
+        })
+      ).data;
+      setReview({ datPhong: booking, ...created });
+      toast.success("Cảm ơn bạn đã gửi đánh giá!");
     } catch (e) {
       if (e instanceof ApiError && e.statusCode === 409) {
         setDuplicate(true);
@@ -101,7 +102,9 @@ export function BookingReview({ booking }: { booking: DatPhong }) {
           /* Keep duplicate locked if rereading fails. */
         }
       }
-      setError(apiErrorMessage(e));
+      const message = apiErrorMessage(e);
+      setError(message);
+      toast.error(message);
     } finally {
       lock.current = false;
       setBusy(false);
@@ -203,8 +206,11 @@ function ReplyForm({
         ...review,
         ...(await apiClient.replyReview(review.maDanhGia, text.trim())).data,
       });
+      toast.success("Đã lưu phản hồi của chủ homestay.");
     } catch (e) {
-      setError(apiErrorMessage(e));
+      const message = apiErrorMessage(e);
+      setError(message);
+      toast.error(message);
     } finally {
       lock.current = false;
       setBusy(false);
@@ -262,7 +268,11 @@ export function Reviews({
       });
       if (version.current === id) setList(r.data);
     } catch (e) {
-      if (version.current === id) setError(apiErrorMessage(e));
+      if (version.current === id) {
+        const message = apiErrorMessage(e);
+        setError(message);
+        toast.error(message);
+      }
     } finally {
       if (version.current === id) setLoading(false);
     }

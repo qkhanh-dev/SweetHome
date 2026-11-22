@@ -12,6 +12,7 @@ import type { StayServicesResult } from "@/types/api";
 import { money, quantitySchema, stayLabel } from "@/lib/sh17-validation";
 import { apiErrorMessage } from "@/lib/sh09-validation";
 import { FormField, inputClassName } from "@/components/ui/form-field";
+import { toast } from "@/components/ui/toast";
 
 export function StayServices() {
   const [bookings, setBookings] = useState<DatPhong[]>([]);
@@ -23,6 +24,7 @@ export function StayServices() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+  const [removingId, setRemovingId] = useState<string | null>(null);
   const selection = useRef("");
   const request = useRef(0);
   const lock = useRef(false);
@@ -40,7 +42,9 @@ export function StayServices() {
       );
       setMenu(m.data);
     } catch (e) {
-      setError(apiErrorMessage(e));
+      const message = apiErrorMessage(e);
+      setError(message);
+      toast.error(message);
     } finally {
       setLoading(false);
     }
@@ -60,7 +64,11 @@ export function StayServices() {
       if (request.current === version && selection.current === id)
         setData(response.data);
     } catch (e) {
-      if (request.current === version) setError(apiErrorMessage(e));
+      if (request.current === version) {
+        const message = apiErrorMessage(e);
+        setError(message);
+        toast.error(message);
+      }
     }
   }
   async function add() {
@@ -71,7 +79,9 @@ export function StayServices() {
       !quantity.trim() ||
       !quantitySchema.safeParse(Number(quantity)).success
     ) {
-      setError("Chọn dịch vụ và nhập số lượng nguyên dương.");
+      const message = "Chọn dịch vụ và nhập số lượng nguyên dương.";
+      setError(message);
+      toast.error(message);
       return;
     }
     lock.current = true;
@@ -82,20 +92,60 @@ export function StayServices() {
         maDichVu: serviceId,
         soLuong: Number(quantity),
       });
+      toast.success("Đã ghi nhận dịch vụ phát sinh cho kỳ lưu trú.");
+      setQuantity("1");
       // A mutation belongs to the captured booking, even if the operator changes rooms meanwhile.
       if (selection.current === id) {
         await choose(id);
       }
     } catch (e) {
-      if (selection.current === id) setError(apiErrorMessage(e));
+      if (selection.current === id) {
+        const message = apiErrorMessage(e);
+        setError(message);
+        toast.error(message);
+      }
     } finally {
       lock.current = false;
       setSubmitting(false);
     }
   }
+  async function removeUsage(maSuDung: string) {
+    const id = selection.current;
+    if (!id || lock.current || !data || data.maDatPhong !== id) return;
+    if (!window.confirm("Xóa dịch vụ phát sinh này khỏi kỳ lưu trú?")) return;
+    lock.current = true;
+    setRemovingId(maSuDung);
+    setError("");
+    try {
+      await apiClient.removeStayService(id, maSuDung);
+      toast.success("Đã xóa dịch vụ phát sinh.");
+      if (selection.current === id) {
+        await choose(id);
+      }
+    } catch (e) {
+      if (selection.current === id) {
+        const message = apiErrorMessage(e);
+        setError(message);
+        toast.error(message);
+      }
+    } finally {
+      lock.current = false;
+      setRemovingId(null);
+    }
+  }
   return (
     <section className="space-y-5 p-4 sm:p-6">
-      <h1 className="text-2xl font-semibold">Dịch vụ phát sinh</h1>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <h1 className="text-2xl font-semibold">Dịch vụ phát sinh</h1>
+        <button
+          type="button"
+          className="rounded-md border px-3 py-2 text-sm font-medium hover:bg-muted disabled:opacity-60"
+          disabled={loading}
+          onClick={() => void load()}
+        >
+          Làm mới danh sách
+        </button>
+      </div>
       {loading ? (
         <p role="status">Đang tải kỳ lưu trú và danh mục dịch vụ…</p>
       ) : (
@@ -173,6 +223,7 @@ export function StayServices() {
                       <th>Đơn giá đã ghi nhận</th>
                       <th>Số lượng</th>
                       <th>Thành tiền</th>
+                      <th className="text-right">Thao tác</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -184,6 +235,16 @@ export function StayServices() {
                         <td>{money(u.thanhTien / u.soLuong)}</td>
                         <td>{u.soLuong}</td>
                         <td>{money(u.thanhTien)}</td>
+                        <td className="text-right">
+                          <button
+                            type="button"
+                            disabled={submitting || removingId === u.maSuDung}
+                            onClick={() => void removeUsage(u.maSuDung)}
+                            className="rounded-md border border-rose-200 px-2.5 py-1 text-xs font-medium text-rose-700 hover:bg-rose-50 disabled:opacity-50"
+                          >
+                            {removingId === u.maSuDung ? "Đang xóa…" : "Xóa"}
+                          </button>
+                        </td>
                       </tr>
                     ))}
                   </tbody>
