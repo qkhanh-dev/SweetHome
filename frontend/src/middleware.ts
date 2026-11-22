@@ -67,7 +67,8 @@ export async function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname;
   const needsAdmin = path === "/admin" || path.startsWith("/admin/");
   const needsStaff = path === "/staff" || path.startsWith("/staff/");
-  if (!needsAdmin && !needsStaff) return NextResponse.next();
+  const needsAuthenticated = path === "/change-password" || path.startsWith("/change-password/");
+  if (!needsAdmin && !needsStaff && !needsAuthenticated) return NextResponse.next();
 
   const rawCookie = request.cookies.get(SESSION_COOKIE_NAME)?.value;
   const session = await readSession(rawCookie);
@@ -75,6 +76,7 @@ export async function middleware(request: NextRequest) {
 
   const requestHeaders = new Headers(request.headers);
   requestHeaders.set("x-sweethome-protected-path", path);
+  if (needsAuthenticated) return NextResponse.next({ request: { headers: requestHeaders } });
   if (session.role === "ADMIN") return NextResponse.next({ request: { headers: requestHeaders } });
   if (needsStaff && session.role === "STAFF") return NextResponse.next({ request: { headers: requestHeaders } });
   if (needsAdmin && session.role === "STAFF") {
@@ -84,5 +86,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/staff/:path*"],
+  matcher: ["/admin/:path*", "/staff/:path*", "/change-password", "/change-password/:path*"],
 };

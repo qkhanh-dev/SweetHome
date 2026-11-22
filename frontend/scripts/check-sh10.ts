@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { NextRequest } from "next/server";
 import { bookingContactSchema, parseBookingQuery } from "../src/lib/booking-validation";
-import { loginSchema, registerSchema } from "../src/lib/auth-validation";
+import { changePasswordSchema, loginSchema, registerSchema } from "../src/lib/auth-validation";
 import { mergeBookingMutation } from "../src/lib/booking-relations";
 import { tinhTienHoanCoc } from "../src/mocks/businessRules";
 import { TrangThaiDatPhong, TrangThaiPhong } from "../src/types/sweethome";
@@ -48,6 +48,11 @@ async function main(): Promise<void> {
   assert.equal(registerSchema.safeParse({ username: "qauser", password: "123456", hoTen: " ", soDienThoai: "0901234567", email: "a@b.test" }).success, false);
   assert.equal(registerSchema.safeParse({ username: "qauser", password: "123456", hoTen: "Khách", soDienThoai: "0901234567", email: "bad" }).success, false);
   assert.equal(loginSchema.safeParse({ username: "", password: "" }).success, false);
+  assert.equal(changePasswordSchema.safeParse({ matKhauCu: "Old@123", matKhauMoi: "New@123", xacNhanMatKhauMoi: "New@123" }).success, true);
+  assert.equal(changePasswordSchema.safeParse({ matKhauCu: "", matKhauMoi: "New@123", xacNhanMatKhauMoi: "New@123" }).success, false);
+  assert.equal(changePasswordSchema.safeParse({ matKhauCu: "Old@123", matKhauMoi: "12345", xacNhanMatKhauMoi: "12345" }).success, false);
+  assert.equal(changePasswordSchema.safeParse({ matKhauCu: "Old@123", matKhauMoi: "Old@123", xacNhanMatKhauMoi: "Old@123" }).success, false);
+  assert.equal(changePasswordSchema.safeParse({ matKhauCu: "Old@123", matKhauMoi: "New@123", xacNhanMatKhauMoi: "Other@123" }).success, false);
   const roleAttempt = registerSchema.parse({ username: "qauser", password: "123456", hoTen: "Khách", soDienThoai: "0901234567", email: "a@b.test", vaiTro: "ADMIN" });
   assert.equal("vaiTro" in roleAttempt, false);
   assert.equal(parseBookingQuery({ maPhong: "P1", ngayNhan: "2030-01-02", ngayTra: "2030-01-02", soKhach: "2" }), null);
@@ -268,6 +273,16 @@ async function main(): Promise<void> {
   const expiredToken = signedCookie("ADMIN", Date.now() - (sessionCookie.SESSION_MAX_AGE_SECONDS + 1) * 1000);
   assert.equal(sessionCookie.verifySignedSession(expiredToken), null);
   assert.equal((await middlewareModule.middleware(requestWithCookie("/staff/rooms", `${sessionCookie.SESSION_COOKIE_NAME}=${expiredToken}`))).status, 307);
+  assert.equal(new URL((await middlewareModule.middleware(requestWithCookie("/change-password"))).headers.get("location")!).pathname, "/login");
+  assert.equal(new URL((await middlewareModule.middleware(requestWithCookie("/staff/change-password"))).headers.get("location")!).pathname, "/login");
+  assert.equal(new URL((await middlewareModule.middleware(requestWithCookie("/admin/change-password"))).headers.get("location")!).pathname, "/login");
+  assert.equal((await middlewareModule.middleware(requestWithCookie("/change-password", customerCookie))).headers.get("x-middleware-next"), "1");
+  assert.equal(new URL((await middlewareModule.middleware(requestWithCookie("/staff/change-password", customerCookie))).headers.get("location")!).pathname, "/");
+  assert.equal(new URL((await middlewareModule.middleware(requestWithCookie("/admin/change-password", customerCookie))).headers.get("location")!).pathname, "/");
+  assert.equal((await middlewareModule.middleware(requestWithCookie("/staff/change-password", staffCookie))).headers.get("x-middleware-next"), "1");
+  assert.equal(new URL((await middlewareModule.middleware(requestWithCookie("/admin/change-password", staffCookie))).headers.get("location")!).pathname, "/staff/rooms");
+  assert.equal((await middlewareModule.middleware(requestWithCookie("/admin/change-password", adminCookieForGate))).headers.get("x-middleware-next"), "1");
+  assert.equal((await middlewareModule.middleware(requestWithCookie("/staff/change-password", adminCookieForGate))).headers.get("x-middleware-next"), "1");
   console.log("PASS SH-10 middleware: direct/deep URL, reload cookie, ADMIN/STAFF/CUSTOMER, modified and expired cookie");
 
   // Policy calculation uses 14:00 UTC+7 (07:00Z) and exact, unrounded thresholds.
