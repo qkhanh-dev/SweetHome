@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import {
   BarChart,
@@ -35,6 +35,7 @@ import {
 import type { RevenueStatsResult, OccupancyStatsResult, RevenueGroupBy } from "@/types/api";
 import { TrangThaiPhong } from "@/types/sweethome";
 import { apiClient } from "@/services/apiClient";
+import { LatestRequestGate } from "@/lib/latest-request";
 import {
   formatVND,
   formatPercent,
@@ -104,44 +105,69 @@ export function DashboardStats() {
   });
   const [groupBy, setGroupBy] = useState<RevenueGroupBy>("day");
   const [revenueChartType, setRevenueChartType] = useState<"bar" | "line" | "pie">("bar");
+  const requestGate = useRef(new LatestRequestGate());
+  const lastFetchedAtRef = useRef(0);
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  async function fetchData(overrideTuNgay = tuNgay, overrideDenNgay = denNgay, overrideGroup = groupBy) {
-    if (overrideDenNgay < overrideTuNgay) {
-      setError("Ngày kết thúc phải lớn hơn hoặc bằng ngày bắt đầu.");
-      setLoading(false);
-      return;
-    }
-    setLoading(true);
-    setError(null);
-    try {
-      const [revRes, occRes] = await Promise.all([
-        apiClient.getRevenueStats({
-          tuNgay: overrideTuNgay,
-          denNgay: overrideDenNgay,
-          groupBy: overrideGroup,
-        }),
-        apiClient.getOccupancyStats({
-          tuNgay: overrideTuNgay,
-          denNgay: overrideDenNgay,
-        }),
-      ]);
-      setRevenueData(revRes.data);
-      setOccupancyData(occRes.data);
-    } catch (err) {
-      setError(apiErrorMessage(err));
-    } finally {
-      setLoading(false);
-    }
-  }
+  const fetchData = useCallback(
+    async (overrideTuNgay: string, overrideDenNgay: string, overrideGroup: RevenueGroupBy) => {
+      if (overrideDenNgay < overrideTuNgay) {
+        setError("Ngày kết thúc phải lớn hơn hoặc bằng ngày bắt đầu.");
+        setLoading(false);
+        return;
+      }
+      lastFetchedAtRef.current = Date.now();
+      const requestId = requestGate.current.begin();
+      setLoading(true);
+      setError(null);
+      try {
+        const [revRes, occRes] = await Promise.all([
+          apiClient.getRevenueStats({
+            tuNgay: overrideTuNgay,
+            denNgay: overrideDenNgay,
+            groupBy: overrideGroup,
+          }),
+          apiClient.getOccupancyStats({
+            tuNgay: overrideTuNgay,
+            denNgay: overrideDenNgay,
+          }),
+        ]);
+        if (!requestGate.current.isCurrent(requestId)) return;
+        setRevenueData(revRes.data);
+        setOccupancyData(occRes.data);
+      } catch (err) {
+        if (!requestGate.current.isCurrent(requestId)) return;
+        setError(apiErrorMessage(err));
+      } finally {
+        if (requestGate.current.isCurrent(requestId)) {
+          setLoading(false);
+        }
+      }
+    },
+    [],
+  );
 
   useEffect(() => {
     void fetchData(tuNgay, denNgay, groupBy);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [groupBy]);
+
+  useEffect(() => {
+    const refreshIfStale = () => {
+      if (document.visibilityState === "visible" && denNgay >= tuNgay && Date.now() - lastFetchedAtRef.current > 1000) {
+        void fetchData(tuNgay, denNgay, groupBy);
+      }
+    };
+    document.addEventListener("visibilitychange", refreshIfStale);
+    window.addEventListener("focus", refreshIfStale);
+    return () => {
+      document.removeEventListener("visibilitychange", refreshIfStale);
+      window.removeEventListener("focus", refreshIfStale);
+    };
+  }, [denNgay, fetchData, groupBy, tuNgay]);
 
   function handleApplyFilters(e?: React.FormEvent) {
     if (e) e.preventDefault();

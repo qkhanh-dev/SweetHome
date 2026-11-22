@@ -1,8 +1,6 @@
 import assert from "node:assert/strict";
 import { createSearchSchema, homestayFormSchema, roomFormSchema, roomTypeFormSchema, amenityFormSchema, minCheckoutDate } from "../src/lib/sh09-validation";
 import { LatestRequestGate } from "../src/lib/latest-request";
-import { apiClient, ApiError } from "../src/services/apiClient";
-import { resetMockState } from "../src/mocks/mockAdapter";
 import { tinhGiaPhongChiTiet } from "../src/mocks/businessRules";
 import { TrangThaiPhong } from "../src/types/sweethome";
 
@@ -99,6 +97,11 @@ async function main() {
   assert.equal(gate.isCurrent(newRequest), true);
   console.log("PASS request ordering: kết quả cũ không được coi là hiện hành");
 
+  process.env.NEXT_PUBLIC_USE_MOCK = "true";
+  const [{ apiClient, ApiError }, { resetMockState }] = await Promise.all([
+    import("../src/services/apiClient"),
+    import("../src/mocks/mockAdapter"),
+  ]);
   assert.equal(process.env.NEXT_PUBLIC_USE_MOCK, "true");
   const originalFetch = globalThis.fetch;
   globalThis.fetch = async () => { throw new Error("Mock check không được gọi fetch."); };

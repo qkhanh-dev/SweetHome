@@ -1,5 +1,4 @@
 import assert from "node:assert/strict";
-import { apiClient, ApiError, setAccessToken } from "@/services/apiClient";
 import {
   lamTronPhanTram,
   tinhGiaPhongChiTiet,
@@ -7,7 +6,6 @@ import {
   tinhTienCoc,
   tinhTongHoaDon,
 } from "@/mocks/businessRules";
-import { resetMockState, setMockAuthenticatedAccount } from "@/mocks/mockAdapter";
 import { TrangThaiDatPhong, TrangThaiPhong } from "@/types/sweethome";
 import type { ApiResponse } from "@/types/sweethome";
 import { withMockBrowserSession } from "./mock-browser-session";
@@ -26,33 +24,6 @@ function envelope<T>(response: ApiResponse<T>, status = 200): void {
   assert.ok(Number.isFinite(Date.parse(response.timestamp)));
 }
 
-async function errorStatus(run: () => Promise<unknown>, status: number): Promise<ApiError> {
-  let found: unknown;
-  await assert.rejects(run, (error: unknown) => {
-    found = error;
-    return error instanceof ApiError && error.statusCode === status;
-  });
-  assert.ok(found instanceof ApiError);
-  const payload = found.payload as Record<string, unknown>;
-  assert.deepEqual(Object.keys(payload).sort(), [
-    "details",
-    "error",
-    "message",
-    "path",
-    "statusCode",
-    "success",
-    "timestamp",
-  ]);
-  assert.equal(payload.success, false);
-  assert.equal(payload.statusCode, status);
-  assert.equal(payload.message, found.message);
-  assert.deepEqual(payload.details, []);
-  assert.equal(typeof payload.error, "string");
-  assert.equal(typeof payload.path, "string");
-  assert.ok(Number.isFinite(Date.parse(String(payload.timestamp))));
-  return found;
-}
-
 function webhookPayload(maDatPhong: string, soTien: number) {
   return {
     maDatPhong,
@@ -63,6 +34,37 @@ function webhookPayload(maDatPhong: string, soTien: number) {
 }
 
 async function main(): Promise<void> {
+  process.env.NEXT_PUBLIC_USE_MOCK = "true";
+  const [{ apiClient, ApiError, setAccessToken }, { resetMockState, setMockAuthenticatedAccount }] = await Promise.all([
+    import("@/services/apiClient"),
+    import("@/mocks/mockAdapter"),
+  ]);
+  async function errorStatus(run: () => Promise<unknown>, status: number) {
+    let found: unknown;
+    await assert.rejects(run, (error: unknown) => {
+      found = error;
+      return error instanceof ApiError && error.statusCode === status;
+    });
+    assert.ok(found instanceof ApiError);
+    const payload = found.payload as Record<string, unknown>;
+    assert.deepEqual(Object.keys(payload).sort(), [
+      "details",
+      "error",
+      "message",
+      "path",
+      "statusCode",
+      "success",
+      "timestamp",
+    ]);
+    assert.equal(payload.success, false);
+    assert.equal(payload.statusCode, status);
+    assert.equal(payload.message, found.message);
+    assert.deepEqual(payload.details, []);
+    assert.equal(typeof payload.error, "string");
+    assert.equal(typeof payload.path, "string");
+    assert.ok(Number.isFinite(Date.parse(String(payload.timestamp))));
+    return found;
+  }
   assert.equal(process.env.NEXT_PUBLIC_USE_MOCK, "true");
   resetMockState();
   await withMockBrowserSession(async () => {
