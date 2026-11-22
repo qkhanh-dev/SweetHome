@@ -8,6 +8,7 @@ import { apiClient } from "@/services/apiClient";
 import { apiErrorMessage, applyZodIssues, roomTypeFormSchema } from "@/lib/sh09-validation";
 import { AccessibleDialog } from "@/components/ui/accessible-dialog";
 import { FormField, inputClassName } from "@/components/ui/form-field";
+import { toast } from "@/components/ui/toast";
 
 type RoomTypeValues = {
   tenLoaiPhong: string;
@@ -46,9 +47,19 @@ export function RoomTypeManagement() {
     try {
       setItems((await apiClient.getRoomTypes()).data);
     } catch (error) {
-      setLoadError(apiErrorMessage(error));
+      const message = apiErrorMessage(error);
+      setLoadError(message);
+      toast.error(message);
     } finally {
       setLoading(false);
+    }
+  }
+
+  async function refreshItems() {
+    try {
+      setItems((await apiClient.getRoomTypes()).data);
+    } catch {
+      /* Preserve optimistic update if background refresh fails. */
     }
   }
 
@@ -97,10 +108,15 @@ export function RoomTypeManagement() {
         ? current.map((item) => item.maLoaiPhong === editing.maLoaiPhong ? response.data : item)
         : [...current, response.data]);
       setDialogOpen(false);
-      setSuccess(editing ? `Đã cập nhật ${response.data.tenLoaiPhong}.` : `Đã thêm ${response.data.tenLoaiPhong}.`);
+      const msg = editing ? `Đã cập nhật ${response.data.tenLoaiPhong}.` : `Đã thêm ${response.data.tenLoaiPhong}.`;
+      setSuccess(msg);
+      toast.success(msg);
       setPageError(null);
+      void refreshItems();
     } catch (error) {
-      setDialogError(apiErrorMessage(error));
+      const message = apiErrorMessage(error);
+      setDialogError(message);
+      toast.error(message);
     }
   });
 
@@ -112,9 +128,14 @@ export function RoomTypeManagement() {
     try {
       await apiClient.deleteRoomType(item.maLoaiPhong);
       setItems((current) => current.filter((candidate) => candidate.maLoaiPhong !== item.maLoaiPhong));
-      setSuccess(`Đã xóa loại phòng ${item.tenLoaiPhong}.`);
+      const msg = `Đã xóa loại phòng ${item.tenLoaiPhong}.`;
+      setSuccess(msg);
+      toast.success(msg);
+      void refreshItems();
     } catch (error) {
-      setPageError(apiErrorMessage(error));
+      const message = apiErrorMessage(error);
+      setPageError(message);
+      toast.error(message);
     } finally {
       setDeletingId(null);
     }

@@ -9,6 +9,7 @@ import { mergeBookingMutation } from "@/lib/booking-relations";
 import { StatusBadge } from "@/components/status-badge";
 import { FormField, inputClassName } from "@/components/ui/form-field";
 import { printDocument } from "@/lib/print-document";
+import { toast } from "@/components/ui/toast";
 
 export function CheckIn() {
   const [keyword, setKeyword] = useState("");
@@ -34,7 +35,9 @@ export function CheckIn() {
       setResults((await apiClient.lookupBookings(keyword.trim())).data);
       setSearched(true);
     } catch (e) {
-      setError(apiErrorMessage(e));
+      const message = apiErrorMessage(e);
+      setError(message);
+      toast.error(message);
     } finally {
       lock.current = false;
       setBusy(false);
@@ -70,8 +73,13 @@ export function CheckIn() {
         items.map((b) => (b.maDatPhong === merged.maDatPhong ? merged : b)),
       );
       setCccd("");
+      toast.success(
+        `Check-in thành công phòng ${merged.phong?.soPhong ?? merged.maPhong}.`,
+      );
     } catch (e) {
-      setError(apiErrorMessage(e));
+      const message = apiErrorMessage(e);
+      setError(message);
+      toast.error(message);
     } finally {
       lock.current = false;
       setBusy(false);

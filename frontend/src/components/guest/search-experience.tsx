@@ -10,6 +10,7 @@ import { apiClient } from "@/services/apiClient";
 import { apiErrorMessage, applyZodIssues, createSearchSchema, minCheckoutDate, toLocalDateInput } from "@/lib/sh09-validation";
 import { LatestRequestGate } from "@/lib/latest-request";
 import { FormField, inputClassName } from "@/components/ui/form-field";
+import { toast } from "@/components/ui/toast";
 
 type SearchValues = {
   ngayNhan: string;
@@ -148,7 +149,9 @@ export function SearchExperience() {
       const response = await apiClient.getAmenities();
       setAmenities(response.data);
     } catch (error) {
-      setAmenitiesError(apiErrorMessage(error));
+      const message = apiErrorMessage(error);
+      setAmenitiesError(message);
+      toast.error(message);
     } finally {
       setAmenitiesLoading(false);
     }
@@ -177,8 +180,10 @@ export function SearchExperience() {
       setSearchState("success");
     } catch (error) {
       if (!requestGate.current.isCurrent(requestId)) return;
-      setSearchError(apiErrorMessage(error));
+      const message = apiErrorMessage(error);
+      setSearchError(message);
       setSearchState("error");
+      toast.error(message);
     }
   }
 

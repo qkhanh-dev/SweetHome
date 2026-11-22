@@ -14,6 +14,7 @@ import { apiErrorMessage } from "@/lib/sh09-validation";
 import { StatusBadge } from "@/components/status-badge";
 import { FormField, inputClassName } from "@/components/ui/form-field";
 import { InvoiceReceipt } from "@/components/booking/invoice-receipt";
+import { toast } from "@/components/ui/toast";
 
 function Settlement({
   bookingId,
@@ -66,7 +67,9 @@ function Settlement({
         }
       }
     } catch (e) {
-      setError(apiErrorMessage(e));
+      const message = apiErrorMessage(e);
+      setError(message);
+      toast.error(message);
     } finally {
       setLoading(false);
     }
@@ -104,13 +107,16 @@ function Settlement({
           ).data;
       setInvoice(next);
       onChange();
+      toast.success(`Đã lập hóa đơn ${next.maHoaDon}.`);
       window.history.replaceState(
         null,
         "",
         `/staff/check-out?invoice=${encodeURIComponent(next.maHoaDon)}`,
       );
     } catch (e) {
-      setError(apiErrorMessage(e));
+      const message = apiErrorMessage(e);
+      setError(message);
+      toast.error(message);
       try {
         const found = (await apiClient.getInvoices()).data.find(
           (i) => i.maDatPhong === booking.maDatPhong,
@@ -162,8 +168,11 @@ function Settlement({
           : b,
       );
       onChange();
+      toast.success(`Thanh toán hóa đơn ${invoice.maHoaDon} thành công.`);
     } catch (e) {
-      setError(apiErrorMessage(e));
+      const message = apiErrorMessage(e);
+      setError(message);
+      toast.error(message);
       // An HTTP timeout can happen after payment committed. Read before allowing another attempt.
       try {
         const latest = (await apiClient.getInvoiceById(invoice.maHoaDon)).data;
@@ -291,7 +300,9 @@ export function CheckOut() {
       setRooms(r.data);
       setError("");
     } catch (e) {
-      setError(apiErrorMessage(e));
+      const message = apiErrorMessage(e);
+      setError(message);
+      toast.error(message);
     } finally {
       setLoading(false);
     }
@@ -310,8 +321,11 @@ export function CheckOut() {
       const room = (await apiClient.completeRoomCleaning(id)).data;
       setCleaned(room);
       setRooms((current) => current.filter((r) => r.maPhong !== room.maPhong));
+      toast.success(`Phòng ${room.soPhong} đã hoàn tất dọn dẹp và chuyển sang Trống.`);
     } catch (e) {
-      setError(apiErrorMessage(e));
+      const message = apiErrorMessage(e);
+      setError(message);
+      toast.error(message);
     } finally {
       cleanLock.current = false;
       setCleaning("");

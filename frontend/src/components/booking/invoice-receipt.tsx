@@ -7,6 +7,7 @@ import { apiErrorMessage } from "@/lib/sh09-validation";
 import { money } from "@/lib/sh17-validation";
 import { StatusBadge } from "@/components/status-badge";
 import { printDocument } from "@/lib/print-document";
+import { toast } from "@/components/ui/toast";
 
 export function InvoiceReceipt({ invoice }: { invoice: HoaDon }) {
   const [error, setError] = useState("");
@@ -25,8 +26,11 @@ export function InvoiceReceipt({ invoice }: { invoice: HoaDon }) {
       anchor.download = `SweetHome-${invoice.maHoaDon}.pdf`;
       anchor.click();
       setTimeout(() => URL.revokeObjectURL(url), 30_000);
+      toast.success(`Đã tải xuống biên lai PDF ${invoice.maHoaDon}.`);
     } catch (e) {
-      setError(apiErrorMessage(e));
+      const message = apiErrorMessage(e);
+      setError(message);
+      toast.error(message);
     } finally {
       lock.current = false;
       setBusy(false);

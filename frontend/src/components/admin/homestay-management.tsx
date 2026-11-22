@@ -6,6 +6,7 @@ import type { Homestay } from "@/types/sweethome";
 import { apiClient } from "@/services/apiClient";
 import { apiErrorMessage, applyZodIssues, homestayFormSchema } from "@/lib/sh09-validation";
 import { FormField, inputClassName } from "@/components/ui/form-field";
+import { toast } from "@/components/ui/toast";
 
 type HomestayValues = {
   tenHomestay: string;
@@ -41,7 +42,9 @@ export function HomestayManagement() {
         quyDinhChung: response.data.quyDinhChung,
       });
     } catch (error) {
-      setLoadError(apiErrorMessage(error));
+      const message = apiErrorMessage(error);
+      setLoadError(message);
+      toast.error(message);
     } finally {
       setLoading(false);
     }
@@ -70,9 +73,13 @@ export function HomestayManagement() {
         email: response.data.email,
         quyDinhChung: response.data.quyDinhChung,
       });
-      setSuccess("Thông tin Homestay đã được cập nhật.");
+      const msg = response.message || "Thông tin Homestay đã được cập nhật.";
+      setSuccess(msg);
+      toast.success(msg);
     } catch (error) {
-      setSaveError(apiErrorMessage(error));
+      const message = apiErrorMessage(error);
+      setSaveError(message);
+      toast.error(message);
     }
   });
 
