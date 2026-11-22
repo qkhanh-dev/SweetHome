@@ -26,6 +26,22 @@ describe('payment gateway boundary', () => {
     expect(() => production.verifyWebhook('secret')).not.toThrow();
   });
 
+  it('allows explicit mock refunds in Docker production without bypassing live or strict guards', async () => {
+    const dockerMock = new PaymentGatewayService(
+      configFor({ PAYMENT_GATEWAY_MODE: 'mock', NODE_ENV: 'production' }),
+    );
+    await expect(dockerMock.hoanTien('payment-1', 390000, 'refund-1')).resolves.toBeUndefined();
+
+    const strictMock = new PaymentGatewayService(
+      configFor({
+        PAYMENT_GATEWAY_MODE: 'mock',
+        NODE_ENV: 'production',
+        PAYMENT_REQUIRE_EXTERNAL_REFUND: 'true',
+      }),
+    );
+    await expect(strictMock.hoanTien('payment-1', 390000, 'refund-2')).rejects.toThrow();
+  });
+
   it('does not claim a live refund without gateway configuration', async () => {
     const gateway = new PaymentGatewayService(configFor({ PAYMENT_GATEWAY_MODE: 'live' }));
     await expect(gateway.hoanTien('payment-1', 100, 'refund-1')).rejects.toThrow();

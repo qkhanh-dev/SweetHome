@@ -6,15 +6,23 @@ import { timingSafeEqual } from 'node:crypto';
 export class PaymentGatewayService {
   constructor(private readonly config: ConfigService) {}
 
-  private isMock() {
+  private isMockWebhook() {
     return (
       this.config.get<string>('PAYMENT_GATEWAY_MODE') === 'mock' &&
       this.config.get<string>('NODE_ENV') !== 'production'
     );
   }
 
+  private isMockRefund() {
+    return (
+      this.config.get<string>('PAYMENT_GATEWAY_MODE') === 'mock' &&
+      !this.config.get<string>('PAYMENT_REFUND_URL') &&
+      this.config.get<string>('PAYMENT_REQUIRE_EXTERNAL_REFUND') !== 'true'
+    );
+  }
+
   verifyWebhook(secret?: string) {
-    if (this.isMock()) return;
+    if (this.isMockWebhook()) return;
     const expected = this.config.get<string>('PAYMENT_WEBHOOK_SECRET');
     if (
       !expected ||
@@ -43,7 +51,7 @@ export class PaymentGatewayService {
   }
 
   async hoanTien(maGiaoDich: string, soTienHoan: number, idempotencyKey: string) {
-    if (this.isMock()) return;
+    if (this.isMockRefund()) return;
     const url = this.config.get<string>('PAYMENT_REFUND_URL');
     const key = this.config.get<string>('PAYMENT_API_KEY');
     if (!url || !key) throw new ServiceUnavailableException('Chưa cấu hình cổng hoàn tiền');
