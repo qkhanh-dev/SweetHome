@@ -15,9 +15,19 @@ export function AuthNavigation() {
   }, [restore, status]);
 
   if (status === "authenticated" && user) {
+    const changePasswordHref =
+      user.vaiTro === "ADMIN"
+        ? "/admin/change-password"
+        : user.vaiTro === "STAFF"
+          ? "/staff/change-password"
+          : "/change-password";
+
     return (
       <div className="flex items-center gap-3 text-sm">
         <span className="hidden text-muted-foreground sm:inline">Xin chào, {user.khachHang?.hoTen ?? user.username}</span>
+        <Link href={changePasswordHref} className="rounded-md border px-3 py-2 font-medium hover:bg-muted">
+          Đổi mật khẩu
+        </Link>
         <LogoutButton />
       </div>
     );
