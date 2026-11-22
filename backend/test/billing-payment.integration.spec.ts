@@ -292,6 +292,7 @@ integration('SH-16 real PostgreSQL checkout-invoice integration', () => {
         hoTen: scope,
         soDienThoai: '0900000001',
         email: `${scope}-customer@test.invalid`,
+        soCCCD: '079203001234',
         maTaiKhoan: result.customer.maTaiKhoan,
       },
     });
@@ -368,6 +369,18 @@ integration('SH-16 real PostgreSQL checkout-invoice integration', () => {
   ) {
     if (!app) throw new Error('Integration app has not initialized');
     const call = request(app.getHttpServer()).post(`/api/invoices/${invoiceId}/pay`).send(body);
+    return accessToken ? call.set('Authorization', `Bearer ${accessToken}`) : call;
+  }
+
+  function getInvoices(accessToken: string | undefined) {
+    if (!app) throw new Error('Integration app has not initialized');
+    const call = request(app.getHttpServer()).get('/api/invoices');
+    return accessToken ? call.set('Authorization', `Bearer ${accessToken}`) : call;
+  }
+
+  function getInvoice(invoiceId: string, accessToken: string | undefined) {
+    if (!app) throw new Error('Integration app has not initialized');
+    const call = request(app.getHttpServer()).get(`/api/invoices/${invoiceId}`);
     return accessToken ? call.set('Authorization', `Bearer ${accessToken}`) : call;
   }
 
@@ -477,6 +490,78 @@ integration('SH-16 real PostgreSQL checkout-invoice integration', () => {
       }),
     );
     expect(response.body.data.datPhong.suDungDichVus).toHaveLength(2);
+  });
+
+  it('lists invoices for STAFF in frontend-compatible, stable order without customer data', async () => {
+    const empty = await fixture();
+    const data = await fixture();
+    const invoiceId = await createDraft(data, await token(data.staff));
+    const response = await getInvoices(await token(data.staff)).expect(200);
+
+    expect(response.body).toEqual(
+      expect.objectContaining({ success: true, statusCode: 200, data: expect.any(Array) }),
+    );
+    expect(
+      response.body.data.find(
+        (invoice: { maDatPhong: string }) => invoice.maDatPhong === empty.bookingId,
+      ),
+    ).toBeUndefined();
+    expect(response.body.data).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          maHoaDon: invoiceId,
+          maDatPhong: data.bookingId,
+          tienPhong: 2800000,
+          tienDichVu: 0,
+          phuPhi: 0,
+          tienCocDaTra: 840000,
+          tongCanThanhToan: 1960000,
+          ngayLap: expect.any(String),
+          phuongThuc: expect.any(String),
+          trangThai: 'CHUA_THANH_TOAN',
+        }),
+      ]),
+    );
+    const invoice = response.body.data.find(
+      (item: { maHoaDon: string }) => item.maHoaDon === invoiceId,
+    );
+    expect(invoice).not.toHaveProperty('datPhong');
+  });
+
+  it('returns invoice detail to STAFF and ADMIN, but not anonymous or CUSTOMER callers', async () => {
+    const data = await fixture({ services: [200000] });
+    const invoiceId = await createDraft(data, await token(data.staff));
+
+    const staff = await getInvoice(invoiceId, await token(data.staff)).expect(200);
+    await getInvoice(invoiceId, await token(data.admin)).expect(200);
+    await getInvoice(invoiceId, undefined).expect(401);
+    await getInvoice(invoiceId, await token(data.customer)).expect(403);
+
+    expect(staff.body).toEqual(
+      expect.objectContaining({ success: true, statusCode: 200, data: expect.any(Object) }),
+    );
+    expect(staff.body.data).toMatchObject({
+      maHoaDon: invoiceId,
+      maDatPhong: data.bookingId,
+      tienPhong: 2800000,
+      tienDichVu: 200000,
+      tienCocDaTra: 840000,
+      tongCanThanhToan: 2160000,
+      ngayLap: expect.any(String),
+      datPhong: expect.objectContaining({
+        maDatPhong: data.bookingId,
+        khachHang: expect.objectContaining({ maKH: data.customerId }),
+        phong: expect.objectContaining({ maPhong: data.roomId }),
+        suDungDichVus: expect.any(Array),
+      }),
+    });
+    expect(staff.body.data.datPhong.khachHang).not.toHaveProperty('soCCCD');
+    expect(staff.body.data.datPhong.khachHang).not.toHaveProperty('maTaiKhoan');
+  });
+
+  it('returns 404 for a missing invoice read', async () => {
+    const data = await fixture();
+    await getInvoice(`${data.scope}-missing`, await token(data.staff)).expect(404);
   });
 
   it('creates an invoice for ADMIN', async () => {

@@ -26,6 +26,57 @@ const INVOICE_DETAILS = {
   },
 } as const;
 
+// The staff checkout screen only needs invoice totals in its list.  Keep that
+// response flat so a list request does not disclose customer/contact data.
+const INVOICE_LIST_SELECT = {
+  maHoaDon: true,
+  maDatPhong: true,
+  tienPhong: true,
+  tienDichVu: true,
+  phuPhi: true,
+  tienCocDaTra: true,
+  tongCanThanhToan: true,
+  ngayLap: true,
+  phuongThuc: true,
+  trangThai: true,
+} as const satisfies Prisma.HoaDonSelect;
+
+// Detail is used by staff/admin checkout recovery.  It supplies the relations
+// documented for invoice reads, while deliberately omitting account IDs and
+// CCCD because neither is required by that screen.
+const INVOICE_READ_DETAILS = {
+  datPhong: {
+    select: {
+      maDatPhong: true,
+      maKH: true,
+      maPhong: true,
+      ngayDat: true,
+      ngayNhan: true,
+      ngayTra: true,
+      soKhach: true,
+      tienCoc: true,
+      tongTienDuKien: true,
+      trangThai: true,
+      ghiChu: true,
+      khachHang: { select: { maKH: true, hoTen: true, soDienThoai: true, email: true } },
+      phong: {
+        select: {
+          maPhong: true,
+          soPhong: true,
+          tang: true,
+          trangThai: true,
+          maHomestay: true,
+          maLoaiPhong: true,
+        },
+      },
+      suDungDichVus: {
+        include: { dichVu: true },
+        orderBy: { thoiDiem: 'asc' as const },
+      },
+    },
+  },
+} as const satisfies Prisma.HoaDonInclude;
+
 const PDF_INVOICE_INCLUDE = {
   datPhong: {
     include: {
@@ -58,6 +109,26 @@ const SERVICE_TABLE = {
   right: 547,
 } as const;
 
+/**
+ * Nest emits TypeScript beneath dist/src but copies configured assets to
+ * dist/assets. Jest executes source beneath src. Keep both module-relative
+ * layouts explicit and require the font pair from one directory.
+ */
+export function resolveInvoiceFontDirectory(
+  moduleDirectory: string,
+  exists: (candidate: string) => boolean = fs.existsSync,
+): string | undefined {
+  const candidates = [
+    path.join(moduleDirectory, '..', '..', 'assets', 'fonts'),
+    path.join(moduleDirectory, '..', '..', '..', 'assets', 'fonts'),
+  ];
+  return candidates.find(
+    (directory) =>
+      exists(path.join(directory, 'NotoSans-Regular.ttf')) &&
+      exists(path.join(directory, 'NotoSans-Bold.ttf')),
+  );
+}
+
 function isTransactionConflict(error: unknown): boolean {
   if (!(error instanceof Prisma.PrismaClientKnownRequestError)) return false;
   if (['P2002', 'P2034'].includes(error.code)) return true;
@@ -88,6 +159,22 @@ function addMoney(left: number, right: number, label: string): number {
 @Injectable()
 export class BillingPaymentService {
   constructor(private readonly prisma: PrismaService) {}
+
+  async listInvoices() {
+    return this.prisma.hoaDon.findMany({
+      select: INVOICE_LIST_SELECT,
+      orderBy: [{ ngayLap: 'desc' }, { maHoaDon: 'desc' }],
+    });
+  }
+
+  async getInvoiceById(invoiceId: string) {
+    const invoice = await this.prisma.hoaDon.findUnique({
+      where: { maHoaDon: invoiceId },
+      include: INVOICE_READ_DETAILS,
+    });
+    if (!invoice) throw new NotFoundException('Không tìm thấy hóa đơn');
+    return invoice;
+  }
 
   async createOrUpdateCheckOutInvoice(bookingId: string, dto: CreateCheckOutInvoiceDto) {
     assertMoney(dto.phuPhi, 'Phụ phí');
@@ -328,12 +415,12 @@ export class BillingPaymentService {
   }
 
   private async renderInvoicePdf(invoice: PdfInvoice): Promise<Buffer> {
-    const fontDirectory = path.join(__dirname, '..', '..', 'assets', 'fonts');
-    const regularFont = path.join(fontDirectory, 'NotoSans-Regular.ttf');
-    const boldFont = path.join(fontDirectory, 'NotoSans-Bold.ttf');
-    if (!fs.existsSync(regularFont) || !fs.existsSync(boldFont)) {
+    const fontDirectory = resolveInvoiceFontDirectory(__dirname);
+    if (!fontDirectory) {
       throw new InternalServerErrorException('Không thể tải phông chữ biên lai');
     }
+    const regularFont = path.join(fontDirectory, 'NotoSans-Regular.ttf');
+    const boldFont = path.join(fontDirectory, 'NotoSans-Bold.ttf');
 
     return new Promise<Buffer>((resolve, reject) => {
       const document = new PDFDocument({

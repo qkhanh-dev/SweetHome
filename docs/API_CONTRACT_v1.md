@@ -48,11 +48,12 @@
 | `Content-Type` | `application/json; charset=utf-8` | Mọi request `POST`, `PUT`, `PATCH` có gửi body JSON. |
 | `Authorization` | `Bearer <jwt_access_token>` | Mọi API yêu cầu đăng nhập (`CUSTOMER`, `STAFF`, `ADMIN`). |
 | `Idempotency-Key` | `<unique_string_key>` (Ví dụ: `idem-DP001-20261106`) | Bắt buộc hoặc khuyến nghị trên `POST /api/payments/webhook` để chống xử lý lặp giao dịch (`SH-08`). |
+| `X-Webhook-Secret` | Secret cấu hình phía Gateway/Backend | Bắt buộc cho `POST /api/payments/webhook` khi Backend chạy production hoặc non-mock; không gửi từ Next.js browser bundle. |
 
 ### 3. Định dạng Ngày tháng & Tiền tệ
-- **Ngày nhận / Ngày trả (`Date`):** Chuỗi chuẩn ISO-8601 định dạng `YYYY-MM-DD` (ví dụ: `"2026-11-12"`) hoặc chuỗi ISO đầy đủ `"2026-11-12T00:00:00.000Z"`.
-- **Thời điểm phát sinh (`DateTime`):** Chuỗi chuẩn ISO-8601 UTC (ví dụ: `"2026-11-06T14:30:00.000Z"`).
-- **Tiền tệ (`double`):** Kiểu số (`number`) tính bằng **VNĐ**, nguyên dương hoặc bằng `0`, không có phần thập phân lẻ (ví dụ: `800000`, `2800000`).
+- **Ngày nhận / Ngày trả đầu vào (`Date`):** Chuỗi `YYYY-MM-DD` (ví dụ: `"2026-11-12"`). DTO đặt phòng/phòng trống không nhận ISO datetime đầy đủ.
+- **Timestamp trong JSON response (`DateTime`):** Chuỗi ISO-8601 UTC (ví dụ: `"2026-11-06T14:30:00.000Z"`).
+- **Tiền tệ:** Các trường tiền tệ trong JSON request/response là `number` tính bằng **VNĐ**. DTO cụ thể có thể giới hạn tiền là số nguyên, không âm và trong miền số nguyên an toàn.
 
 ### 4. Cấu trúc JSON Response Envelope chuẩn (Global Response Interceptor & Exception Filter – `SH-04`)
 
@@ -472,8 +473,8 @@ export interface DatPhong {
   maKH: string;
   maPhong: string;
   ngayDat: string; // ISO-8601 DateTime
-  ngayNhan: string; // ISO-8601 Date (YYYY-MM-DD hoặc ISO string)
-  ngayTra: string; // ISO-8601 Date (YYYY-MM-DD hoặc ISO string)
+  ngayNhan: string; // Request: YYYY-MM-DD; response: ISO-8601 DateTime
+  ngayTra: string; // Request: YYYY-MM-DD; response: ISO-8601 DateTime
   soKhach: number;
   tienCoc: number;
   tongTienDuKien: number;
@@ -1248,7 +1249,7 @@ export interface ApiResponse<T> {
 }
 ```
   - *(Lưu ý: Nếu khách đã có `maKH` truyền lên thì có thể truyền thêm `"maKH": "KH001"`, nếu không truyền thì Backend tự động tìm hoặc khởi tạo bản ghi `KhachHang` theo `soDienThoai`/`email`).*
-  - *Validation:* `maPhong` (bắt buộc), `ngayNhan` & `ngayTra` (`ngayTra > ngayNhan`), `soKhach` ($\ge 1$ và $\le \text{loaiPhong.sucChuaToiDa}$), `hoTen` (không rỗng), `soDienThoai` (10 chữ số `0xxxxxxxxx`), `email` (định dạng email).
+  - *Validation:* `maPhong` (bắt buộc), `ngayNhan` & `ngayTra` là chuỗi `YYYY-MM-DD` và `ngayTra > ngayNhan`, `soKhach` ($\ge 1$ và $\le \text{loaiPhong.sucChuaToiDa}$), `hoTen` (không rỗng), `soDienThoai` (10 chữ số `0xxxxxxxxx`), `email` (định dạng email).
 - **Xử lý nghiệp vụ (`SH-08`):**
   1. Mở `prisma.$transaction` mức cô lập `Serializable` để kiểm tra chống đặt trùng phòng (`409 Conflict` nếu phòng vừa bị người khác đặt).
   2. Tính `tongTienDuKien` theo Công thức 1 và `tienCoc = Math.round(tongTienDuKien * 0.3)` theo Công thức 2.
@@ -1360,7 +1361,8 @@ export interface ApiResponse<T> {
 - **Headers:**
   - `Content-Type: application/json`
   - `Idempotency-Key: idem-DP2026110601` *(Hỗ trợ chống xử lý lặp khi cổng thanh toán bắn lại webhook)*
-- **Quyền truy cập:** Public Webhook Endpoint (Hoặc kích hoạt từ nút *"Xác nhận đã chuyển khoản (Simulate Webhook)"* trên Modal QR ở Frontend `SH-10`)
+  - `X-Webhook-Secret: <gateway_secret>` *(bắt buộc khi `PAYMENT_GATEWAY_MODE` không phải `mock` hoặc `NODE_ENV=production`)*
+- **Quyền truy cập:** Endpoint dành cho Payment Gateway; không dùng JWT. Ở non-production với `PAYMENT_GATEWAY_MODE=mock`, backend bỏ qua kiểm tra `X-Webhook-Secret` để phục vụ test/integration. Browser simulator chỉ sử dụng với backend mock/integration; không dùng simulator để gọi gateway non-mock vì browser không mang webhook secret. Tuyệt đối không đưa webhook secret vào `NEXT_PUBLIC_*` hoặc bundle Next.js.
 - **Request Body DTO (`PaymentWebhookDto`):**
 ```json
 {
@@ -1417,6 +1419,8 @@ export interface ApiResponse<T> {
 
 ### Nhóm 10: Tra Cứu Đơn Đặt Phòng & Hủy Đơn Hoàn Cọc (`UC2.4`, `UC2.5` / `SD02` – `yeuCauHuy`)
 * **Tham chiếu:** `Sequence_Diagrams_v2.xml` (`SD02`: `layThongTin(maDatPhong)` $\rightarrow$ `tinhTienHoanCoc()` $\rightarrow$ `PaymentGateway.hoanTien(maGiaoDich, soTienHoan)` $\rightarrow$ `DatPhong.huyDatPhong()` $\rightarrow$ `Phong.capNhatTrangThai('TRONG')`), `UC2.4`, `UC2.5`, `SH-08`, `SH-10`, `SH-11`.
+
+> **KNOWN SECURITY LIMITATION — OOAD LOCAL DEMO ONLY, NOT PRODUCTION-READY:** Theo implementation hiện tại, bốn endpoint `GET /api/bookings/lookup`, `GET /api/bookings/:id`, `GET /api/bookings/:id/refund-preview` và `POST /api/bookings/:id/cancel` đều public để hỗ trợ khách vãng lai. Việc chỉ biết mã booking hoặc số điện thoại có thể dẫn đến IDOR/unauthorized booking access; riêng `GET /api/bookings/:id` có thể trả booking detail kèm PII, bao gồm `soCCCD`. `POST /api/bookings/:id/cancel` cũng có thể cho phép unauthorized cancellation/refund. Hệ thống chưa có proof-of-possession, ownership guard cho guest, rate limiting hoặc response minimization đầy đủ cho các endpoint này. Đây là known limitation được chấp nhận chỉ cho local demo OOAD; không public deployment và không tuyên bố production-ready. Cảnh báo này không thay đổi authentication hay behavior hiện hành.
 
 #### `10.1. Tra cứu đơn đặt phòng theo từ khóa Mã đặt phòng hoặc Số điện thoại (UC2.4 & SD03 Bước 2)`
 - **URL:** `GET /api/bookings/lookup`
@@ -1791,21 +1795,18 @@ export interface ApiResponse<T> {
 
 #### `14.1. Lập hóa đơn quyết toán khi trả phòng (UC3.3, UC4.1 – SD05 Phase 1: lapHoaDonQuyetToan)`
 - **URL:** `POST /api/stays/:bookingId/check-out-invoice` *(trong đó `:bookingId` là `maDatPhong`)*
-- **Đặc tả tương thích linh hoạt (`SD05` Bước 2):** Trong sơ đồ tuần tự SD05, phương thức gọi giữa Giao diện và Bộ điều khiển là `lapHoaDonQuyetToan(maPhong, phuPhi)`. Để hỗ trợ tối đa cho Lễ tân thao tác trực tiếp từ **Sơ đồ phòng theo tầng** (chọn theo số phòng `P201`), Backend hỗ trợ cả 2 cách truyền:
-  1. Truyền `maDatPhong` trên URL `:bookingId` (ví dụ: `POST /api/stays/DP2026110602/check-out-invoice`).
-  2. Hoặc truyền `maPhong` trong Request Body (ví dụ: `POST /api/stays/check-out-invoice` với body `{"maPhong": "P201", "phuPhi": 100000}`). Backend sẽ tự động tìm đơn `DatPhong` đang ở trạng thái `'DANG_LUU_TRU'` của phòng đó để quyết toán.
+- **Liên hệ SD05:** Sơ đồ tuần tự mô tả thao tác nghiệp vụ chọn phòng bằng `maPhong`; REST API chuẩn hóa thao tác này theo `maDatPhong` trên path. Không có compatibility endpoint nhận `maPhong` trong request body.
 - **Headers:** `Authorization: Bearer <token>`
 - **Quyền truy cập:** `@Roles('STAFF', 'ADMIN')`
 - **Request Body DTO (`CreateCheckOutInvoiceDto`):**
 ```json
 {
-  "maPhong": "P201",
   "phuPhi": 100000,
   "phuongThuc": "CHUYEN_KHOAN_QR",
   "ghiChuPhuPhi": "Phụ thu trả phòng muộn 2 giờ"
 }
 ```
-  - *Validation:* `phuPhi` (số $\ge 0$, mặc định `0`), `phuongThuc` (mặc định `"CHUYEN_KHOAN_QR"` hoặc `"TIEN_MAT"`).
+  - *Validation:* `phuPhi` bắt buộc, là số nguyên VNĐ $\ge 0$ trong miền số nguyên an toàn; `phuongThuc` tùy chọn thuộc `"CHUYEN_KHOAN_QR"` hoặc `"TIEN_MAT"`; `ghiChuPhuPhi` tùy chọn tối đa 2.000 ký tự và không được lưu vì schema hóa đơn chưa có trường ghi chú.
 - **Xử lý nghiệp vụ (`SD05` Phase 1 – `SH-16`):**
   1. Kiểm tra `DatPhong.trangThai === 'DANG_LUU_TRU'`.
   2. Lấy `tienPhong = DatPhong.tongTienDuKien` và `tienCocDaTra = DatPhong.tienCoc`.
@@ -1940,15 +1941,26 @@ export interface ApiResponse<T> {
 
 #### `14.3. Xuất biên lai thanh toán định dạng PDF (UC4.2 – HoaDon.xuatBienLaiPDF(): byte[])`
 - **URL:** `GET /api/invoices/:id/pdf` *(trong đó `:id` là `maHoaDon`)*
-- **Quyền truy cập:** Public (Theo mã hóa đơn) hoặc `@Roles('CUSTOMER', 'STAFF', 'ADMIN')`
+- **Headers:** `Authorization: Bearer <token>`
+- **Quyền truy cập:** JWT bắt buộc. `STAFF`/`ADMIN` tải được biên lai đã thanh toán; `CUSTOMER` chỉ tải được biên lai thuộc booking của chính mình.
+- **Mã lỗi:** `401` khi anonymous, `404` khi hóa đơn không tồn tại hoặc không thuộc customer hiện tại, `409` khi hóa đơn chưa thanh toán.
 - **Response Headers (`200 OK`):**
   - `Content-Type: application/pdf`
-  - `Content-Disposition: inline; filename="BienLai_SweetHome_HD2026111501.pdf"`
+  - `Content-Disposition: attachment; filename="BienLai_SweetHome_HD2026111501.pdf"`
 - **Response Body:** Luồng byte nhị phân (`byte[]` / `Buffer`) của file PDF được sinh bằng `PDFKit` (hỗ trợ đầy đủ font tiếng Việt Unicode, hiển thị thông tin Homestay, thông tin khách hàng, chi tiết phòng, bảng kê dịch vụ phát sinh, tiền phòng, phụ phí, khấu trừ `tienCocDaTra` và `tongCanThanhToan`).
 
-#### `14.4. Xem chi tiết một Hóa đơn hoặc Danh sách Hóa đơn`
-- **URL:** `GET /api/invoices/:id` (Chi tiết 1 hóa đơn theo `maHoaDon`) & `GET /api/invoices` (Danh sách hóa đơn cho `STAFF`/`ADMIN`).
-- **Response `200 OK`:** Trả về đối tượng `HoaDon` (hoặc mảng `HoaDon[]`) kèm `datPhong`, `khachHang`, `phong`, `suDungDichVus`.
+#### `14.4. Lấy danh sách hóa đơn (Staff/Admin)`
+- **URL:** `GET /api/invoices`
+- **Headers:** `Authorization: Bearer <token>`
+- **Quyền truy cập:** JWT bắt buộc, `@Roles('STAFF', 'ADMIN')`; anonymous nhận `401`, `CUSTOMER` nhận `403`.
+- **Response `200 OK`:** `ApiResponse<HoaDon[]>`, thứ tự ổn định `ngayLap DESC`, sau đó `maHoaDon DESC`. Mỗi phần tử chỉ gồm scalar invoice fields: `maHoaDon`, `maDatPhong`, `tienPhong`, `tienDichVu`, `phuPhi`, `tienCocDaTra`, `tongCanThanhToan`, `ngayLap`, `phuongThuc`, `trangThai`; không include booking/customer data và không ghi database.
+
+#### `14.5. Lấy chi tiết một hóa đơn (Staff/Admin)`
+- **URL:** `GET /api/invoices/:id` *(trong đó `:id` là `maHoaDon`)*
+- **Headers:** `Authorization: Bearer <token>`
+- **Quyền truy cập:** JWT bắt buộc, `@Roles('STAFF', 'ADMIN')`; anonymous nhận `401`, `CUSTOMER` nhận `403`.
+- **Response `200 OK`:** `ApiResponse<HoaDon>` với toàn bộ scalar invoice fields và `datPhong` gồm booking fields, customer contact (`maKH`, `hoTen`, `soDienThoai`, `email`), room, cùng `suDungDichVus`/`dichVu` theo thứ tự `thoiDiem ASC`. Không trả `KhachHang.soCCCD` hoặc `KhachHang.maTaiKhoan`; endpoint chỉ đọc, không tạo/cập nhật hóa đơn, booking hay phòng.
+- **Mã lỗi:** `404` khi không tìm thấy `maHoaDon`.
 
 ---
 
@@ -2218,6 +2230,7 @@ export const apiClient = {
   addStayService: (maDatPhong: string, payload: { maDichVu: string; soLuong: number }) => Promise<ApiResponse<{ suDungDichVu: SuDungDichVu; tongTienDichVuTamTinh: number }>>,
   removeStayService: (maDatPhong: string, maSuDung: string) => Promise<ApiResponse<{ deleted: boolean; maSuDung: string; tongTienDichVuTamTinh: number }>>,
   createCheckOutInvoice: (maDatPhong: string, payload: { phuPhi: number; phuongThuc?: string; ghiChuPhuPhi?: string }) => Promise<ApiResponse<HoaDon>>,
+  getInvoices: () => Promise<ApiResponse<HoaDon[]>>,
   getInvoiceById: (maHoaDon: string) => Promise<ApiResponse<HoaDon>>,
   payInvoice: (maHoaDon: string, payload: { phuongThuc: string }) => Promise<ApiResponse<PayInvoiceResult>>,
   getInvoicePdfUrl: (maHoaDon: string) => string,

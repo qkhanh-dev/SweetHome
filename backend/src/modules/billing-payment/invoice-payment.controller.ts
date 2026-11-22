@@ -25,6 +25,27 @@ import { ConfirmInvoicePaymentDto } from './dto/confirm-invoice-payment.dto';
 export class InvoicePaymentController {
   constructor(private readonly billingPayment: BillingPaymentService) {}
 
+  @Get()
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('STAFF', 'ADMIN')
+  @ApiBearerAuth()
+  @ApiOkResponse({ description: 'Lấy danh sách hóa đơn thành công.' })
+  async list() {
+    return result('Lấy danh sách hóa đơn thành công', await this.billingPayment.listInvoices());
+  }
+
+  @Get(':id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('STAFF', 'ADMIN')
+  @ApiBearerAuth()
+  @ApiOkResponse({ description: 'Lấy chi tiết hóa đơn thành công.' })
+  async get(@Param('id') invoiceId: string) {
+    return result(
+      'Lấy chi tiết hóa đơn thành công',
+      await this.billingPayment.getInvoiceById(invoiceId),
+    );
+  }
+
   @Post(':id/pay')
   @HttpCode(200)
   @UseGuards(JwtAuthGuard, RolesGuard)
