@@ -16,7 +16,11 @@ import { SESSION_COOKIE_NAME, SESSION_MAX_AGE_SECONDS } from "@/lib/session-cons
 
 type RouteContext = { params: Promise<{ action: string }> };
 const USE_MOCK = process.env.NEXT_PUBLIC_USE_MOCK === "true";
-const API_BASE_URL = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api").replace(/\/+$/, "");
+const API_BASE_URL = (
+  process.env.INTERNAL_API_URL ||
+  process.env.NEXT_PUBLIC_API_URL ||
+  "http://localhost:3001/api"
+).replace(/\/+$/, "");
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
