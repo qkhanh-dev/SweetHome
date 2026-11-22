@@ -73,7 +73,7 @@ function seedAccounts(): void {
         soCCCD: null,
       },
     },
-    { id: "TK_STAFF_01", username: "staff_demo", password: "Staff@123", role: "STAFF" },
+    { id: "TK_STAFF_DEMO", username: "staff_demo", password: "Staff@123", role: "STAFF" },
     { id: "TK_ADMIN_01", username: "admin_sweethome", password: "Admin@123", role: "ADMIN" },
     { id: "TK_LOCKED_DEMO", username: "locked_demo", password: "Locked@123", role: "CUSTOMER", status: "LOCKED" },
   ];

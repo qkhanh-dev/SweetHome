@@ -118,7 +118,7 @@ function seedMockAuthAccounts(): void {
       digest: "700534cbd2811335f521614d8da7920863a37cde0f1f57341f80beb1bbd61bb6",
     },
     {
-      account: { maTaiKhoan: "TK_STAFF_01", username: "staff_demo", vaiTro: "STAFF", trangThai: "ACTIVE", khachHang: null },
+      account: { maTaiKhoan: "TK_STAFF_DEMO", username: "staff_demo", vaiTro: "STAFF", trangThai: "ACTIVE", khachHang: null },
       digest: "99f9a055b78d409b0b5cc13d4e59a99ac59b7e3ec83a82d3bff1e195330c0bf9",
     },
     {
@@ -131,7 +131,13 @@ function seedMockAuthAccounts(): void {
     },
   ];
   for (const { account, digest } of demoAccounts) {
-    if (!users.some((item) => item.username.toLowerCase() === account.username.toLowerCase())) {
+    if (
+      !users.some(
+        (item) =>
+          item.username.toLowerCase() === account.username.toLowerCase() ||
+          item.maTaiKhoan === account.maTaiKhoan,
+      )
+    ) {
       users.push(structuredClone(account));
     }
     mockCredentials.set(account.username.toLowerCase(), { salt: "sweethome-mock-v1", digest });
