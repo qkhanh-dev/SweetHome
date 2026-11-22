@@ -43,6 +43,7 @@ async function main(): Promise<void> {
   assert.equal(isPaymentSimulatorEnabled, true, "mock mode explicitly allows the local simulator");
   checkPhoneValidation(bookingContactSchema);
   assert.equal(registerSchema.safeParse({ username: "ab", password: "123456", hoTen: "Khách", soDienThoai: "0901234567", email: "a@b.test" }).success, false);
+  assert.equal(registerSchema.safeParse({ username: "qa user", password: "123456", hoTen: "Khách", soDienThoai: "0901234567", email: "a@b.test" }).success, false);
   assert.equal(registerSchema.safeParse({ username: "x".repeat(51), password: "123456", hoTen: "Khách", soDienThoai: "0901234567", email: "a@b.test" }).success, false);
   assert.equal(registerSchema.safeParse({ username: "qauser", password: "12345", hoTen: "Khách", soDienThoai: "0901234567", email: "a@b.test" }).success, false);
   assert.equal(registerSchema.safeParse({ username: "qauser", password: "123456", hoTen: " ", soDienThoai: "0901234567", email: "a@b.test" }).success, false);
@@ -340,8 +341,9 @@ async function main(): Promise<void> {
   const mergedAfterPayment = mergeBookingMutation({
     ...beforePayment,
     phong: { ...beforePayment.phong, trangThai: TrangThaiPhong.TRONG },
-  }, payment.data.datPhong, payment.data.phong);
+  }, { ...payment.data.datPhong, khachHang: undefined }, payment.data.phong);
   assert.equal(mergedAfterPayment.trangThai, TrangThaiDatPhong.DA_XAC_NHAN);
+  assert.equal(mergedAfterPayment.khachHang?.hoTen, beforePayment.khachHang?.hoTen);
   assert.equal(mergedAfterPayment.phong?.loaiPhong?.tenLoaiPhong, beforePayment.phong.loaiPhong.tenLoaiPhong);
   assert.equal(mergedAfterPayment.phong?.trangThai, payment.data.phong.trangThai);
   assert.equal(payment.data.idempotentReplay, false);
@@ -360,9 +362,10 @@ async function main(): Promise<void> {
   const mergedAfterCancel = mergeBookingMutation({
     ...beforeCancel,
     phong: { ...beforeCancel.phong, trangThai: TrangThaiPhong.TRONG },
-  }, unpaidCancel.data.datPhong, unpaidCancel.data.phong);
+  }, { ...unpaidCancel.data.datPhong, khachHang: undefined }, unpaidCancel.data.phong);
   assert.equal(unpaidCancel.data.datPhong.trangThai, TrangThaiDatPhong.DA_HUY);
   assert.equal(mergedAfterCancel.trangThai, TrangThaiDatPhong.DA_HUY);
+  assert.equal(mergedAfterCancel.khachHang?.soDienThoai, beforeCancel.khachHang?.soDienThoai);
   assert.equal(mergedAfterCancel.phong?.loaiPhong?.tenLoaiPhong, beforeCancel.phong.loaiPhong.tenLoaiPhong);
   assert.equal(mergedAfterCancel.phong?.trangThai, unpaidCancel.data.phong.trangThai);
   assert.equal(unpaidCancel.data.hoanCoc.tienCocDaDong, 0);

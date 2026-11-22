@@ -1,31 +1,32 @@
 ﻿import assert from "node:assert/strict";
 import fixtures from "../src/mocks/fixtures.json";
-import { apiClient } from "../src/services/apiClient";
-
-const checks = [
-  {
-    name: "getHomestay",
-    fixture: "3.1",
-    run: apiClient.getHomestay,
-  },
-  {
-    name: "getRoomTypes",
-    fixture: "4.1",
-    run: apiClient.getRoomTypes,
-  },
-  {
-    name: "getAmenities",
-    fixture: "5.1",
-    run: apiClient.getAmenities,
-  },
-  {
-    name: "getServices",
-    fixture: "12.1",
-    run: apiClient.getServices,
-  },
-] as const;
 
 async function main() {
+  process.env.NEXT_PUBLIC_USE_MOCK = "true";
+  const { apiClient } = await import("../src/services/apiClient");
+  const checks = [
+    {
+      name: "getHomestay",
+      fixture: "3.1",
+      run: apiClient.getHomestay,
+    },
+    {
+      name: "getRoomTypes",
+      fixture: "4.1",
+      run: apiClient.getRoomTypes,
+    },
+    {
+      name: "getAmenities",
+      fixture: "5.1",
+      run: apiClient.getAmenities,
+    },
+    {
+      name: "getServices",
+      fixture: "12.1",
+      run: apiClient.getServices,
+    },
+  ] as const;
+
   assert.equal(
     process.env.NEXT_PUBLIC_USE_MOCK,
     "true",

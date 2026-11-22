@@ -237,7 +237,7 @@ export function BookingLookup() {
                     <div><dt className="text-muted-foreground">Trạng thái hiện tại</dt><dd className="mt-1"><StatusBadge status={preview.trangThaiHienTai} /></dd></div>
                     <div><dt className="text-muted-foreground">Mốc nhận phòng</dt><dd className="mt-1 font-medium">{dateLabel(preview.ngayNhan)} · 14:00 (giờ Việt Nam)</dd></div>
                     <div><dt className="text-muted-foreground">Tiền cọc</dt><dd className="mt-1 font-medium">{preview.trangThaiHienTai === "CHO_COC" ? "Chưa thu cọc" : currency.format(preview.tienCoc)}</dd></div>
-                    <div><dt className="text-muted-foreground">Thời gian còn lại</dt><dd className="mt-1 font-medium">{preview.trangThaiHienTai === "CHO_COC" ? "Chưa áp dụng" : `${preview.deltaHours} giờ`}</dd></div>
+                    <div><dt className="text-muted-foreground">Thời gian còn lại</dt><dd className="mt-1 font-medium">{preview.trangThaiHienTai === "CHO_COC" ? "Chưa áp dụng" : `${Number(preview.deltaHours.toFixed(2))} giờ`}</dd></div>
                     <div><dt className="text-muted-foreground">Tỷ lệ dự kiến</dt><dd className="mt-1 font-medium">{preview.tyLeHoanPhanTram}%</dd></div>
                     <div><dt className="text-muted-foreground">Số tiền hoàn dự kiến</dt><dd className="mt-1 font-semibold">{currency.format(preview.soTienHoan)}</dd></div>
                     <div className="sm:col-span-2"><dt className="text-muted-foreground">Chính sách áp dụng</dt><dd className="mt-1">{preview.chinhSachApDung}</dd></div>

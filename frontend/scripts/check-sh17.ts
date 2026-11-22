@@ -1,6 +1,4 @@
 import assert from "node:assert/strict";
-import { apiClient, ApiError } from "../src/services/apiClient";
-import { resetMockState } from "../src/mocks/mockAdapter";
 import {
   cccdSchema,
   quantitySchema,
@@ -10,13 +8,18 @@ import {
 } from "../src/lib/sh17-validation";
 import { withMockBrowserSession } from "./mock-browser-session";
 
-async function rejects(run: () => Promise<unknown>, status: number) {
-  await assert.rejects(
-    run,
-    (e: unknown) => e instanceof ApiError && e.statusCode === status,
-  );
-}
 async function main() {
+  process.env.NEXT_PUBLIC_USE_MOCK = "true";
+  const [{ apiClient, ApiError }, { resetMockState }] = await Promise.all([
+    import("../src/services/apiClient"),
+    import("../src/mocks/mockAdapter"),
+  ]);
+  async function rejects(run: () => Promise<unknown>, status: number) {
+    await assert.rejects(
+      run,
+      (e: unknown) => e instanceof ApiError && e.statusCode === status,
+    );
+  }
   for (const id of ["012345678", "012345678901"])
     assert.ok(cccdSchema.safeParse(id).success);
   for (const id of ["", "123", "01234567890a", " 012345678"])
