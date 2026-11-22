@@ -4,6 +4,7 @@
     "node_modules",
     "dist",
     "test",
+    "scripts",
     "**/*.spec.ts",
     "prisma.config.ts",
     "prisma"
