@@ -46,3 +46,33 @@ describe('InvoicePaymentController.downloadPdf', () => {
     );
   });
 });
+
+describe('InvoicePaymentController invoice reads', () => {
+  it('declares staff/admin access and delegates list/detail reads without mutation', async () => {
+    const invoices = [{ maHoaDon: 'HD-001', maDatPhong: 'DP-001' }];
+    const service = {
+      listInvoices: jest.fn().mockResolvedValue(invoices),
+      getInvoiceById: jest.fn().mockResolvedValue(invoices[0]),
+    };
+    const controller = new InvoicePaymentController(service as unknown as BillingPaymentService);
+
+    await expect(controller.list()).resolves.toMatchObject({
+      message: 'Lấy danh sách hóa đơn thành công',
+      data: invoices,
+    });
+    await expect(controller.get('HD-001')).resolves.toMatchObject({
+      message: 'Lấy chi tiết hóa đơn thành công',
+      data: invoices[0],
+    });
+    expect(Reflect.getMetadata(ROLES_KEY, InvoicePaymentController.prototype.list)).toEqual([
+      'STAFF',
+      'ADMIN',
+    ]);
+    expect(Reflect.getMetadata(ROLES_KEY, InvoicePaymentController.prototype.get)).toEqual([
+      'STAFF',
+      'ADMIN',
+    ]);
+    expect(service.listInvoices).toHaveBeenCalledTimes(1);
+    expect(service.getInvoiceById).toHaveBeenCalledWith('HD-001');
+  });
+});

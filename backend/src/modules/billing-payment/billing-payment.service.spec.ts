@@ -6,11 +6,12 @@ import {
 } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import * as fs from 'node:fs';
+import * as path from 'node:path';
 // PDFKit publishes a CommonJS export; default-import interop is not a constructor at runtime.
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 import PDFDocument = require('pdfkit');
 import { PrismaService } from '../../prisma/prisma.service';
-import { BillingPaymentService } from './billing-payment.service';
+import { BillingPaymentService, resolveInvoiceFontDirectory } from './billing-payment.service';
 
 const booking = (overrides: Record<string, unknown> = {}) => ({
   maDatPhong: 'DP1',
@@ -147,6 +148,45 @@ describe('BillingPaymentService.createOrUpdateCheckOutInvoice', () => {
     await expect(service.createOrUpdateCheckOutInvoice('DP1', dto)).rejects.toBeInstanceOf(
       ConflictException,
     );
+  });
+});
+
+describe('BillingPaymentService invoice reads', () => {
+  it('returns an empty, stably ordered list when there are no invoices', async () => {
+    const findMany = jest.fn().mockResolvedValue([]);
+    const service = new BillingPaymentService({ hoaDon: { findMany } } as unknown as PrismaService);
+
+    await expect(service.listInvoices()).resolves.toEqual([]);
+    expect(findMany).toHaveBeenCalledWith(
+      expect.objectContaining({ orderBy: [{ ngayLap: 'desc' }, { maHoaDon: 'desc' }] }),
+    );
+  });
+
+  it('returns the requested detail and omits CCCD/account identifiers from its customer relation', async () => {
+    const invoice = {
+      maHoaDon: 'HD-001',
+      maDatPhong: 'DP-001',
+      datPhong: {
+        khachHang: { maKH: 'KH-001', hoTen: 'Khách', soDienThoai: '0900000000', email: 'a@b.test' },
+      },
+    };
+    const findUnique = jest.fn().mockResolvedValue(invoice);
+    const service = new BillingPaymentService({
+      hoaDon: { findUnique },
+    } as unknown as PrismaService);
+
+    await expect(service.getInvoiceById('HD-001')).resolves.toEqual(invoice);
+    expect(findUnique).toHaveBeenCalledWith(
+      expect.objectContaining({ where: { maHoaDon: 'HD-001' } }),
+    );
+  });
+
+  it('returns 404 when the requested invoice does not exist', async () => {
+    const service = new BillingPaymentService({
+      hoaDon: { findUnique: jest.fn().mockResolvedValue(null) },
+    } as unknown as PrismaService);
+
+    await expect(service.getInvoiceById('missing')).rejects.toBeInstanceOf(NotFoundException);
   });
 });
 
@@ -402,6 +442,37 @@ function pdfHarness(invoice: Record<string, unknown> | null) {
     service: new BillingPaymentService(prisma as unknown as PrismaService),
   };
 }
+
+describe('resolveInvoiceFontDirectory', () => {
+  const sourceModuleDirectory = path.join('backend', 'src', 'modules', 'billing-payment');
+  const distModuleDirectory = path.join('backend', 'dist', 'src', 'modules', 'billing-payment');
+
+  it('selects the source/test assets directory when both font files are present there', () => {
+    const sourceFonts = path.join('backend', 'src', 'assets', 'fonts');
+    const files = new Set([
+      path.join(sourceFonts, 'NotoSans-Regular.ttf'),
+      path.join(sourceFonts, 'NotoSans-Bold.ttf'),
+    ]);
+    expect(
+      resolveInvoiceFontDirectory(sourceModuleDirectory, (candidate) => files.has(candidate)),
+    ).toBe(sourceFonts);
+  });
+
+  it('selects dist/assets when Nest emits modules below dist/src', () => {
+    const distFonts = path.join('backend', 'dist', 'assets', 'fonts');
+    const files = new Set([
+      path.join(distFonts, 'NotoSans-Regular.ttf'),
+      path.join(distFonts, 'NotoSans-Bold.ttf'),
+    ]);
+    expect(
+      resolveInvoiceFontDirectory(distModuleDirectory, (candidate) => files.has(candidate)),
+    ).toBe(distFonts);
+  });
+
+  it('rejects a directory containing only one member of the font pair', () => {
+    expect(resolveInvoiceFontDirectory(sourceModuleDirectory, () => false)).toBeUndefined();
+  });
+});
 
 describe('BillingPaymentService.getPaidInvoicePdf', () => {
   const customer = {
