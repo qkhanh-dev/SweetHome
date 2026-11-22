@@ -1,0 +1,247 @@
+<?xml version="1.0" ?>
+<mxfile host="app.diagrams.net" pages="1">
+  <diagram id="sd06_danhgia_phanhoi" name="SD06_DanhGia_PhanHoi">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1630" pageHeight="1208" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="sd06_danhgia_phanhoi_ll_cust" parent="1" edge="1" value="" style="endArrow=none;html=1;dashed=1;dashPattern=5 5;strokeColor=#181818;strokeWidth=1;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="130" y="116" as="sourcePoint"/>
+            <mxPoint x="130" y="1078" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd06_danhgia_phanhoi_top_cust" parent="1" vertex="1" value="Khách hàng" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;spacingTop=2;fillColor=#E2E2F0;strokeColor=#181818;fontColor=#000000;fontSize=13;fontStyle=1;html=1;">
+          <mxGeometry x="115" y="28" width="30" height="58" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd06_danhgia_phanhoi_bot_cust" parent="1" vertex="1" value="Khách hàng" style="shape=umlActor;verticalLabelPosition=top;verticalAlign=bottom;spacingBottom=2;fillColor=#E2E2F0;strokeColor=#181818;fontColor=#000000;fontSize=13;fontStyle=1;html=1;">
+          <mxGeometry x="115" y="1106" width="30" height="58" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd06_danhgia_phanhoi_ll_admin" parent="1" edge="1" value="" style="endArrow=none;html=1;dashed=1;dashPattern=5 5;strokeColor=#181818;strokeWidth=1;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="280" y="116" as="sourcePoint"/>
+            <mxPoint x="280" y="1078" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd06_danhgia_phanhoi_top_admin" parent="1" vertex="1" value="Chủ Homestay&lt;br&gt;(ADMIN)" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;spacingTop=2;fillColor=#E2E2F0;strokeColor=#181818;fontColor=#000000;fontSize=13;fontStyle=1;html=1;">
+          <mxGeometry x="265" y="28" width="30" height="58" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd06_danhgia_phanhoi_bot_admin" parent="1" vertex="1" value="Chủ Homestay&lt;br&gt;(ADMIN)" style="shape=umlActor;verticalLabelPosition=top;verticalAlign=bottom;spacingBottom=2;fillColor=#E2E2F0;strokeColor=#181818;fontColor=#000000;fontSize=13;fontStyle=1;html=1;">
+          <mxGeometry x="265" y="1106" width="30" height="58" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd06_danhgia_phanhoi_ll_ui" parent="1" edge="1" value="" style="endArrow=none;html=1;dashed=1;dashPattern=5 5;strokeColor=#181818;strokeWidth=1;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="550" y="116" as="sourcePoint"/>
+            <mxPoint x="550" y="1078" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd06_danhgia_phanhoi_top_ui" parent="1" vertex="1" value="ReviewUI&lt;br&gt;(BookingReview / Reviews)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#181818;fontColor=#000000;fontSize=13;fontStyle=1;">
+          <mxGeometry x="455" y="40" width="190" height="46" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd06_danhgia_phanhoi_bot_ui" parent="1" vertex="1" value="ReviewUI&lt;br&gt;(BookingReview / Reviews)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#181818;fontColor=#000000;fontSize=13;fontStyle=1;">
+          <mxGeometry x="455" y="1090" width="190" height="46" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd06_danhgia_phanhoi_ll_ctrl" parent="1" edge="1" value="" style="endArrow=none;html=1;dashed=1;dashPattern=5 5;strokeColor=#181818;strokeWidth=1;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="870" y="116" as="sourcePoint"/>
+            <mxPoint x="870" y="1078" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd06_danhgia_phanhoi_top_ctrl" parent="1" vertex="1" value="ReviewController&lt;br&gt;(ReviewsService)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#181818;fontColor=#000000;fontSize=13;fontStyle=1;">
+          <mxGeometry x="780" y="40" width="180" height="46" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd06_danhgia_phanhoi_bot_ctrl" parent="1" vertex="1" value="ReviewController&lt;br&gt;(ReviewsService)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#181818;fontColor=#000000;fontSize=13;fontStyle=1;">
+          <mxGeometry x="780" y="1090" width="180" height="46" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd06_danhgia_phanhoi_ll_dp" parent="1" edge="1" value="" style="endArrow=none;html=1;dashed=1;dashPattern=5 5;strokeColor=#181818;strokeWidth=1;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1150" y="116" as="sourcePoint"/>
+            <mxPoint x="1150" y="1078" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd06_danhgia_phanhoi_top_dp" parent="1" vertex="1" value="DatPhong&lt;br&gt;(CSDL)" style="shape=cylinder3;size=10;verticalLabelPosition=bottom;verticalAlign=top;spacingTop=2;fillColor=#E2E2F0;strokeColor=#181818;fontColor=#000000;fontSize=13;fontStyle=1;html=1;">
+          <mxGeometry x="1129" y="36" width="42" height="48" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd06_danhgia_phanhoi_bot_dp" parent="1" vertex="1" value="DatPhong&lt;br&gt;(CSDL)" style="shape=cylinder3;size=10;verticalLabelPosition=top;verticalAlign=bottom;spacingBottom=2;fillColor=#E2E2F0;strokeColor=#181818;fontColor=#000000;fontSize=13;fontStyle=1;html=1;">
+          <mxGeometry x="1129" y="1108" width="42" height="48" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd06_danhgia_phanhoi_ll_dg" parent="1" edge="1" value="" style="endArrow=none;html=1;dashed=1;dashPattern=5 5;strokeColor=#181818;strokeWidth=1;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1370" y="116" as="sourcePoint"/>
+            <mxPoint x="1370" y="1078" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd06_danhgia_phanhoi_top_dg" parent="1" vertex="1" value="DanhGia&lt;br&gt;(CSDL)" style="shape=cylinder3;size=10;verticalLabelPosition=bottom;verticalAlign=top;spacingTop=2;fillColor=#E2E2F0;strokeColor=#181818;fontColor=#000000;fontSize=13;fontStyle=1;html=1;">
+          <mxGeometry x="1349" y="36" width="42" height="48" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd06_danhgia_phanhoi_bot_dg" parent="1" vertex="1" value="DanhGia&lt;br&gt;(CSDL)" style="shape=cylinder3;size=10;verticalLabelPosition=top;verticalAlign=bottom;spacingBottom=2;fillColor=#E2E2F0;strokeColor=#181818;fontColor=#000000;fontSize=13;fontStyle=1;html=1;">
+          <mxGeometry x="1349" y="1108" width="42" height="48" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd06_danhgia_phanhoi_frame_0" parent="1" vertex="1" value="" style="rounded=0;fillColor=none;strokeColor=#000000;strokeWidth=1.5;">
+          <mxGeometry x="45" y="402" width="1440" height="360" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd06_danhgia_phanhoi_frame_0_tab" parent="sd06_danhgia_phanhoi_frame_0" vertex="1" value="alt" style="rounded=0;fillColor=#EEEEEE;strokeColor=#000000;strokeWidth=1.5;fontColor=#000000;fontSize=13;fontStyle=1;align=center;verticalAlign=middle;html=1;">
+          <mxGeometry x="0" y="0" width="54" height="22" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd06_danhgia_phanhoi_frame_0_cond" parent="sd06_danhgia_phanhoi_frame_0" vertex="1" value="[Không thuộc khách (403) / Chưa HOAN_TAT (400) / Đã đánh giá (409)]" style="text;html=1;fontColor=#000000;fontSize=13;fontStyle=1;align=left;verticalAlign=middle;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry x="62" y="2" width="1370" height="18" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd06_danhgia_phanhoi_frame_0_else_0" parent="sd06_danhgia_phanhoi_frame_0" edge="1" value="" style="endArrow=none;html=1;strokeColor=#000000;strokeWidth=1;dashed=1;dashPattern=4 4;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="0" y="140" as="sourcePoint"/>
+            <mxPoint x="1440" y="140" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd06_danhgia_phanhoi_frame_0_elselbl_0" parent="sd06_danhgia_phanhoi_frame_0" vertex="1" value="[Đơn HOAN_TAT &amp; chưa có DanhGia]" style="text;html=1;fontColor=#000000;fontSize=13;fontStyle=1;align=left;verticalAlign=middle;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry x="8" y="143" width="1424" height="18" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd06_danhgia_phanhoi_act_0" parent="1" vertex="1" value="" style="rounded=0;fillColor=#FFFFFF;strokeColor=#181818;strokeWidth=1;">
+          <mxGeometry x="1145" y="338" width="10" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd06_danhgia_phanhoi_act_1" parent="1" vertex="1" value="" style="rounded=0;fillColor=#FFFFFF;strokeColor=#181818;strokeWidth=1;">
+          <mxGeometry x="1365" y="614" width="10" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd06_danhgia_phanhoi_act_2" parent="1" vertex="1" value="" style="rounded=0;fillColor=#FFFFFF;strokeColor=#181818;strokeWidth=1;">
+          <mxGeometry x="865" y="294" width="10" height="402" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd06_danhgia_phanhoi_act_3" parent="1" vertex="1" value="" style="rounded=0;fillColor=#FFFFFF;strokeColor=#181818;strokeWidth=1;">
+          <mxGeometry x="545" y="180" width="10" height="594" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd06_danhgia_phanhoi_act_4" parent="1" vertex="1" value="" style="rounded=0;fillColor=#FFFFFF;strokeColor=#181818;strokeWidth=1;">
+          <mxGeometry x="1365" y="910" width="10" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd06_danhgia_phanhoi_act_5" parent="1" vertex="1" value="" style="rounded=0;fillColor=#FFFFFF;strokeColor=#181818;strokeWidth=1;">
+          <mxGeometry x="865" y="866" width="10" height="126" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd06_danhgia_phanhoi_act_6" parent="1" vertex="1" value="" style="rounded=0;fillColor=#FFFFFF;strokeColor=#181818;strokeWidth=1;">
+          <mxGeometry x="545" y="822" width="10" height="214" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd06_danhgia_phanhoi_msg_0" parent="1" edge="1" value="&lt;b&gt;1&lt;/b&gt; Chọn soSao (1–5), nhập noiDung (≥ 5 ký tự) &amp; bấm Gửi đánh giá" style="endArrow=classic;endFill=1;endSize=8;html=1;strokeColor=#181818;strokeWidth=1;fontColor=#000000;fontSize=13;verticalAlign=bottom;align=center;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="130" y="180" as="sourcePoint"/>
+            <mxPoint x="545" y="180" as="targetPoint"/>
+            <mxPoint x="0" y="-8" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd06_danhgia_phanhoi_msg_1" parent="1" edge="1" value="" style="endArrow=classic;endFill=1;endSize=8;html=1;strokeColor=#181818;strokeWidth=1;fontColor=#000000;fontSize=13;edgeStyle=orthogonalEdgeStyle;rounded=0;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="591" y="222"/>
+              <mxPoint x="591" y="244"/>
+            </Array>
+            <mxPoint x="555" y="222" as="sourcePoint"/>
+            <mxPoint x="555" y="244" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd06_danhgia_phanhoi_msglbl_1" parent="1" vertex="1" value="&lt;b&gt;2&lt;/b&gt; Kiểm tra reviewSchema (soSao 1..5, noiDung ≥ 5 ký tự)" style="text;html=1;whiteSpace=wrap;fontColor=#000000;fontSize=13;align=left;verticalAlign=middle;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry x="597" y="216" width="230" height="34" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd06_danhgia_phanhoi_msg_2" parent="1" edge="1" value="&lt;b&gt;3&lt;/b&gt; POST /api/reviews ({ maDatPhong, soSao, noiDung })" style="endArrow=classic;endFill=1;endSize=8;html=1;strokeColor=#181818;strokeWidth=1;fontColor=#000000;fontSize=13;verticalAlign=bottom;align=center;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="555" y="294" as="sourcePoint"/>
+            <mxPoint x="865" y="294" as="targetPoint"/>
+            <mxPoint x="0" y="-8" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd06_danhgia_phanhoi_msg_3" parent="1" edge="1" value="&lt;b&gt;4&lt;/b&gt; findUnique(maDatPhong, include: { khachHang, danhGia })" style="endArrow=classic;endFill=1;endSize=8;html=1;strokeColor=#181818;strokeWidth=1;fontColor=#000000;fontSize=13;verticalAlign=bottom;align=center;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="875" y="338" as="sourcePoint"/>
+            <mxPoint x="1145" y="338" as="targetPoint"/>
+            <mxPoint x="0" y="-8" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd06_danhgia_phanhoi_msg_4" parent="1" edge="1" value="&lt;b&gt;5&lt;/b&gt; Trả về thông tin đơn đặt phòng" style="endArrow=classic;endFill=1;endSize=8;html=1;strokeColor=#181818;strokeWidth=1;fontColor=#000000;fontSize=13;dashed=1;dashPattern=3 3;verticalAlign=bottom;align=center;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1145" y="378" as="sourcePoint"/>
+            <mxPoint x="875" y="378" as="targetPoint"/>
+            <mxPoint x="0" y="-8" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd06_danhgia_phanhoi_msg_5" parent="1" edge="1" value="&lt;b&gt;6&lt;/b&gt; 403 / 400 / 409 / 404 Error" style="endArrow=classic;endFill=1;endSize=8;html=1;strokeColor=#181818;strokeWidth=1;fontColor=#000000;fontSize=13;dashed=1;dashPattern=3 3;verticalAlign=bottom;align=center;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="865" y="476" as="sourcePoint"/>
+            <mxPoint x="555" y="476" as="targetPoint"/>
+            <mxPoint x="0" y="-8" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd06_danhgia_phanhoi_msg_6" parent="1" edge="1" value="&lt;b&gt;7&lt;/b&gt; Hiển thị thông báo không đủ điều kiện đánh giá" style="endArrow=classic;endFill=1;endSize=8;html=1;strokeColor=#181818;strokeWidth=1;fontColor=#000000;fontSize=13;dashed=1;dashPattern=3 3;verticalAlign=bottom;align=center;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="545" y="518" as="sourcePoint"/>
+            <mxPoint x="130" y="518" as="targetPoint"/>
+            <mxPoint x="0" y="-8" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd06_danhgia_phanhoi_msg_7" parent="1" edge="1" value="&lt;b&gt;8&lt;/b&gt; create({ maDatPhong, soSao, noiDung, phanHoiHost: null })" style="endArrow=classic;endFill=1;endSize=8;html=1;strokeColor=#181818;strokeWidth=1;fontColor=#000000;fontSize=13;verticalAlign=bottom;align=center;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="875" y="614" as="sourcePoint"/>
+            <mxPoint x="1365" y="614" as="targetPoint"/>
+            <mxPoint x="0" y="-8" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd06_danhgia_phanhoi_msg_8" parent="1" edge="1" value="&lt;b&gt;9&lt;/b&gt; Trả về danhGia mới" style="endArrow=classic;endFill=1;endSize=8;html=1;strokeColor=#181818;strokeWidth=1;fontColor=#000000;fontSize=13;dashed=1;dashPattern=3 3;verticalAlign=bottom;align=center;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1365" y="654" as="sourcePoint"/>
+            <mxPoint x="875" y="654" as="targetPoint"/>
+            <mxPoint x="0" y="-8" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd06_danhgia_phanhoi_msg_9" parent="1" edge="1" value="&lt;b&gt;10&lt;/b&gt; 201 Created: { danhGia }" style="endArrow=classic;endFill=1;endSize=8;html=1;strokeColor=#181818;strokeWidth=1;fontColor=#000000;fontSize=13;dashed=1;dashPattern=3 3;verticalAlign=bottom;align=center;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="865" y="696" as="sourcePoint"/>
+            <mxPoint x="555" y="696" as="targetPoint"/>
+            <mxPoint x="0" y="-8" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd06_danhgia_phanhoi_msg_10" parent="1" edge="1" value="&lt;b&gt;11&lt;/b&gt; Hiển thị lời cảm ơn &amp; thẻ đánh giá" style="endArrow=classic;endFill=1;endSize=8;html=1;strokeColor=#181818;strokeWidth=1;fontColor=#000000;fontSize=13;dashed=1;dashPattern=3 3;verticalAlign=bottom;align=center;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="545" y="738" as="sourcePoint"/>
+            <mxPoint x="130" y="738" as="targetPoint"/>
+            <mxPoint x="0" y="-8" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd06_danhgia_phanhoi_msg_11" parent="1" edge="1" value="&lt;b&gt;12&lt;/b&gt; Mở /admin/reviews, nhập phanHoiHost &amp; bấm Lưu phản hồi" style="endArrow=classic;endFill=1;endSize=8;html=1;strokeColor=#181818;strokeWidth=1;fontColor=#000000;fontSize=13;verticalAlign=bottom;align=center;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="280" y="822" as="sourcePoint"/>
+            <mxPoint x="545" y="822" as="targetPoint"/>
+            <mxPoint x="0" y="-8" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd06_danhgia_phanhoi_msg_12" parent="1" edge="1" value="&lt;b&gt;13&lt;/b&gt; PATCH /api/reviews/:id/reply ({ phanHoiHost }) [@Roles('ADMIN')]" style="endArrow=classic;endFill=1;endSize=8;html=1;strokeColor=#181818;strokeWidth=1;fontColor=#000000;fontSize=13;verticalAlign=bottom;align=center;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="555" y="866" as="sourcePoint"/>
+            <mxPoint x="865" y="866" as="targetPoint"/>
+            <mxPoint x="0" y="-8" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd06_danhgia_phanhoi_msg_13" parent="1" edge="1" value="&lt;b&gt;14&lt;/b&gt; findUnique(maDanhGia) &amp; update(phanHoiHost)" style="endArrow=classic;endFill=1;endSize=8;html=1;strokeColor=#181818;strokeWidth=1;fontColor=#000000;fontSize=13;verticalAlign=bottom;align=center;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="875" y="910" as="sourcePoint"/>
+            <mxPoint x="1365" y="910" as="targetPoint"/>
+            <mxPoint x="0" y="-8" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd06_danhgia_phanhoi_msg_14" parent="1" edge="1" value="&lt;b&gt;15&lt;/b&gt; Trả về danhGia đã cập nhật phanHoiHost" style="endArrow=classic;endFill=1;endSize=8;html=1;strokeColor=#181818;strokeWidth=1;fontColor=#000000;fontSize=13;dashed=1;dashPattern=3 3;verticalAlign=bottom;align=center;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1365" y="950" as="sourcePoint"/>
+            <mxPoint x="875" y="950" as="targetPoint"/>
+            <mxPoint x="0" y="-8" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd06_danhgia_phanhoi_msg_15" parent="1" edge="1" value="&lt;b&gt;16&lt;/b&gt; 200 OK: { danhGia }" style="endArrow=classic;endFill=1;endSize=8;html=1;strokeColor=#181818;strokeWidth=1;fontColor=#000000;fontSize=13;dashed=1;dashPattern=3 3;verticalAlign=bottom;align=center;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="865" y="992" as="sourcePoint"/>
+            <mxPoint x="555" y="992" as="targetPoint"/>
+            <mxPoint x="0" y="-8" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd06_danhgia_phanhoi_msg_16" parent="1" edge="1" value="&lt;b&gt;17&lt;/b&gt; Hiển thị phản hồi của Chủ homestay &amp; công khai trên trang phòng" style="endArrow=classic;endFill=1;endSize=8;html=1;strokeColor=#181818;strokeWidth=1;fontColor=#000000;fontSize=13;dashed=1;dashPattern=3 3;verticalAlign=bottom;align=center;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="545" y="1036" as="sourcePoint"/>
+            <mxPoint x="280" y="1036" as="targetPoint"/>
+            <mxPoint x="0" y="-8" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -1,0 +1,165 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="app.diagrams.net" pages="1">
+  <diagram id="state_datphong_v2" name="State_DatPhong_v2">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1180" pageHeight="1030" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="dp_init" value="" style="ellipse;html=1;shape=startState;fillColor=#000000;strokeColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="140" y="28" width="22" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="dp_cho_coc" value="CHO_COC (Chờ cọc)" style="swimlane;fontStyle=1;align=center;verticalAlign=middle;startSize=30;rounded=1;arcSize=12;collapsible=0;fillColor=#FFFFFF;fontColor=#000000;strokeColor=#000000;strokeWidth=1.6;fontSize=13;html=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="155" width="380" height="92" as="geometry" />
+        </mxCell>
+        <mxCell id="dp_cho_coc_body" value="entry / tạo yêu cầu thanh toán VietQR (30%)&lt;br&gt;do / chờ khách quét QR chuyển khoản tiền cọc" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=10;spacingRight=8;fontSize=13;fontColor=#000000;whiteSpace=wrap;" vertex="1" parent="dp_cho_coc">
+          <mxGeometry y="30" width="380" height="62" as="geometry" />
+        </mxCell>
+        <mxCell id="dp_da_xac_nhan" value="DA_XAC_NHAN (Đã xác nhận)" style="swimlane;fontStyle=1;align=center;verticalAlign=middle;startSize=30;rounded=1;arcSize=12;collapsible=0;fillColor=#FFFFFF;fontColor=#000000;strokeColor=#000000;strokeWidth=1.6;fontSize=13;html=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="375" width="380" height="92" as="geometry" />
+        </mxCell>
+        <mxCell id="dp_da_xac_nhan_body" value="entry / lưu ThanhToanCoc; refreshRoom() → DA_DAT&lt;br&gt;do / chờ đến ngày nhận phòng (14:00 UTC+7)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=10;spacingRight=8;fontSize=13;fontColor=#000000;whiteSpace=wrap;" vertex="1" parent="dp_da_xac_nhan">
+          <mxGeometry y="30" width="380" height="62" as="geometry" />
+        </mxCell>
+        <mxCell id="dp_choice_cancel" value="" style="rhombus;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;strokeWidth=1.5;" vertex="1" parent="1">
+          <mxGeometry x="580" y="403" width="36" height="36" as="geometry" />
+        </mxCell>
+        <mxCell id="dp_da_huy" value="DA_HUY (Đã hủy)" style="swimlane;fontStyle=1;align=center;verticalAlign=middle;startSize=30;rounded=1;arcSize=12;collapsible=0;fillColor=#FFFFFF;fontColor=#000000;strokeColor=#000000;strokeWidth=1.6;fontSize=13;html=1;" vertex="1" parent="1">
+          <mxGeometry x="740" y="155" width="340" height="92" as="geometry" />
+        </mxCell>
+        <mxCell id="dp_da_huy_body" value="entry / lưu HoanCoc (THANH_CONG),&lt;br&gt;        ghi nhận lý do hủy; refreshRoom()" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=10;spacingRight=8;fontSize=13;fontColor=#000000;whiteSpace=wrap;" vertex="1" parent="dp_da_huy">
+          <mxGeometry y="30" width="340" height="62" as="geometry" />
+        </mxCell>
+        <mxCell id="dp_final_huy" value="" style="ellipse;html=1;shape=endState;fillColor=#000000;strokeColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="896" y="36" width="28" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="dp_dang_luu_tru" value="DANG_LUU_TRU (Đang lưu trú)" style="swimlane;fontStyle=1;align=center;verticalAlign=middle;startSize=30;rounded=1;arcSize=12;collapsible=0;fillColor=#FFFFFF;fontColor=#000000;strokeColor=#000000;strokeWidth=1.6;fontSize=13;html=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="605" width="420" height="112" as="geometry" />
+        </mxCell>
+        <mxCell id="dp_dang_luu_tru_body" value="entry / cập nhật soCCCD; Phong → DANG_SU_DUNG&lt;br&gt;internal / ghi nhận &amp;amp; xóa SuDungDichVu&lt;br&gt;internal / lập/cập nhật HoaDon (CHUA_THANH_TOAN)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=10;spacingRight=8;fontSize=13;fontColor=#000000;whiteSpace=wrap;" vertex="1" parent="dp_dang_luu_tru">
+          <mxGeometry y="30" width="420" height="82" as="geometry" />
+        </mxCell>
+        <mxCell id="dp_hoan_tat" value="HOAN_TAT (Hoàn tất)" style="swimlane;fontStyle=1;align=center;verticalAlign=middle;startSize=30;rounded=1;arcSize=12;collapsible=0;fillColor=#FFFFFF;fontColor=#000000;strokeColor=#000000;strokeWidth=1.6;fontSize=13;html=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="835" width="420" height="92" as="geometry" />
+        </mxCell>
+        <mxCell id="dp_hoan_tat_body" value="entry / HoaDon → DA_THANH_TOAN; Phong → CHO_DON_DEP&lt;br&gt;internal / gửi DanhGia [CUSTOMER ∧ chưa đánh giá]" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=10;spacingRight=8;fontSize=13;fontColor=#000000;whiteSpace=wrap;" vertex="1" parent="dp_hoan_tat">
+          <mxGeometry y="30" width="420" height="62" as="geometry" />
+        </mxCell>
+        <mxCell id="dp_final_hoantat" value="" style="ellipse;html=1;shape=endState;fillColor=#000000;strokeColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="236" y="972" width="28" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="e_dp_init" value="create(dto) [Phong != BAO_TRI ∧ soKhach ≤ sucChua ∧ không trùng lịch]&lt;br&gt;/ tính tongTienDuKien &amp;amp; tienCoc = 30%" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;endSize=10;strokeColor=#000000;strokeWidth=1.4;fontColor=#000000;fontSize=13;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="dp_init" target="dp_cho_coc">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="151" y="50" as="sourcePoint" />
+            <mxPoint x="151" y="155" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_dp_qr_self" value="createQr() [chưa có HoanCoc]&lt;br&gt;/ trả về VietQR &amp;amp; maGiaoDich" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;endSize=10;strokeColor=#000000;strokeWidth=1.4;fontColor=#000000;fontSize=13;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="dp_cho_coc" target="dp_cho_coc">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="420" y="180" as="sourcePoint" />
+            <mxPoint x="420" y="222" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="470" y="180" />
+              <mxPoint x="470" y="222" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_dp_webhook" value="webhook(dto, Idempotency-Key)&lt;br&gt;[secret hợp lệ ∧ soTien == tienCoc&lt;br&gt;∧ chưa có HoanCoc ∧ Phong != BAO_TRI]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;endSize=10;strokeColor=#000000;strokeWidth=1.4;fontColor=#000000;fontSize=13;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="dp_cho_coc" target="dp_da_xac_nhan">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="175" y="247" as="sourcePoint" />
+            <mxPoint x="175" y="375" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_dp_cancel_chococ" value="cancel(id, lyDo) [chưa đóng cọc] / HoanCoc (0%, soTienHoan = 0)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;endSize=10;strokeColor=#000000;strokeWidth=1.4;fontColor=#000000;fontSize=13;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="dp_cho_coc" target="dp_da_huy">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="375" y="155" as="sourcePoint" />
+            <mxPoint x="785" y="155" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="375" y="68" />
+              <mxPoint x="785" y="68" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_dp_replay_self" value="webhook() [idempotentReplay]&lt;br&gt;/ trả 200 OK" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;endSize=10;strokeColor=#000000;strokeWidth=1.4;fontColor=#000000;fontSize=13;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="dp_da_xac_nhan" target="dp_da_xac_nhan">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="40" y="402" as="sourcePoint" />
+            <mxPoint x="40" y="442" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="14" y="402" />
+              <mxPoint x="14" y="442" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_dp_to_choice" value="cancel(id, lyDo)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;endSize=10;strokeColor=#000000;strokeWidth=1.4;fontColor=#000000;fontSize=13;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="dp_da_xac_nhan" target="dp_choice_cancel">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="420" y="421" as="sourcePoint" />
+            <mxPoint x="580" y="421" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_dp_choice_100" value="[deltaHours ≥ 72] / hoàn 100%,&lt;br&gt;gateway.hoanTien() == THANH_CONG" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;endSize=10;strokeColor=#000000;strokeWidth=1.4;fontColor=#000000;fontSize=13;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="dp_choice_cancel" target="dp_da_huy">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="598" y="403" as="sourcePoint" />
+            <mxPoint x="790" y="247" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="598" y="260" />
+              <mxPoint x="790" y="260" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_dp_choice_50" value="[24 ≤ deltaHours &amp;lt; 72] / hoàn 50%,&lt;br&gt;gateway.hoanTien() == THANH_CONG" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;endSize=10;strokeColor=#000000;strokeWidth=1.4;fontColor=#000000;fontSize=13;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="dp_choice_cancel" target="dp_da_huy">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="616" y="421" as="sourcePoint" />
+            <mxPoint x="885" y="247" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="885" y="421" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_dp_choice_0" value="[deltaHours &amp;lt; 24] / hoàn 0% (không gọi cổng hoàn tiền)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;endSize=10;strokeColor=#000000;strokeWidth=1.4;fontColor=#000000;fontSize=13;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="dp_choice_cancel" target="dp_da_huy">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="598" y="439" as="sourcePoint" />
+            <mxPoint x="1015" y="247" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="598" y="490" />
+              <mxPoint x="1015" y="490" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_dp_choice_fail" value="[gateway lỗi 503 khi soTienHoan &amp;gt; 0]&lt;br&gt;/ giữ DA_XAC_NHAN &amp;amp; quote HoanCoc (DANG_XU_LY)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;endSize=10;strokeColor=#000000;strokeWidth=1.4;fontColor=#000000;fontSize=13;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="dp_choice_cancel" target="dp_da_xac_nhan">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="580" y="430" as="sourcePoint" />
+            <mxPoint x="380" y="467" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="540" y="430" />
+              <mxPoint x="540" y="535" />
+              <mxPoint x="380" y="535" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_dp_huy_final" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;endSize=10;strokeColor=#000000;strokeWidth=1.4;fontColor=#000000;fontSize=13;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="dp_da_huy" target="dp_final_huy">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="910" y="155" as="sourcePoint" />
+            <mxPoint x="910" y="64" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_dp_checkin" value="checkIn(bookingId, dto)&lt;br&gt;[Phong == DA_DAT ∨ Phong == TRONG]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;endSize=10;strokeColor=#000000;strokeWidth=1.4;fontColor=#000000;fontSize=13;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="dp_da_xac_nhan" target="dp_dang_luu_tru">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="195" y="467" as="sourcePoint" />
+            <mxPoint x="195" y="605" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_dp_checkout" value="payInvoice(hoaDonId, dto)&lt;br&gt;[HoaDon == CHUA_THANH_TOAN ∧ dịch vụ khớp ∧ Phong == DANG_SU_DUNG]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;endSize=10;strokeColor=#000000;strokeWidth=1.4;fontColor=#000000;fontSize=13;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="dp_dang_luu_tru" target="dp_hoan_tat">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="250" y="717" as="sourcePoint" />
+            <mxPoint x="250" y="835" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_dp_hoantat_final" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;endSize=10;strokeColor=#000000;strokeWidth=1.4;fontColor=#000000;fontSize=13;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="dp_hoan_tat" target="dp_final_hoantat">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="250" y="927" as="sourcePoint" />
+            <mxPoint x="250" y="972" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

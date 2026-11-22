@@ -1,0 +1,40 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="Usecase_UC6_BaoCao_QuanTri" id="usecase_uc6_baocao_quantri">
+    <mxGraphModel dx="1847" dy="888" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="860" pageHeight="520" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="actor_admin" parent="1" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fillColor=#ffffff;strokeColor=#334155;fontColor=#0f172a;fontSize=14;fontStyle=1;strokeWidth=1.5;" value="Chủ Homestay / Admin" vertex="1">
+          <mxGeometry height="100" width="55" x="80" y="212" as="geometry" />
+        </mxCell>
+        <mxCell id="system_boundary" parent="1" style="swimlane;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#334155;strokeWidth=1.8;fontStyle=1;fontSize=14;fontColor=#0f172a;startSize=38;collapsible=0;" value="UC6. Báo cáo thống kê và quản trị hệ thống" vertex="1">
+          <mxGeometry height="430" width="510" x="270" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_6_1" parent="system_boundary" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#334155;strokeWidth=1.4;fontColor=#0f172a;fontSize=14;" value="UC6.1: Thống kê doanh thu theo thời gian" vertex="1">
+          <mxGeometry height="75" width="380" x="65" y="65" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_6_2" parent="system_boundary" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#334155;strokeWidth=1.4;fontColor=#0f172a;fontSize=14;" value="UC6.2: Báo cáo tỷ lệ lấp đầy phòng" vertex="1">
+          <mxGeometry height="75" width="380" x="65" y="185" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_6_3" parent="system_boundary" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#334155;strokeWidth=1.4;fontColor=#0f172a;fontSize=14;" value="UC6.3: Quản lý tài khoản và phân quyền" vertex="1">
+          <mxGeometry height="75" width="380" x="65" y="305" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_admin_uc61" edge="1" parent="1" style="endArrow=none;html=1;strokeColor=#334155;strokeWidth=1.3;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="uc_6_1" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="140" y="262" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge_admin_uc62" edge="1" parent="1" style="endArrow=none;html=1;strokeColor=#334155;strokeWidth=1.3;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="uc_6_2" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="140" y="262.5" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge_admin_uc63" edge="1" parent="1" style="endArrow=none;html=1;strokeColor=#334155;strokeWidth=1.3;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="uc_6_3" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="140" y="262" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -1,0 +1,57 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="app.diagrams.net" pages="1">
+  <diagram id="state_hoancoc_v2" name="State_HoanCoc_v2">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="880" pageHeight="520" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="hc_init" value="" style="ellipse;html=1;shape=startState;fillColor=#000000;strokeColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="169" y="32" width="22" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="hc_dang_xu_ly" value="DANG_XU_LY (Đang xử lý hoàn cọc)" style="swimlane;fontStyle=1;align=center;verticalAlign=middle;startSize=30;rounded=1;arcSize=12;collapsible=0;fillColor=#FFFFFF;fontColor=#000000;strokeColor=#000000;strokeWidth=1.6;fontSize=13;html=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="145" width="415" height="92" as="geometry" />
+        </mxCell>
+        <mxCell id="hc_dang_xu_ly_body" value="entry / chốt quote deltaHours, tyLeHoanPhanTram, soTienHoan&lt;br&gt;do / gọi PaymentGateway.hoanTien() nếu soTienHoan &amp;gt; 0" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=10;spacingRight=8;fontSize=13;fontColor=#000000;whiteSpace=wrap;" vertex="1" parent="hc_dang_xu_ly">
+          <mxGeometry y="30" width="415" height="62" as="geometry" />
+        </mxCell>
+        <mxCell id="hc_thanh_cong" value="THANH_CONG (Hoàn cọc thành công)" style="swimlane;fontStyle=1;align=center;verticalAlign=middle;startSize=30;rounded=1;arcSize=12;collapsible=0;fillColor=#FFFFFF;fontColor=#000000;strokeColor=#000000;strokeWidth=1.6;fontSize=13;html=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="350" width="415" height="76" as="geometry" />
+        </mxCell>
+        <mxCell id="hc_thanh_cong_body" value="entry / DatPhong → DA_HUY; ghiChu lý do; refreshRoom()" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=10;spacingRight=8;fontSize=13;fontColor=#000000;whiteSpace=wrap;" vertex="1" parent="hc_thanh_cong">
+          <mxGeometry y="30" width="415" height="46" as="geometry" />
+        </mxCell>
+        <mxCell id="hc_final" value="" style="ellipse;html=1;shape=endState;fillColor=#000000;strokeColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="233" y="470" width="28" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="e_hc_init" value="cancel(bookingId, lyDo)&lt;br&gt;[DatPhong ∈ {CHO_COC, DA_XAC_NHAN} ∧ chưa có HoanCoc]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;endSize=10;strokeColor=#000000;strokeWidth=1.4;fontColor=#000000;fontSize=13;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="hc_init" target="hc_dang_xu_ly">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="180" y="54" as="sourcePoint" />
+            <mxPoint x="180" y="145" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_hc_retry" value="cancel(bookingId, lyDo) [retry sau lỗi 503]&lt;br&gt;/ tái sử dụng nguyên quote &amp;amp; maGiaoDichHoan" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;endSize=10;strokeColor=#000000;strokeWidth=1.4;fontColor=#000000;fontSize=13;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="hc_dang_xu_ly" target="hc_dang_xu_ly">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="455" y="168" as="sourcePoint" />
+            <mxPoint x="455" y="214" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="508" y="168" />
+              <mxPoint x="508" y="214" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_hc_done" value="[soTienHoan == 0 ∨ gateway.hoanTien() == THANH_CONG]&lt;br&gt;/ chuyển trangThai = THANH_CONG" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;endSize=10;strokeColor=#000000;strokeWidth=1.4;fontColor=#000000;fontSize=13;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="hc_dang_xu_ly" target="hc_thanh_cong">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="247" y="237" as="sourcePoint" />
+            <mxPoint x="247" y="350" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_hc_final" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;endSize=10;strokeColor=#000000;strokeWidth=1.4;fontColor=#000000;fontSize=13;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="hc_thanh_cong" target="hc_final">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="247" y="426" as="sourcePoint" />
+            <mxPoint x="247" y="470" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

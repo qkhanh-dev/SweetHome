@@ -1,0 +1,143 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="app.diagrams.net" pages="1">
+  <diagram id="arch_webclient_v2" name="Arch_Comp1_WebClient_v2">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1060" pageHeight="620" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="wc_guest" value="&amp;lt;&amp;lt;pages / components&amp;gt;&amp;gt;&lt;br&gt;&lt;b&gt;GuestPages ((guest))&lt;/b&gt;" style="swimlane;fontStyle=0;align=center;verticalAlign=middle;startSize=38;rounded=0;collapsible=0;fillColor=#FFFFFF;fontColor=#000000;strokeColor=#000000;strokeWidth=1.5;fontSize=13;html=1;" vertex="1" parent="1">
+          <mxGeometry x="30" y="30" width="310" height="135" as="geometry" />
+        </mxCell>
+        <mxCell id="wc_guest_body" value="• SearchExperience, RoomDetail&lt;br&gt;• BookingCreate, DepositDialog&lt;br&gt;• BookingLookup, BookingReceipt&lt;br&gt;• Reviews, LoginForm, RegisterForm" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=8;fontSize=13;fontColor=#000000;whiteSpace=wrap;" vertex="1" parent="wc_guest">
+          <mxGeometry y="38" width="310" height="97" as="geometry" />
+        </mxCell>
+        <mxCell id="wc_staff" value="&amp;lt;&amp;lt;pages / components&amp;gt;&amp;gt;&lt;br&gt;&lt;b&gt;StaffPages ((staff))&lt;/b&gt;" style="swimlane;fontStyle=0;align=center;verticalAlign=middle;startSize=38;rounded=0;collapsible=0;fillColor=#FFFFFF;fontColor=#000000;strokeColor=#000000;strokeWidth=1.5;fontSize=13;html=1;" vertex="1" parent="1">
+          <mxGeometry x="375" y="30" width="310" height="135" as="geometry" />
+        </mxCell>
+        <mxCell id="wc_staff_body" value="• RoomStatusBoard (/staff/rooms)&lt;br&gt;• CheckIn (/staff/check-in)&lt;br&gt;• StayServices (/staff/services)&lt;br&gt;• CheckOut, InvoiceReceipt (/staff/check-out)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=8;fontSize=13;fontColor=#000000;whiteSpace=wrap;" vertex="1" parent="wc_staff">
+          <mxGeometry y="38" width="310" height="97" as="geometry" />
+        </mxCell>
+        <mxCell id="wc_admin" value="&amp;lt;&amp;lt;pages / components&amp;gt;&amp;gt;&lt;br&gt;&lt;b&gt;AdminPages ((admin))&lt;/b&gt;" style="swimlane;fontStyle=0;align=center;verticalAlign=middle;startSize=38;rounded=0;collapsible=0;fillColor=#FFFFFF;fontColor=#000000;strokeColor=#000000;strokeWidth=1.5;fontSize=13;html=1;" vertex="1" parent="1">
+          <mxGeometry x="720" y="30" width="310" height="135" as="geometry" />
+        </mxCell>
+        <mxCell id="wc_admin_body" value="• DashboardStats (/admin/dashboard)&lt;br&gt;• HomestayManagement, RoomManagement&lt;br&gt;• RoomTypeManagement, AmenityManagement&lt;br&gt;• ServiceManagement, UserManagement" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=8;fontSize=13;fontColor=#000000;whiteSpace=wrap;" vertex="1" parent="wc_admin">
+          <mxGeometry y="38" width="310" height="97" as="geometry" />
+        </mxCell>
+        <mxCell id="wc_shell" value="&amp;lt;&amp;lt;layout &amp;amp; guards&amp;gt;&amp;gt;&lt;br&gt;&lt;b&gt;AppShell &amp;amp; ProtectedShells&lt;/b&gt;" style="swimlane;fontStyle=0;align=center;verticalAlign=middle;startSize=38;rounded=0;collapsible=0;fillColor=#FFFFFF;fontColor=#000000;strokeColor=#000000;strokeWidth=1.5;fontSize=13;html=1;" vertex="1" parent="1">
+          <mxGeometry x="375" y="215" width="310" height="95" as="geometry" />
+        </mxCell>
+        <mxCell id="wc_shell_body" value="• GuestShell / StaffShell / AdminShell&lt;br&gt;• ProtectedAuthenticatedShell&lt;br&gt;• ProtectedManagementShell" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=8;fontSize=13;fontColor=#000000;whiteSpace=wrap;" vertex="1" parent="wc_shell">
+          <mxGeometry y="38" width="310" height="57" as="geometry" />
+        </mxCell>
+        <mxCell id="wc_mw" value="&amp;lt;&amp;lt;edge middleware&amp;gt;&amp;gt;&lt;br&gt;&lt;b&gt;middleware.ts&lt;/b&gt;" style="swimlane;fontStyle=0;align=center;verticalAlign=middle;startSize=38;rounded=0;collapsible=0;fillColor=#FFFFFF;fontColor=#000000;strokeColor=#000000;strokeWidth=1.5;fontSize=13;html=1;" vertex="1" parent="1">
+          <mxGeometry x="30" y="215" width="310" height="95" as="geometry" />
+        </mxCell>
+        <mxCell id="wc_mw_body" value="+ middleware(request: NextRequest)&lt;br&gt;- readSession(): HMAC-SHA256 verify&lt;br&gt;• Chặn /admin/*, /staff/*, /change-password" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=8;fontSize=13;fontColor=#000000;whiteSpace=wrap;" vertex="1" parent="wc_mw">
+          <mxGeometry y="38" width="310" height="57" as="geometry" />
+        </mxCell>
+        <mxCell id="wc_bff" value="&amp;lt;&amp;lt;Next.js Route Handler&amp;gt;&amp;gt;&lt;br&gt;&lt;b&gt;/api/auth/[action]/route.ts&lt;/b&gt;" style="swimlane;fontStyle=0;align=center;verticalAlign=middle;startSize=38;rounded=0;collapsible=0;fillColor=#FFFFFF;fontColor=#000000;strokeColor=#000000;strokeWidth=1.5;fontSize=13;html=1;" vertex="1" parent="1">
+          <mxGeometry x="30" y="365" width="310" height="95" as="geometry" />
+        </mxCell>
+        <mxCell id="wc_bff_body" value="+ POST /api/auth/login | register | logout&lt;br&gt;+ GET /api/auth/session&lt;br&gt;• Ký &amp;amp; lưu HttpOnly session cookie" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=8;fontSize=13;fontColor=#000000;whiteSpace=wrap;" vertex="1" parent="wc_bff">
+          <mxGeometry y="38" width="310" height="57" as="geometry" />
+        </mxCell>
+        <mxCell id="wc_store" value="&amp;lt;&amp;lt;Zustand store&amp;gt;&amp;gt;&lt;br&gt;&lt;b&gt;useAuthStore (auth-store.ts)&lt;/b&gt;" style="swimlane;fontStyle=0;align=center;verticalAlign=middle;startSize=38;rounded=0;collapsible=0;fillColor=#FFFFFF;fontColor=#000000;strokeColor=#000000;strokeWidth=1.5;fontSize=13;html=1;" vertex="1" parent="1">
+          <mxGeometry x="720" y="215" width="310" height="95" as="geometry" />
+        </mxCell>
+        <mxCell id="wc_store_body" value="- user: TaiKhoan | null, token: string | null&lt;br&gt;+ setSession(user, token), restore()&lt;br&gt;+ clearSession(), beginLogout()" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=8;fontSize=13;fontColor=#000000;whiteSpace=wrap;" vertex="1" parent="wc_store">
+          <mxGeometry y="38" width="310" height="57" as="geometry" />
+        </mxCell>
+        <mxCell id="wc_apiclient" value="&amp;lt;&amp;lt;service&amp;gt;&amp;gt;&lt;br&gt;&lt;b&gt;apiClient (apiClient.ts)&lt;/b&gt;" style="swimlane;fontStyle=0;align=center;verticalAlign=middle;startSize=38;rounded=0;collapsible=0;fillColor=#FFFFFF;fontColor=#000000;strokeColor=#000000;strokeWidth=1.5;fontSize=13;html=1;" vertex="1" parent="1">
+          <mxGeometry x="375" y="365" width="310" height="115" as="geometry" />
+        </mxCell>
+        <mxCell id="wc_apiclient_body" value="+ setAccessToken() / getAccessToken()&lt;br&gt;+ request(): gắn Bearer token &amp;amp; xử lý 401/403&lt;br&gt;• Định tuyến API live hoặc mockApi" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=8;fontSize=13;fontColor=#000000;whiteSpace=wrap;" vertex="1" parent="wc_apiclient">
+          <mxGeometry y="38" width="310" height="77" as="geometry" />
+        </mxCell>
+        <mxCell id="wc_error" value="&amp;lt;&amp;lt;exception&amp;gt;&amp;gt;&lt;br&gt;&lt;b&gt;ApiError (apiError.ts)&lt;/b&gt;" style="swimlane;fontStyle=0;align=center;verticalAlign=middle;startSize=38;rounded=0;collapsible=0;fillColor=#FFFFFF;fontColor=#000000;strokeColor=#000000;strokeWidth=1.5;fontSize=13;html=1;" vertex="1" parent="1">
+          <mxGeometry x="375" y="515" width="310" height="75" as="geometry" />
+        </mxCell>
+        <mxCell id="wc_error_body" value="+ statusCode: number, payload: unknown&lt;br&gt;+ createErrorPayload(statusCode, message, path)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=8;fontSize=13;fontColor=#000000;whiteSpace=wrap;" vertex="1" parent="wc_error">
+          <mxGeometry y="38" width="310" height="37" as="geometry" />
+        </mxCell>
+        <mxCell id="wc_mock" value="&amp;lt;&amp;lt;adapter&amp;gt;&amp;gt;&lt;br&gt;&lt;b&gt;MockAdapter (mockApi)&lt;/b&gt;" style="swimlane;fontStyle=0;align=center;verticalAlign=middle;startSize=38;rounded=0;collapsible=0;fillColor=#FFFFFF;fontColor=#000000;strokeColor=#000000;strokeWidth=1.5;fontSize=13;html=1;" vertex="1" parent="1">
+          <mxGeometry x="720" y="365" width="310" height="115" as="geometry" />
+        </mxCell>
+        <mxCell id="wc_mock_body" value="• mockAdapter.ts &amp;amp; mockAuthStore.ts&lt;br&gt;• businessRules.ts &amp;amp; mockData.ts&lt;br&gt;• Kích hoạt khi NEXT_PUBLIC_USE_MOCK=true" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=8;fontSize=13;fontColor=#000000;whiteSpace=wrap;" vertex="1" parent="wc_mock">
+          <mxGeometry y="38" width="310" height="77" as="geometry" />
+        </mxCell>
+        <mxCell id="e_wc_g_s" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;endSize=9;strokeColor=#000000;strokeWidth=1.35;fontColor=#000000;fontSize=13;labelBackgroundColor=#FFFFFF;dashed=1;dashPattern=5 4;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="185" y="165" as="sourcePoint" />
+            <mxPoint x="470" y="215" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="185" y="190" />
+              <mxPoint x="470" y="190" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_wc_st_s" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;endSize=9;strokeColor=#000000;strokeWidth=1.35;fontColor=#000000;fontSize=13;labelBackgroundColor=#FFFFFF;dashed=1;dashPattern=5 4;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="530" y="165" as="sourcePoint" />
+            <mxPoint x="530" y="215" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_wc_ad_s" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;endSize=9;strokeColor=#000000;strokeWidth=1.35;fontColor=#000000;fontSize=13;labelBackgroundColor=#FFFFFF;dashed=1;dashPattern=5 4;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="875" y="165" as="sourcePoint" />
+            <mxPoint x="590" y="215" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="875" y="190" />
+              <mxPoint x="590" y="190" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_wc_sh_store" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;endSize=9;strokeColor=#000000;strokeWidth=1.35;fontColor=#000000;fontSize=13;labelBackgroundColor=#FFFFFF;dashed=1;dashPattern=5 4;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="685" y="262" as="sourcePoint" />
+            <mxPoint x="720" y="262" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_wc_sh_api" value="gọi API" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;endSize=9;strokeColor=#000000;strokeWidth=1.35;fontColor=#000000;fontSize=13;labelBackgroundColor=#FFFFFF;dashed=1;dashPattern=5 4;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="530" y="310" as="sourcePoint" />
+            <mxPoint x="530" y="365" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_wc_store_api" value="getMe()" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;endSize=9;strokeColor=#000000;strokeWidth=1.35;fontColor=#000000;fontSize=13;labelBackgroundColor=#FFFFFF;dashed=1;dashPattern=5 4;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="810" y="310" as="sourcePoint" />
+            <mxPoint x="610" y="365" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="810" y="338" />
+              <mxPoint x="610" y="338" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_wc_mw_bff" value="đọc signed cookie" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;endSize=9;strokeColor=#000000;strokeWidth=1.35;fontColor=#000000;fontSize=13;labelBackgroundColor=#FFFFFF;dashed=1;dashPattern=5 4;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="185" y="310" as="sourcePoint" />
+            <mxPoint x="185" y="365" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_wc_bff_api" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;endSize=9;strokeColor=#000000;strokeWidth=1.35;fontColor=#000000;fontSize=13;labelBackgroundColor=#FFFFFF;dashed=1;dashPattern=5 4;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="340" y="412" as="sourcePoint" />
+            <mxPoint x="375" y="412" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_wc_api_mock" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;endSize=9;strokeColor=#000000;strokeWidth=1.35;fontColor=#000000;fontSize=13;labelBackgroundColor=#FFFFFF;dashed=1;dashPattern=5 4;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="685" y="422" as="sourcePoint" />
+            <mxPoint x="720" y="422" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_wc_api_err" value="throws" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;endSize=9;strokeColor=#000000;strokeWidth=1.35;fontColor=#000000;fontSize=13;labelBackgroundColor=#FFFFFF;dashed=1;dashPattern=5 4;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="530" y="480" as="sourcePoint" />
+            <mxPoint x="530" y="515" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

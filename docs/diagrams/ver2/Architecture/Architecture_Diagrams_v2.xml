@@ -1,0 +1,630 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="app.diagrams.net" pages="6">
+  <diagram id="arch_tongquat_v2" name="Arch_TongQuat_v2">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1160" pageHeight="760" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="node_client" value="&lt;b&gt;&amp;lt;&amp;lt;node&amp;gt;&amp;gt; Client &amp;amp; Next.js Frontend (:3000)&lt;/b&gt;&lt;br&gt;Container: sweethome-frontend" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FAFAFA;strokeColor=#000000;strokeWidth=1.4;verticalAlign=top;align=left;spacingLeft=10;spacingTop=6;fontSize=13;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="30" y="30" width="320" height="420" as="geometry" />
+        </mxCell>
+        <mxCell id="node_backend" value="&lt;b&gt;&amp;lt;&amp;lt;node&amp;gt;&amp;gt; NestJS Application Server (:3001)&lt;/b&gt;&lt;br&gt;Container: sweethome-backend" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FAFAFA;strokeColor=#000000;strokeWidth=1.4;verticalAlign=top;align=left;spacingLeft=10;spacingTop=6;fontSize=13;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="420" y="30" width="710" height="500" as="geometry" />
+        </mxCell>
+        <mxCell id="node_db" value="&lt;b&gt;&amp;lt;&amp;lt;node&amp;gt;&amp;gt; PostgreSQL Database (:5432)&lt;/b&gt;&lt;br&gt;Container: sweethome-postgres" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FAFAFA;strokeColor=#000000;strokeWidth=1.4;verticalAlign=top;align=left;spacingLeft=10;spacingTop=6;fontSize=13;fontColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="420" y="595" width="350" height="135" as="geometry" />
+        </mxCell>
+        <mxCell id="node_ext" value="&lt;b&gt;&amp;lt;&amp;lt;external&amp;gt;&amp;gt; Payment &amp;amp; Bank Gateway&lt;/b&gt;&lt;br&gt;VietQR / Webhook / Refund API" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FAFAFA;strokeColor=#000000;strokeWidth=1.4;verticalAlign=top;align=left;spacingLeft=10;spacingTop=6;fontSize=13;fontColor=#000000;dashed=1;dashPattern=6 4;" vertex="1" parent="1">
+          <mxGeometry x="820" y="595" width="310" height="135" as="geometry" />
+        </mxCell>
+        <mxCell id="pkg_webclient" value="&amp;lt;&amp;lt;component&amp;gt;&amp;gt;&lt;br&gt;&lt;b&gt;SweetHomeWebClient&lt;/b&gt;" style="swimlane;fontStyle=0;align=center;verticalAlign=middle;startSize=38;rounded=0;collapsible=0;fillColor=#FFFFFF;fontColor=#000000;strokeColor=#000000;strokeWidth=1.5;fontSize=13;html=1;" vertex="1" parent="1">
+          <mxGeometry x="55" y="100" width="270" height="315" as="geometry" />
+        </mxCell>
+        <mxCell id="pkg_webclient_body" value="• Route Groups: (guest), (staff), (admin)&lt;br&gt;• Edge RBAC: middleware.ts&lt;br&gt;• BFF Cookie: /api/auth/[action]&lt;br&gt;• State: useAuthStore (Zustand)&lt;br&gt;• HTTP Client: apiClient / mockAdapter" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=8;fontSize=13;fontColor=#000000;whiteSpace=wrap;" vertex="1" parent="pkg_webclient">
+          <mxGeometry y="38" width="270" height="277" as="geometry" />
+        </mxCell>
+        <mxCell id="pkg_security" value="&amp;lt;&amp;lt;component&amp;gt;&amp;gt;&lt;br&gt;&lt;b&gt;SweetHomeSecurityPipeline&lt;/b&gt;" style="swimlane;fontStyle=0;align=center;verticalAlign=middle;startSize=38;rounded=0;collapsible=0;fillColor=#FFFFFF;fontColor=#000000;strokeColor=#000000;strokeWidth=1.5;fontSize=13;html=1;" vertex="1" parent="1">
+          <mxGeometry x="445" y="100" width="660" height="95" as="geometry" />
+        </mxCell>
+        <mxCell id="pkg_security_body" value="ValidationPipe (whitelist) → JwtAuthGuard / JwtStrategy → RolesGuard (@Roles)&lt;br&gt;ResponseEnvelopeInterceptor ({ success, statusCode, message, data }) | HttpExceptionFilter" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=8;fontSize=13;fontColor=#000000;whiteSpace=wrap;" vertex="1" parent="pkg_security">
+          <mxGeometry y="38" width="660" height="57" as="geometry" />
+        </mxCell>
+        <mxCell id="pkg_apicore" value="&amp;lt;&amp;lt;component&amp;gt;&amp;gt;&lt;br&gt;&lt;b&gt;SweetHomeApiCore (AppModule - 12 Modules)&lt;/b&gt;" style="swimlane;fontStyle=0;align=center;verticalAlign=middle;startSize=38;rounded=0;collapsible=0;fillColor=#FFFFFF;fontColor=#000000;strokeColor=#000000;strokeWidth=1.5;fontSize=13;html=1;" vertex="1" parent="1">
+          <mxGeometry x="445" y="230" width="660" height="135" as="geometry" />
+        </mxCell>
+        <mxCell id="pkg_apicore_body" value="• AuthModule, UsersModule, CustomersModule, HealthModule&lt;br&gt;• HomestayRoomsModule (Homestay, RoomTypes, Amenities, Rooms)&lt;br&gt;• BookingModule, StayOperationsModule, ServicesModule&lt;br&gt;• BillingPaymentModule, ReviewsModule, ReportsAdminModule" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=8;fontSize=13;fontColor=#000000;whiteSpace=wrap;" vertex="1" parent="pkg_apicore">
+          <mxGeometry y="38" width="660" height="97" as="geometry" />
+        </mxCell>
+        <mxCell id="pkg_dataaccess" value="&amp;lt;&amp;lt;component&amp;gt;&amp;gt;&lt;br&gt;&lt;b&gt;SweetHomeDataAccess&lt;/b&gt;" style="swimlane;fontStyle=0;align=center;verticalAlign=middle;startSize=38;rounded=0;collapsible=0;fillColor=#FFFFFF;fontColor=#000000;strokeColor=#000000;strokeWidth=1.5;fontSize=13;html=1;" vertex="1" parent="1">
+          <mxGeometry x="445" y="400" width="320" height="105" as="geometry" />
+        </mxCell>
+        <mxCell id="pkg_dataaccess_body" value="• PrismaService (PrismaPg Adapter)&lt;br&gt;• ReportQueryRepository&lt;br&gt;• Serializable Tx + SELECT FOR UPDATE" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=8;fontSize=13;fontColor=#000000;whiteSpace=wrap;" vertex="1" parent="pkg_dataaccess">
+          <mxGeometry y="38" width="320" height="67" as="geometry" />
+        </mxCell>
+        <mxCell id="pkg_payment" value="&amp;lt;&amp;lt;component&amp;gt;&amp;gt;&lt;br&gt;&lt;b&gt;SweetHomePaymentIntegration&lt;/b&gt;" style="swimlane;fontStyle=0;align=center;verticalAlign=middle;startSize=38;rounded=0;collapsible=0;fillColor=#FFFFFF;fontColor=#000000;strokeColor=#000000;strokeWidth=1.5;fontSize=13;html=1;" vertex="1" parent="1">
+          <mxGeometry x="795" y="400" width="310" height="105" as="geometry" />
+        </mxCell>
+        <mxCell id="pkg_payment_body" value="• PaymentGatewayService (VietQR / Refund)&lt;br&gt;• Webhook HMAC/Secret + Idempotency-Key&lt;br&gt;• PDFDocument (PDFKit Biên lai PDF)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=8;fontSize=13;fontColor=#000000;whiteSpace=wrap;" vertex="1" parent="pkg_payment">
+          <mxGeometry y="38" width="310" height="67" as="geometry" />
+        </mxCell>
+        <mxCell id="db_pg" value="&amp;lt;&amp;lt;database&amp;gt;&amp;gt;&lt;br&gt;&lt;b&gt;PostgreSQL 16 (sweethome_db)&lt;/b&gt;" style="swimlane;fontStyle=0;align=center;verticalAlign=middle;startSize=38;rounded=0;collapsible=0;fillColor=#FFFFFF;fontColor=#000000;strokeColor=#000000;strokeWidth=1.5;fontSize=13;html=1;" vertex="1" parent="1">
+          <mxGeometry x="445" y="655" width="300" height="58" as="geometry" />
+        </mxCell>
+        <mxCell id="db_pg_body" value="14 bảng quan hệ &amp;amp; 3 kiểu ENUM" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=8;fontSize=13;fontColor=#000000;whiteSpace=wrap;" vertex="1" parent="db_pg">
+          <mxGeometry y="38" width="300" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="ext_gw" value="&amp;lt;&amp;lt;external service&amp;gt;&amp;gt;&lt;br&gt;&lt;b&gt;VietQR &amp;amp; Payment Refund API&lt;/b&gt;" style="swimlane;fontStyle=0;align=center;verticalAlign=middle;startSize=38;rounded=0;collapsible=0;fillColor=#FFFFFF;fontColor=#000000;strokeColor=#000000;strokeWidth=1.5;fontSize=13;html=1;" vertex="1" parent="1">
+          <mxGeometry x="845" y="655" width="260" height="58" as="geometry" />
+        </mxCell>
+        <mxCell id="ext_gw_body" value="img.vietqr.io / PAYMENT_REFUND_URL" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=8;fontSize=13;fontColor=#000000;whiteSpace=wrap;" vertex="1" parent="ext_gw">
+          <mxGeometry y="38" width="260" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="e1_fe_sec" value="REST /api/*&lt;br&gt;(Bearer JWT)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;endSize=9;strokeColor=#000000;strokeWidth=1.35;fontColor=#000000;fontSize=13;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="325" y="148" as="sourcePoint" />
+            <mxPoint x="445" y="148" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e2_sec_core" value="Request hợp lệ" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;endSize=9;strokeColor=#000000;strokeWidth=1.35;fontColor=#000000;fontSize=13;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="775" y="195" as="sourcePoint" />
+            <mxPoint x="775" y="230" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e3_core_da" value="Prisma ORM" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;endSize=9;strokeColor=#000000;strokeWidth=1.35;fontColor=#000000;fontSize=13;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="605" y="365" as="sourcePoint" />
+            <mxPoint x="605" y="400" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e4_core_pay" value="QR / Hoàn tiền / PDF" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;endSize=9;strokeColor=#000000;strokeWidth=1.35;fontColor=#000000;fontSize=13;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="950" y="365" as="sourcePoint" />
+            <mxPoint x="950" y="400" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e5_da_db" value="TCP 5432 (PrismaPg)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;endSize=9;strokeColor=#000000;strokeWidth=1.35;fontColor=#000000;fontSize=13;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="595" y="505" as="sourcePoint" />
+            <mxPoint x="595" y="595" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e6_pay_ext" value="HTTPS VietQR / Refund" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;endSize=9;strokeColor=#000000;strokeWidth=1.35;fontColor=#000000;fontSize=13;labelBackgroundColor=#FFFFFF;dashed=1;dashPattern=5 4;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="975" y="505" as="sourcePoint" />
+            <mxPoint x="975" y="595" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="arch_webclient_v2" name="Arch_Comp1_WebClient_v2">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1060" pageHeight="620" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="wc_guest" value="&amp;lt;&amp;lt;pages / components&amp;gt;&amp;gt;&lt;br&gt;&lt;b&gt;GuestPages ((guest))&lt;/b&gt;" style="swimlane;fontStyle=0;align=center;verticalAlign=middle;startSize=38;rounded=0;collapsible=0;fillColor=#FFFFFF;fontColor=#000000;strokeColor=#000000;strokeWidth=1.5;fontSize=13;html=1;" vertex="1" parent="1">
+          <mxGeometry x="30" y="30" width="310" height="135" as="geometry" />
+        </mxCell>
+        <mxCell id="wc_guest_body" value="• SearchExperience, RoomDetail&lt;br&gt;• BookingCreate, DepositDialog&lt;br&gt;• BookingLookup, BookingReceipt&lt;br&gt;• Reviews, LoginForm, RegisterForm" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=8;fontSize=13;fontColor=#000000;whiteSpace=wrap;" vertex="1" parent="wc_guest">
+          <mxGeometry y="38" width="310" height="97" as="geometry" />
+        </mxCell>
+        <mxCell id="wc_staff" value="&amp;lt;&amp;lt;pages / components&amp;gt;&amp;gt;&lt;br&gt;&lt;b&gt;StaffPages ((staff))&lt;/b&gt;" style="swimlane;fontStyle=0;align=center;verticalAlign=middle;startSize=38;rounded=0;collapsible=0;fillColor=#FFFFFF;fontColor=#000000;strokeColor=#000000;strokeWidth=1.5;fontSize=13;html=1;" vertex="1" parent="1">
+          <mxGeometry x="375" y="30" width="310" height="135" as="geometry" />
+        </mxCell>
+        <mxCell id="wc_staff_body" value="• RoomStatusBoard (/staff/rooms)&lt;br&gt;• CheckIn (/staff/check-in)&lt;br&gt;• StayServices (/staff/services)&lt;br&gt;• CheckOut, InvoiceReceipt (/staff/check-out)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=8;fontSize=13;fontColor=#000000;whiteSpace=wrap;" vertex="1" parent="wc_staff">
+          <mxGeometry y="38" width="310" height="97" as="geometry" />
+        </mxCell>
+        <mxCell id="wc_admin" value="&amp;lt;&amp;lt;pages / components&amp;gt;&amp;gt;&lt;br&gt;&lt;b&gt;AdminPages ((admin))&lt;/b&gt;" style="swimlane;fontStyle=0;align=center;verticalAlign=middle;startSize=38;rounded=0;collapsible=0;fillColor=#FFFFFF;fontColor=#000000;strokeColor=#000000;strokeWidth=1.5;fontSize=13;html=1;" vertex="1" parent="1">
+          <mxGeometry x="720" y="30" width="310" height="135" as="geometry" />
+        </mxCell>
+        <mxCell id="wc_admin_body" value="• DashboardStats (/admin/dashboard)&lt;br&gt;• HomestayManagement, RoomManagement&lt;br&gt;• RoomTypeManagement, AmenityManagement&lt;br&gt;• ServiceManagement, UserManagement" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=8;fontSize=13;fontColor=#000000;whiteSpace=wrap;" vertex="1" parent="wc_admin">
+          <mxGeometry y="38" width="310" height="97" as="geometry" />
+        </mxCell>
+        <mxCell id="wc_shell" value="&amp;lt;&amp;lt;layout &amp;amp; guards&amp;gt;&amp;gt;&lt;br&gt;&lt;b&gt;AppShell &amp;amp; ProtectedShells&lt;/b&gt;" style="swimlane;fontStyle=0;align=center;verticalAlign=middle;startSize=38;rounded=0;collapsible=0;fillColor=#FFFFFF;fontColor=#000000;strokeColor=#000000;strokeWidth=1.5;fontSize=13;html=1;" vertex="1" parent="1">
+          <mxGeometry x="375" y="215" width="310" height="95" as="geometry" />
+        </mxCell>
+        <mxCell id="wc_shell_body" value="• GuestShell / StaffShell / AdminShell&lt;br&gt;• ProtectedAuthenticatedShell&lt;br&gt;• ProtectedManagementShell" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=8;fontSize=13;fontColor=#000000;whiteSpace=wrap;" vertex="1" parent="wc_shell">
+          <mxGeometry y="38" width="310" height="57" as="geometry" />
+        </mxCell>
+        <mxCell id="wc_mw" value="&amp;lt;&amp;lt;edge middleware&amp;gt;&amp;gt;&lt;br&gt;&lt;b&gt;middleware.ts&lt;/b&gt;" style="swimlane;fontStyle=0;align=center;verticalAlign=middle;startSize=38;rounded=0;collapsible=0;fillColor=#FFFFFF;fontColor=#000000;strokeColor=#000000;strokeWidth=1.5;fontSize=13;html=1;" vertex="1" parent="1">
+          <mxGeometry x="30" y="215" width="310" height="95" as="geometry" />
+        </mxCell>
+        <mxCell id="wc_mw_body" value="+ middleware(request: NextRequest)&lt;br&gt;- readSession(): HMAC-SHA256 verify&lt;br&gt;• Chặn /admin/*, /staff/*, /change-password" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=8;fontSize=13;fontColor=#000000;whiteSpace=wrap;" vertex="1" parent="wc_mw">
+          <mxGeometry y="38" width="310" height="57" as="geometry" />
+        </mxCell>
+        <mxCell id="wc_bff" value="&amp;lt;&amp;lt;Next.js Route Handler&amp;gt;&amp;gt;&lt;br&gt;&lt;b&gt;/api/auth/[action]/route.ts&lt;/b&gt;" style="swimlane;fontStyle=0;align=center;verticalAlign=middle;startSize=38;rounded=0;collapsible=0;fillColor=#FFFFFF;fontColor=#000000;strokeColor=#000000;strokeWidth=1.5;fontSize=13;html=1;" vertex="1" parent="1">
+          <mxGeometry x="30" y="365" width="310" height="95" as="geometry" />
+        </mxCell>
+        <mxCell id="wc_bff_body" value="+ POST /api/auth/login | register | logout&lt;br&gt;+ GET /api/auth/session&lt;br&gt;• Ký &amp;amp; lưu HttpOnly session cookie" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=8;fontSize=13;fontColor=#000000;whiteSpace=wrap;" vertex="1" parent="wc_bff">
+          <mxGeometry y="38" width="310" height="57" as="geometry" />
+        </mxCell>
+        <mxCell id="wc_store" value="&amp;lt;&amp;lt;Zustand store&amp;gt;&amp;gt;&lt;br&gt;&lt;b&gt;useAuthStore (auth-store.ts)&lt;/b&gt;" style="swimlane;fontStyle=0;align=center;verticalAlign=middle;startSize=38;rounded=0;collapsible=0;fillColor=#FFFFFF;fontColor=#000000;strokeColor=#000000;strokeWidth=1.5;fontSize=13;html=1;" vertex="1" parent="1">
+          <mxGeometry x="720" y="215" width="310" height="95" as="geometry" />
+        </mxCell>
+        <mxCell id="wc_store_body" value="- user: TaiKhoan | null, token: string | null&lt;br&gt;+ setSession(user, token), restore()&lt;br&gt;+ clearSession(), beginLogout()" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=8;fontSize=13;fontColor=#000000;whiteSpace=wrap;" vertex="1" parent="wc_store">
+          <mxGeometry y="38" width="310" height="57" as="geometry" />
+        </mxCell>
+        <mxCell id="wc_apiclient" value="&amp;lt;&amp;lt;service&amp;gt;&amp;gt;&lt;br&gt;&lt;b&gt;apiClient (apiClient.ts)&lt;/b&gt;" style="swimlane;fontStyle=0;align=center;verticalAlign=middle;startSize=38;rounded=0;collapsible=0;fillColor=#FFFFFF;fontColor=#000000;strokeColor=#000000;strokeWidth=1.5;fontSize=13;html=1;" vertex="1" parent="1">
+          <mxGeometry x="375" y="365" width="310" height="115" as="geometry" />
+        </mxCell>
+        <mxCell id="wc_apiclient_body" value="+ setAccessToken() / getAccessToken()&lt;br&gt;+ request(): gắn Bearer token &amp;amp; xử lý 401/403&lt;br&gt;• Định tuyến API live hoặc mockApi" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=8;fontSize=13;fontColor=#000000;whiteSpace=wrap;" vertex="1" parent="wc_apiclient">
+          <mxGeometry y="38" width="310" height="77" as="geometry" />
+        </mxCell>
+        <mxCell id="wc_error" value="&amp;lt;&amp;lt;exception&amp;gt;&amp;gt;&lt;br&gt;&lt;b&gt;ApiError (apiError.ts)&lt;/b&gt;" style="swimlane;fontStyle=0;align=center;verticalAlign=middle;startSize=38;rounded=0;collapsible=0;fillColor=#FFFFFF;fontColor=#000000;strokeColor=#000000;strokeWidth=1.5;fontSize=13;html=1;" vertex="1" parent="1">
+          <mxGeometry x="375" y="515" width="310" height="75" as="geometry" />
+        </mxCell>
+        <mxCell id="wc_error_body" value="+ statusCode: number, payload: unknown&lt;br&gt;+ createErrorPayload(statusCode, message, path)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=8;fontSize=13;fontColor=#000000;whiteSpace=wrap;" vertex="1" parent="wc_error">
+          <mxGeometry y="38" width="310" height="37" as="geometry" />
+        </mxCell>
+        <mxCell id="wc_mock" value="&amp;lt;&amp;lt;adapter&amp;gt;&amp;gt;&lt;br&gt;&lt;b&gt;MockAdapter (mockApi)&lt;/b&gt;" style="swimlane;fontStyle=0;align=center;verticalAlign=middle;startSize=38;rounded=0;collapsible=0;fillColor=#FFFFFF;fontColor=#000000;strokeColor=#000000;strokeWidth=1.5;fontSize=13;html=1;" vertex="1" parent="1">
+          <mxGeometry x="720" y="365" width="310" height="115" as="geometry" />
+        </mxCell>
+        <mxCell id="wc_mock_body" value="• mockAdapter.ts &amp;amp; mockAuthStore.ts&lt;br&gt;• businessRules.ts &amp;amp; mockData.ts&lt;br&gt;• Kích hoạt khi NEXT_PUBLIC_USE_MOCK=true" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=8;fontSize=13;fontColor=#000000;whiteSpace=wrap;" vertex="1" parent="wc_mock">
+          <mxGeometry y="38" width="310" height="77" as="geometry" />
+        </mxCell>
+        <mxCell id="e_wc_g_s" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;endSize=9;strokeColor=#000000;strokeWidth=1.35;fontColor=#000000;fontSize=13;labelBackgroundColor=#FFFFFF;dashed=1;dashPattern=5 4;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="185" y="165" as="sourcePoint" />
+            <mxPoint x="470" y="215" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="185" y="190" />
+              <mxPoint x="470" y="190" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_wc_st_s" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;endSize=9;strokeColor=#000000;strokeWidth=1.35;fontColor=#000000;fontSize=13;labelBackgroundColor=#FFFFFF;dashed=1;dashPattern=5 4;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="530" y="165" as="sourcePoint" />
+            <mxPoint x="530" y="215" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_wc_ad_s" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;endSize=9;strokeColor=#000000;strokeWidth=1.35;fontColor=#000000;fontSize=13;labelBackgroundColor=#FFFFFF;dashed=1;dashPattern=5 4;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="875" y="165" as="sourcePoint" />
+            <mxPoint x="590" y="215" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="875" y="190" />
+              <mxPoint x="590" y="190" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_wc_sh_store" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;endSize=9;strokeColor=#000000;strokeWidth=1.35;fontColor=#000000;fontSize=13;labelBackgroundColor=#FFFFFF;dashed=1;dashPattern=5 4;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="685" y="262" as="sourcePoint" />
+            <mxPoint x="720" y="262" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_wc_sh_api" value="gọi API" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;endSize=9;strokeColor=#000000;strokeWidth=1.35;fontColor=#000000;fontSize=13;labelBackgroundColor=#FFFFFF;dashed=1;dashPattern=5 4;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="530" y="310" as="sourcePoint" />
+            <mxPoint x="530" y="365" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_wc_store_api" value="getMe()" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;endSize=9;strokeColor=#000000;strokeWidth=1.35;fontColor=#000000;fontSize=13;labelBackgroundColor=#FFFFFF;dashed=1;dashPattern=5 4;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="810" y="310" as="sourcePoint" />
+            <mxPoint x="610" y="365" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="810" y="338" />
+              <mxPoint x="610" y="338" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_wc_mw_bff" value="đọc signed cookie" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;endSize=9;strokeColor=#000000;strokeWidth=1.35;fontColor=#000000;fontSize=13;labelBackgroundColor=#FFFFFF;dashed=1;dashPattern=5 4;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="185" y="310" as="sourcePoint" />
+            <mxPoint x="185" y="365" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_wc_bff_api" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;endSize=9;strokeColor=#000000;strokeWidth=1.35;fontColor=#000000;fontSize=13;labelBackgroundColor=#FFFFFF;dashed=1;dashPattern=5 4;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="340" y="412" as="sourcePoint" />
+            <mxPoint x="375" y="412" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_wc_api_mock" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;endSize=9;strokeColor=#000000;strokeWidth=1.35;fontColor=#000000;fontSize=13;labelBackgroundColor=#FFFFFF;dashed=1;dashPattern=5 4;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="685" y="422" as="sourcePoint" />
+            <mxPoint x="720" y="422" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_wc_api_err" value="throws" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;endSize=9;strokeColor=#000000;strokeWidth=1.35;fontColor=#000000;fontSize=13;labelBackgroundColor=#FFFFFF;dashed=1;dashPattern=5 4;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="530" y="480" as="sourcePoint" />
+            <mxPoint x="530" y="515" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="arch_security_v2" name="Arch_Comp2_SecurityPipeline_v2">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1060" pageHeight="560" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="sec_setup" value="&amp;lt;&amp;lt;config&amp;gt;&amp;gt;&lt;br&gt;&lt;b&gt;AppSetup (app.setup.ts)&lt;/b&gt;" style="swimlane;fontStyle=0;align=center;verticalAlign=middle;startSize=38;rounded=0;collapsible=0;fillColor=#FFFFFF;fontColor=#000000;strokeColor=#000000;strokeWidth=1.5;fontSize=13;html=1;" vertex="1" parent="1">
+          <mxGeometry x="30" y="30" width="310" height="105" as="geometry" />
+        </mxCell>
+        <mxCell id="sec_setup_body" value="+ configureHttpApp(app, options)&lt;br&gt;+ setupSwagger(app)&lt;br&gt;• Thiết lập prefix /api &amp;amp; CORS (cors.config.ts)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=8;fontSize=13;fontColor=#000000;whiteSpace=wrap;" vertex="1" parent="sec_setup">
+          <mxGeometry y="38" width="310" height="67" as="geometry" />
+        </mxCell>
+        <mxCell id="sec_pipe" value="&amp;lt;&amp;lt;pipe&amp;gt;&amp;gt;&lt;br&gt;&lt;b&gt;ValidationPipe (Global)&lt;/b&gt;" style="swimlane;fontStyle=0;align=center;verticalAlign=middle;startSize=38;rounded=0;collapsible=0;fillColor=#FFFFFF;fontColor=#000000;strokeColor=#000000;strokeWidth=1.5;fontSize=13;html=1;" vertex="1" parent="1">
+          <mxGeometry x="375" y="30" width="310" height="105" as="geometry" />
+        </mxCell>
+        <mxCell id="sec_pipe_body" value="• whitelist: true&lt;br&gt;• forbidNonWhitelisted: true&lt;br&gt;• transform: true (class-validator DTO)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=8;fontSize=13;fontColor=#000000;whiteSpace=wrap;" vertex="1" parent="sec_pipe">
+          <mxGeometry y="38" width="310" height="67" as="geometry" />
+        </mxCell>
+        <mxCell id="sec_env" value="&amp;lt;&amp;lt;interceptor&amp;gt;&amp;gt;&lt;br&gt;&lt;b&gt;ResponseEnvelopeInterceptor&lt;/b&gt;" style="swimlane;fontStyle=0;align=center;verticalAlign=middle;startSize=38;rounded=0;collapsible=0;fillColor=#FFFFFF;fontColor=#000000;strokeColor=#000000;strokeWidth=1.5;fontSize=13;html=1;" vertex="1" parent="1">
+          <mxGeometry x="720" y="30" width="310" height="105" as="geometry" />
+        </mxCell>
+        <mxCell id="sec_env_body" value="+ intercept(context, next)&lt;br&gt;- shouldBypassEnvelope() (StreamableFile PDF)&lt;br&gt;• Bọc chuẩn { success, statusCode, message, data }" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=8;fontSize=13;fontColor=#000000;whiteSpace=wrap;" vertex="1" parent="sec_env">
+          <mxGeometry y="38" width="310" height="67" as="geometry" />
+        </mxCell>
+        <mxCell id="sec_jwt_guard" value="&amp;lt;&amp;lt;guard&amp;gt;&amp;gt;&lt;br&gt;&lt;b&gt;JwtAuthGuard / OptionalJwtAuthGuard&lt;/b&gt;" style="swimlane;fontStyle=0;align=center;verticalAlign=middle;startSize=38;rounded=0;collapsible=0;fillColor=#FFFFFF;fontColor=#000000;strokeColor=#000000;strokeWidth=1.5;fontSize=13;html=1;" vertex="1" parent="1">
+          <mxGeometry x="30" y="215" width="310" height="95" as="geometry" />
+        </mxCell>
+        <mxCell id="sec_jwt_guard_body" value="• AuthGuard('jwt') bảo vệ route cần đăng nhập&lt;br&gt;• OptionalJwtAuthGuard cho route công khai" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=8;fontSize=13;fontColor=#000000;whiteSpace=wrap;" vertex="1" parent="sec_jwt_guard">
+          <mxGeometry y="38" width="310" height="57" as="geometry" />
+        </mxCell>
+        <mxCell id="sec_strategy" value="&amp;lt;&amp;lt;strategy&amp;gt;&amp;gt;&lt;br&gt;&lt;b&gt;JwtStrategy (PassportStrategy)&lt;/b&gt;" style="swimlane;fontStyle=0;align=center;verticalAlign=middle;startSize=38;rounded=0;collapsible=0;fillColor=#FFFFFF;fontColor=#000000;strokeColor=#000000;strokeWidth=1.5;fontSize=13;html=1;" vertex="1" parent="1">
+          <mxGeometry x="30" y="385" width="310" height="105" as="geometry" />
+        </mxCell>
+        <mxCell id="sec_strategy_body" value="+ validate(payload): CurrentAccountData&lt;br&gt;• Trích xuất Bearer JWT từ Header&lt;br&gt;• Gọi AuthService.findActiveAccount(sub)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=8;fontSize=13;fontColor=#000000;whiteSpace=wrap;" vertex="1" parent="sec_strategy">
+          <mxGeometry y="38" width="310" height="67" as="geometry" />
+        </mxCell>
+        <mxCell id="sec_roles" value="&amp;lt;&amp;lt;guard&amp;gt;&amp;gt;&lt;br&gt;&lt;b&gt;RolesGuard (roles.guard.ts)&lt;/b&gt;" style="swimlane;fontStyle=0;align=center;verticalAlign=middle;startSize=38;rounded=0;collapsible=0;fillColor=#FFFFFF;fontColor=#000000;strokeColor=#000000;strokeWidth=1.5;fontSize=13;html=1;" vertex="1" parent="1">
+          <mxGeometry x="375" y="215" width="310" height="115" as="geometry" />
+        </mxCell>
+        <mxCell id="sec_roles_body" value="+ canActivate(context): boolean&lt;br&gt;+ roleAllows(actual, required): boolean&lt;br&gt;• Đọc @Roles() &amp;amp; @CurrentAccount()&lt;br&gt;• ADMIN kế thừa toàn bộ quyền STAFF" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=8;fontSize=13;fontColor=#000000;whiteSpace=wrap;" vertex="1" parent="sec_roles">
+          <mxGeometry y="38" width="310" height="77" as="geometry" />
+        </mxCell>
+        <mxCell id="sec_filter" value="&amp;lt;&amp;lt;exception filter&amp;gt;&amp;gt;&lt;br&gt;&lt;b&gt;HttpExceptionFilter&lt;/b&gt;" style="swimlane;fontStyle=0;align=center;verticalAlign=middle;startSize=38;rounded=0;collapsible=0;fillColor=#FFFFFF;fontColor=#000000;strokeColor=#000000;strokeWidth=1.5;fontSize=13;html=1;" vertex="1" parent="1">
+          <mxGeometry x="720" y="215" width="310" height="115" as="geometry" />
+        </mxCell>
+        <mxCell id="sec_filter_body" value="+ catch(exception, host): void&lt;br&gt;- normalizeExceptionResponse()&lt;br&gt;- createSafeServerError() (ẩn lỗi 5xx)&lt;br&gt;• Chuẩn hóa JSON lỗi trả về Client" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=8;fontSize=13;fontColor=#000000;whiteSpace=wrap;" vertex="1" parent="sec_filter">
+          <mxGeometry y="38" width="310" height="77" as="geometry" />
+        </mxCell>
+        <mxCell id="sec_authsvc" value="&amp;lt;&amp;lt;service&amp;gt;&amp;gt;&lt;br&gt;&lt;b&gt;AuthService (auth.service.ts)&lt;/b&gt;" style="swimlane;fontStyle=0;align=center;verticalAlign=middle;startSize=38;rounded=0;collapsible=0;fillColor=#FFFFFF;fontColor=#000000;strokeColor=#000000;strokeWidth=1.5;fontSize=13;html=1;" vertex="1" parent="1">
+          <mxGeometry x="375" y="385" width="310" height="105" as="geometry" />
+        </mxCell>
+        <mxCell id="sec_authsvc_body" value="+ findActiveAccount(maTaiKhoan)&lt;br&gt;• Kiểm tra ACTIVE vs LOCKED (403 Forbidden)&lt;br&gt;• Kiểm tra vaiTro ∈ {ADMIN, STAFF, CUSTOMER}" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=8;fontSize=13;fontColor=#000000;whiteSpace=wrap;" vertex="1" parent="sec_authsvc">
+          <mxGeometry y="38" width="310" height="67" as="geometry" />
+        </mxCell>
+        <mxCell id="e_s_1" value="đăng ký" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;endSize=9;strokeColor=#000000;strokeWidth=1.35;fontColor=#000000;fontSize=13;labelBackgroundColor=#FFFFFF;dashed=1;dashPattern=5 4;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="340" y="82" as="sourcePoint" />
+            <mxPoint x="375" y="82" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_s_2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;endSize=9;strokeColor=#000000;strokeWidth=1.35;fontColor=#000000;fontSize=13;labelBackgroundColor=#FFFFFF;dashed=1;dashPattern=5 4;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="685" y="82" as="sourcePoint" />
+            <mxPoint x="720" y="82" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_s_3" value="gắn Guard" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;endSize=9;strokeColor=#000000;strokeWidth=1.35;fontColor=#000000;fontSize=13;labelBackgroundColor=#FFFFFF;dashed=1;dashPattern=5 4;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="185" y="135" as="sourcePoint" />
+            <mxPoint x="185" y="215" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_s_4" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;endSize=9;strokeColor=#000000;strokeWidth=1.35;fontColor=#000000;fontSize=13;labelBackgroundColor=#FFFFFF;dashed=1;dashPattern=5 4;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="340" y="262" as="sourcePoint" />
+            <mxPoint x="375" y="262" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_s_5" value="xác thực JWT" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;endSize=9;strokeColor=#000000;strokeWidth=1.35;fontColor=#000000;fontSize=13;labelBackgroundColor=#FFFFFF;dashed=1;dashPattern=5 4;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="185" y="310" as="sourcePoint" />
+            <mxPoint x="185" y="385" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_s_6" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;endSize=9;strokeColor=#000000;strokeWidth=1.35;fontColor=#000000;fontSize=13;labelBackgroundColor=#FFFFFF;dashed=1;dashPattern=5 4;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="340" y="437" as="sourcePoint" />
+            <mxPoint x="375" y="437" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_s_7" value="đăng ký global" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;endSize=9;strokeColor=#000000;strokeWidth=1.35;fontColor=#000000;fontSize=13;labelBackgroundColor=#FFFFFF;dashed=1;dashPattern=5 4;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="875" y="135" as="sourcePoint" />
+            <mxPoint x="875" y="215" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="arch_apicore_v2" name="Arch_Comp3_ApiCore_v2">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1160" pageHeight="770" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="grp_auth" value="&lt;b&gt;&amp;lt;&amp;lt;module&amp;gt;&amp;gt; AuthModule &amp;amp; UsersModule &amp;amp; CustomersModule&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FAFAFA;strokeColor=#000000;strokeWidth=1.4;verticalAlign=top;align=left;spacingLeft=10;spacingTop=6;fontSize=13;fontColor=#000000;dashed=1;dashPattern=6 4;" vertex="1" parent="1">
+          <mxGeometry x="30" y="110" width="530" height="215" as="geometry" />
+        </mxCell>
+        <mxCell id="grp_hr" value="&lt;b&gt;&amp;lt;&amp;lt;module&amp;gt;&amp;gt; HomestayRoomsModule&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FAFAFA;strokeColor=#000000;strokeWidth=1.4;verticalAlign=top;align=left;spacingLeft=10;spacingTop=6;fontSize=13;fontColor=#000000;dashed=1;dashPattern=6 4;" vertex="1" parent="1">
+          <mxGeometry x="600" y="110" width="530" height="235" as="geometry" />
+        </mxCell>
+        <mxCell id="grp_bs" value="&lt;b&gt;&amp;lt;&amp;lt;module&amp;gt;&amp;gt; BookingModule &amp;amp; StayOperationsModule&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FAFAFA;strokeColor=#000000;strokeWidth=1.4;verticalAlign=top;align=left;spacingLeft=10;spacingTop=6;fontSize=13;fontColor=#000000;dashed=1;dashPattern=6 4;" vertex="1" parent="1">
+          <mxGeometry x="30" y="350" width="530" height="315" as="geometry" />
+        </mxCell>
+        <mxCell id="grp_fin" value="&lt;b&gt;&amp;lt;&amp;lt;module&amp;gt;&amp;gt; Services, BillingPayment, Reviews, ReportsAdmin&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FAFAFA;strokeColor=#000000;strokeWidth=1.4;verticalAlign=top;align=left;spacingLeft=10;spacingTop=6;fontSize=13;fontColor=#000000;dashed=1;dashPattern=6 4;" vertex="1" parent="1">
+          <mxGeometry x="600" y="365" width="530" height="370" as="geometry" />
+        </mxCell>
+        <mxCell id="core_app" value="&amp;lt;&amp;lt;root module&amp;gt;&amp;gt;&lt;br&gt;&lt;b&gt;AppModule (app.module.ts)&lt;/b&gt;" style="swimlane;fontStyle=0;align=center;verticalAlign=middle;startSize=38;rounded=0;collapsible=0;fillColor=#FFFFFF;fontColor=#000000;strokeColor=#000000;strokeWidth=1.5;fontSize=13;html=1;" vertex="1" parent="1">
+          <mxGeometry x="360" y="18" width="260" height="68" as="geometry" />
+        </mxCell>
+        <mxCell id="core_app_body" value="ConfigModule.forRoot(isGlobal=true)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=8;fontSize=13;fontColor=#000000;whiteSpace=wrap;" vertex="1" parent="core_app">
+          <mxGeometry y="38" width="260" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="core_health" value="&amp;lt;&amp;lt;module&amp;gt;&amp;gt;&lt;br&gt;&lt;b&gt;HealthModule&lt;/b&gt;" style="swimlane;fontStyle=0;align=center;verticalAlign=middle;startSize=38;rounded=0;collapsible=0;fillColor=#FFFFFF;fontColor=#000000;strokeColor=#000000;strokeWidth=1.5;fontSize=13;html=1;" vertex="1" parent="1">
+          <mxGeometry x="650" y="18" width="250" height="68" as="geometry" />
+        </mxCell>
+        <mxCell id="core_health_body" value="HealthController → HealthService" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=8;fontSize=13;fontColor=#000000;whiteSpace=wrap;" vertex="1" parent="core_health">
+          <mxGeometry y="38" width="250" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="c_auth" value="&amp;lt;&amp;lt;controller&amp;gt;&amp;gt;&lt;br&gt;&lt;b&gt;AuthController / UsersController / CustomersController&lt;/b&gt;" style="swimlane;fontStyle=0;align=center;verticalAlign=middle;startSize=38;rounded=0;collapsible=0;fillColor=#FFFFFF;fontColor=#000000;strokeColor=#000000;strokeWidth=1.5;fontSize=13;html=1;" vertex="1" parent="1">
+          <mxGeometry x="50" y="150" width="490" height="68" as="geometry" />
+        </mxCell>
+        <mxCell id="c_auth_body" value="/api/auth/*, /api/users/*, /api/customers/*" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=8;fontSize=13;fontColor=#000000;whiteSpace=wrap;" vertex="1" parent="c_auth">
+          <mxGeometry y="38" width="490" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="s_auth" value="&amp;lt;&amp;lt;service&amp;gt;&amp;gt;&lt;br&gt;&lt;b&gt;AuthService | UsersService | CustomersService&lt;/b&gt;" style="swimlane;fontStyle=0;align=center;verticalAlign=middle;startSize=38;rounded=0;collapsible=0;fillColor=#FFFFFF;fontColor=#000000;strokeColor=#000000;strokeWidth=1.5;fontSize=13;html=1;" vertex="1" parent="1">
+          <mxGeometry x="50" y="240" width="490" height="68" as="geometry" />
+        </mxCell>
+        <mxCell id="s_auth_body" value="register(), login(), me(), updateStatus(), updateRole()" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=8;fontSize=13;fontColor=#000000;whiteSpace=wrap;" vertex="1" parent="s_auth">
+          <mxGeometry y="38" width="490" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="c_hr" value="&amp;lt;&amp;lt;controller&amp;gt;&amp;gt;&lt;br&gt;&lt;b&gt;Homestay / RoomTypes / Amenities / RoomsController&lt;/b&gt;" style="swimlane;fontStyle=0;align=center;verticalAlign=middle;startSize=38;rounded=0;collapsible=0;fillColor=#FFFFFF;fontColor=#000000;strokeColor=#000000;strokeWidth=1.5;fontSize=13;html=1;" vertex="1" parent="1">
+          <mxGeometry x="620" y="150" width="490" height="68" as="geometry" />
+        </mxCell>
+        <mxCell id="c_hr_body" value="/api/homestays, /room-types, /amenities, /rooms" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=8;fontSize=13;fontColor=#000000;whiteSpace=wrap;" vertex="1" parent="c_hr">
+          <mxGeometry y="38" width="490" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="s_hr" value="&amp;lt;&amp;lt;service&amp;gt;&amp;gt;&lt;br&gt;&lt;b&gt;HomestayService | RoomTypesService | AmenitiesService | RoomsService&lt;/b&gt;" style="swimlane;fontStyle=0;align=center;verticalAlign=middle;startSize=38;rounded=0;collapsible=0;fillColor=#FFFFFF;fontColor=#000000;strokeColor=#000000;strokeWidth=1.5;fontSize=13;html=1;" vertex="1" parent="1">
+          <mxGeometry x="620" y="242" width="490" height="84" as="geometry" />
+        </mxCell>
+        <mxCell id="s_hr_body" value="• CRUD cơ sở, hạng phòng, tiện nghi, phòng&lt;br&gt;• updateStatus(), completeCleaning() (MANUAL_ROOM_TRANSITIONS)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=8;fontSize=13;fontColor=#000000;whiteSpace=wrap;" vertex="1" parent="s_hr">
+          <mxGeometry y="38" width="490" height="46" as="geometry" />
+        </mxCell>
+        <mxCell id="c_bs" value="&amp;lt;&amp;lt;controller&amp;gt;&amp;gt;&lt;br&gt;&lt;b&gt;BookingController | RoomAvailabilityController | BookingPaymentController&lt;/b&gt;" style="swimlane;fontStyle=0;align=center;verticalAlign=middle;startSize=38;rounded=0;collapsible=0;fillColor=#FFFFFF;fontColor=#000000;strokeColor=#000000;strokeWidth=1.5;fontSize=13;html=1;" vertex="1" parent="1">
+          <mxGeometry x="50" y="390" width="490" height="68" as="geometry" />
+        </mxCell>
+        <mxCell id="c_bs_body" value="/api/bookings/*, /api/rooms/available, /api/payments/*" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=8;fontSize=13;fontColor=#000000;whiteSpace=wrap;" vertex="1" parent="c_bs">
+          <mxGeometry y="38" width="490" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="s_bs" value="&amp;lt;&amp;lt;service&amp;gt;&amp;gt;&lt;br&gt;&lt;b&gt;BookingService (booking.service.ts)&lt;/b&gt;" style="swimlane;fontStyle=0;align=center;verticalAlign=middle;startSize=38;rounded=0;collapsible=0;fillColor=#FFFFFF;fontColor=#000000;strokeColor=#000000;strokeWidth=1.5;fontSize=13;html=1;" vertex="1" parent="1">
+          <mxGeometry x="50" y="480" width="490" height="68" as="geometry" />
+        </mxCell>
+        <mxCell id="s_bs_body" value="available(), create(), webhook(), cancel(), refundPreview(), lookup()" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=8;fontSize=13;fontColor=#000000;whiteSpace=wrap;" vertex="1" parent="s_bs">
+          <mxGeometry y="38" width="490" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="cs_stay" value="&amp;lt;&amp;lt;controller &amp;amp; service&amp;gt;&amp;gt;&lt;br&gt;&lt;b&gt;StayController → StayService | ServiceController → StayServiceUsageService&lt;/b&gt;" style="swimlane;fontStyle=0;align=center;verticalAlign=middle;startSize=38;rounded=0;collapsible=0;fillColor=#FFFFFF;fontColor=#000000;strokeColor=#000000;strokeWidth=1.5;fontSize=13;html=1;" vertex="1" parent="1">
+          <mxGeometry x="50" y="568" width="490" height="82" as="geometry" />
+        </mxCell>
+        <mxCell id="cs_stay_body" value="• POST /api/stays/:id/check-in (cập nhật soCCCD &amp;amp; DANG_LUU_TRU)&lt;br&gt;• GET/POST/DELETE /api/stays/:id/services (SuDungDichVu)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=8;fontSize=13;fontColor=#000000;whiteSpace=wrap;" vertex="1" parent="cs_stay">
+          <mxGeometry y="38" width="490" height="44" as="geometry" />
+        </mxCell>
+        <mxCell id="c_fin" value="&amp;lt;&amp;lt;controller&amp;gt;&amp;gt;&lt;br&gt;&lt;b&gt;Services / BillingPayment / InvoicePayment / Review / ReportsAdminController&lt;/b&gt;" style="swimlane;fontStyle=0;align=center;verticalAlign=middle;startSize=38;rounded=0;collapsible=0;fillColor=#FFFFFF;fontColor=#000000;strokeColor=#000000;strokeWidth=1.5;fontSize=13;html=1;" vertex="1" parent="1">
+          <mxGeometry x="620" y="405" width="490" height="68" as="geometry" />
+        </mxCell>
+        <mxCell id="c_fin_body" value="/api/services, /stays/:id/check-out-invoice, /invoices, /reviews, /reports" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=8;fontSize=13;fontColor=#000000;whiteSpace=wrap;" vertex="1" parent="c_fin">
+          <mxGeometry y="38" width="490" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="s_fin1" value="&amp;lt;&amp;lt;service&amp;gt;&amp;gt;&lt;br&gt;&lt;b&gt;ServicesService | BillingPaymentService&lt;/b&gt;" style="swimlane;fontStyle=0;align=center;verticalAlign=middle;startSize=38;rounded=0;collapsible=0;fillColor=#FFFFFF;fontColor=#000000;strokeColor=#000000;strokeWidth=1.5;fontSize=13;html=1;" vertex="1" parent="1">
+          <mxGeometry x="620" y="502" width="490" height="88" as="geometry" />
+        </mxCell>
+        <mxCell id="s_fin1_body" value="• CRUD DichVu; createOrUpdateCheckOutInvoice()&lt;br&gt;• payInvoice(), getPaidInvoicePdf()" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=8;fontSize=13;fontColor=#000000;whiteSpace=wrap;" vertex="1" parent="s_fin1">
+          <mxGeometry y="38" width="490" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="s_fin2" value="&amp;lt;&amp;lt;service&amp;gt;&amp;gt;&lt;br&gt;&lt;b&gt;ReviewsService | ReportsAdminService&lt;/b&gt;" style="swimlane;fontStyle=0;align=center;verticalAlign=middle;startSize=38;rounded=0;collapsible=0;fillColor=#FFFFFF;fontColor=#000000;strokeColor=#000000;strokeWidth=1.5;fontSize=13;html=1;" vertex="1" parent="1">
+          <mxGeometry x="620" y="612" width="490" height="88" as="geometry" />
+        </mxCell>
+        <mxCell id="s_fin2_body" value="• ReviewsService: list(), create(), reply()&lt;br&gt;• ReportsAdminService: getRevenueStats(), getOccupancyStats()" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=8;fontSize=13;fontColor=#000000;whiteSpace=wrap;" vertex="1" parent="s_fin2">
+          <mxGeometry y="38" width="490" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="e_c_app_h" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;endSize=9;strokeColor=#000000;strokeWidth=1.35;fontColor=#000000;fontSize=13;labelBackgroundColor=#FFFFFF;dashed=1;dashPattern=5 4;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="620" y="52" as="sourcePoint" />
+            <mxPoint x="650" y="52" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_c_app_1" value="imports" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;endSize=9;strokeColor=#000000;strokeWidth=1.35;fontColor=#000000;fontSize=13;labelBackgroundColor=#FFFFFF;dashed=1;dashPattern=5 4;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="360" y="52" as="sourcePoint" />
+            <mxPoint x="295" y="110" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="295" y="52" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_c_app_2" value="imports" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;endSize=9;strokeColor=#000000;strokeWidth=1.35;fontColor=#000000;fontSize=13;labelBackgroundColor=#FFFFFF;dashed=1;dashPattern=5 4;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="900" y="52" as="sourcePoint" />
+            <mxPoint x="945" y="110" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="945" y="52" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_c_auth" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;endSize=9;strokeColor=#000000;strokeWidth=1.35;fontColor=#000000;fontSize=13;labelBackgroundColor=#FFFFFF;dashed=1;dashPattern=5 4;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="295" y="218" as="sourcePoint" />
+            <mxPoint x="295" y="240" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_c_hr" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;endSize=9;strokeColor=#000000;strokeWidth=1.35;fontColor=#000000;fontSize=13;labelBackgroundColor=#FFFFFF;dashed=1;dashPattern=5 4;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="865" y="218" as="sourcePoint" />
+            <mxPoint x="865" y="242" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_c_bs" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;endSize=9;strokeColor=#000000;strokeWidth=1.35;fontColor=#000000;fontSize=13;labelBackgroundColor=#FFFFFF;dashed=1;dashPattern=5 4;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="295" y="458" as="sourcePoint" />
+            <mxPoint x="295" y="480" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_c_fin1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;endSize=9;strokeColor=#000000;strokeWidth=1.35;fontColor=#000000;fontSize=13;labelBackgroundColor=#FFFFFF;dashed=1;dashPattern=5 4;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="865" y="473" as="sourcePoint" />
+            <mxPoint x="865" y="502" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="arch_dataaccess_v2" name="Arch_Comp4_DataAccess_v2">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1060" pageHeight="540" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="da_pmod" value="&amp;lt;&amp;lt;@Global module&amp;gt;&amp;gt;&lt;br&gt;&lt;b&gt;PrismaModule (prisma.module.ts)&lt;/b&gt;" style="swimlane;fontStyle=0;align=center;verticalAlign=middle;startSize=38;rounded=0;collapsible=0;fillColor=#FFFFFF;fontColor=#000000;strokeColor=#000000;strokeWidth=1.5;fontSize=13;html=1;" vertex="1" parent="1">
+          <mxGeometry x="30" y="30" width="300" height="85" as="geometry" />
+        </mxCell>
+        <mxCell id="da_pmod_body" value="• Cung cấp PrismaService toàn cục&lt;br&gt;• Inject ConfigService (DATABASE_URL)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=8;fontSize=13;fontColor=#000000;whiteSpace=wrap;" vertex="1" parent="da_pmod">
+          <mxGeometry y="38" width="300" height="47" as="geometry" />
+        </mxCell>
+        <mxCell id="da_psvc" value="&amp;lt;&amp;lt;service / singleton&amp;gt;&amp;gt;&lt;br&gt;&lt;b&gt;PrismaService (extends PrismaClient)&lt;/b&gt;" style="swimlane;fontStyle=0;align=center;verticalAlign=middle;startSize=38;rounded=0;collapsible=0;fillColor=#FFFFFF;fontColor=#000000;strokeColor=#000000;strokeWidth=1.5;fontSize=13;html=1;" vertex="1" parent="1">
+          <mxGeometry x="375" y="30" width="320" height="115" as="geometry" />
+        </mxCell>
+        <mxCell id="da_psvc_body" value="• Adapter: PrismaPg (@prisma/adapter-pg)&lt;br&gt;+ onModuleInit(): $connect()&lt;br&gt;+ onModuleDestroy(): $disconnect()&lt;br&gt;• Hỗ trợ $transaction(Serializable) &amp;amp; $queryRaw" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=8;fontSize=13;fontColor=#000000;whiteSpace=wrap;" vertex="1" parent="da_psvc">
+          <mxGeometry y="38" width="320" height="77" as="geometry" />
+        </mxCell>
+        <mxCell id="da_repo" value="&amp;lt;&amp;lt;repository&amp;gt;&amp;gt;&lt;br&gt;&lt;b&gt;ReportQueryRepository&lt;/b&gt;" style="swimlane;fontStyle=0;align=center;verticalAlign=middle;startSize=38;rounded=0;collapsible=0;fillColor=#FFFFFF;fontColor=#000000;strokeColor=#000000;strokeWidth=1.5;fontSize=13;html=1;" vertex="1" parent="1">
+          <mxGeometry x="740" y="30" width="290" height="115" as="geometry" />
+        </mxCell>
+        <mxCell id="da_repo_body" value="- prisma: PrismaService&lt;br&gt;+ getRevenueStats(tuNgay, denNgay, groupBy)&lt;br&gt;+ getOccupancyStats(tuNgay, denNgay)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=8;fontSize=13;fontColor=#000000;whiteSpace=wrap;" vertex="1" parent="da_repo">
+          <mxGeometry y="38" width="290" height="77" as="geometry" />
+        </mxCell>
+        <mxCell id="da_err" value="&amp;lt;&amp;lt;utility&amp;gt;&amp;gt;&lt;br&gt;&lt;b&gt;PrismaErrorsUtil (prisma-errors.ts)&lt;/b&gt;" style="swimlane;fontStyle=0;align=center;verticalAlign=middle;startSize=38;rounded=0;collapsible=0;fillColor=#FFFFFF;fontColor=#000000;strokeColor=#000000;strokeWidth=1.5;fontSize=13;html=1;" vertex="1" parent="1">
+          <mxGeometry x="30" y="195" width="325" height="115" as="geometry" />
+        </mxCell>
+        <mxCell id="da_err_body" value="+ rethrowPrismaError(err, conflictMsg)&lt;br&gt;• Ánh xạ mã lỗi Prisma P2002/P2003/P2025&lt;br&gt;  → ConflictException / NotFoundException" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=8;fontSize=13;fontColor=#000000;whiteSpace=wrap;" vertex="1" parent="da_err">
+          <mxGeometry y="38" width="325" height="77" as="geometry" />
+        </mxCell>
+        <mxCell id="da_pg" value="&amp;lt;&amp;lt;database&amp;gt;&amp;gt;&lt;br&gt;&lt;b&gt;PostgreSQL 16 (sweethome_db)&lt;/b&gt;" style="swimlane;fontStyle=0;align=center;verticalAlign=middle;startSize=38;rounded=0;collapsible=0;fillColor=#FFFFFF;fontColor=#000000;strokeColor=#000000;strokeWidth=1.5;fontSize=13;html=1;" vertex="1" parent="1">
+          <mxGeometry x="375" y="215" width="320" height="95" as="geometry" />
+        </mxCell>
+        <mxCell id="da_pg_body" value="• 14 bảng quan hệ &amp;amp; 3 kiểu ENUM&lt;br&gt;• Khóa dòng bi quan SELECT ... FOR UPDATE&lt;br&gt;• Ràng buộc UNIQUE chống trùng &amp;amp; lũy đẳng" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=8;fontSize=13;fontColor=#000000;whiteSpace=wrap;" vertex="1" parent="da_pg">
+          <mxGeometry y="38" width="320" height="57" as="geometry" />
+        </mxCell>
+        <mxCell id="da_rules" value="&amp;lt;&amp;lt;domain rules&amp;gt;&amp;gt;&lt;br&gt;&lt;b&gt;BookingRules &amp;amp; PriceCalculator&lt;/b&gt;" style="swimlane;fontStyle=0;align=center;verticalAlign=middle;startSize=38;rounded=0;collapsible=0;fillColor=#FFFFFF;fontColor=#000000;strokeColor=#000000;strokeWidth=1.5;fontSize=13;html=1;" vertex="1" parent="1">
+          <mxGeometry x="30" y="365" width="480" height="145" as="geometry" />
+        </mxCell>
+        <mxCell id="da_rules_body" value="• booking.rules.ts: stayDates(), tinhGiaPhong(), tinhTienHoanCoc()&lt;br&gt;• price.ts: tinhGiaPhongChiTiet() (T2–T5 vs T6–CN)&lt;br&gt;• booking.constants.ts: ACTIVE_BOOKING_STATUSES" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=8;fontSize=13;fontColor=#000000;whiteSpace=wrap;" vertex="1" parent="da_rules">
+          <mxGeometry y="38" width="480" height="107" as="geometry" />
+        </mxCell>
+        <mxCell id="da_roomrules" value="&amp;lt;&amp;lt;domain rules&amp;gt;&amp;gt;&lt;br&gt;&lt;b&gt;RoomStatusRules (room-status.ts)&lt;/b&gt;" style="swimlane;fontStyle=0;align=center;verticalAlign=middle;startSize=38;rounded=0;collapsible=0;fillColor=#FFFFFF;fontColor=#000000;strokeColor=#000000;strokeWidth=1.5;fontSize=13;html=1;" vertex="1" parent="1">
+          <mxGeometry x="550" y="365" width="480" height="145" as="geometry" />
+        </mxCell>
+        <mxCell id="da_roomrules_body" value="• MANUAL_ROOM_TRANSITIONS:&lt;br&gt;  TRONG ↔ BAO_TRI, CHO_DON_DEP → BAO_TRI&lt;br&gt;+ assertManualRoomTransition(from, to)&lt;br&gt;• Chặn chuyển thủ công khi phòng DA_DAT / DANG_SU_DUNG" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=8;fontSize=13;fontColor=#000000;whiteSpace=wrap;" vertex="1" parent="da_roomrules">
+          <mxGeometry y="38" width="480" height="107" as="geometry" />
+        </mxCell>
+        <mxCell id="e_da_1" value="exports" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;endSize=9;strokeColor=#000000;strokeWidth=1.35;fontColor=#000000;fontSize=13;labelBackgroundColor=#FFFFFF;dashed=1;dashPattern=5 4;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="330" y="72" as="sourcePoint" />
+            <mxPoint x="375" y="72" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_da_2" value="uses" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;endSize=9;strokeColor=#000000;strokeWidth=1.35;fontColor=#000000;fontSize=13;labelBackgroundColor=#FFFFFF;dashed=1;dashPattern=5 4;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="740" y="87" as="sourcePoint" />
+            <mxPoint x="695" y="87" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_da_3" value="SQL / PrismaPg" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;endSize=9;strokeColor=#000000;strokeWidth=1.35;fontColor=#000000;fontSize=13;labelBackgroundColor=#FFFFFF;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="535" y="145" as="sourcePoint" />
+            <mxPoint x="535" y="215" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_da_4" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;endSize=9;strokeColor=#000000;strokeWidth=1.35;fontColor=#000000;fontSize=13;labelBackgroundColor=#FFFFFF;dashed=1;dashPattern=5 4;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="180" y="115" as="sourcePoint" />
+            <mxPoint x="180" y="195" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="arch_payment_v2" name="Arch_Comp5_PaymentIntegration_v2">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1060" pageHeight="480" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="pi_bkctrl" value="&amp;lt;&amp;lt;controller&amp;gt;&amp;gt;&lt;br&gt;&lt;b&gt;BookingPaymentController&lt;/b&gt;" style="swimlane;fontStyle=0;align=center;verticalAlign=middle;startSize=38;rounded=0;collapsible=0;fillColor=#FFFFFF;fontColor=#000000;strokeColor=#000000;strokeWidth=1.5;fontSize=13;html=1;" vertex="1" parent="1">
+          <mxGeometry x="30" y="30" width="300" height="85" as="geometry" />
+        </mxCell>
+        <mxCell id="pi_bkctrl_body" value="+ webhook(dto, idempotencyKey, secret)&lt;br&gt;+ qr(dto: CreateQrDto)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=8;fontSize=13;fontColor=#000000;whiteSpace=wrap;" vertex="1" parent="pi_bkctrl">
+          <mxGeometry y="38" width="300" height="47" as="geometry" />
+        </mxCell>
+        <mxCell id="pi_bksvc" value="&amp;lt;&amp;lt;service&amp;gt;&amp;gt;&lt;br&gt;&lt;b&gt;BookingService&lt;/b&gt;" style="swimlane;fontStyle=0;align=center;verticalAlign=middle;startSize=38;rounded=0;collapsible=0;fillColor=#FFFFFF;fontColor=#000000;strokeColor=#000000;strokeWidth=1.5;fontSize=13;html=1;" vertex="1" parent="1">
+          <mxGeometry x="30" y="180" width="300" height="95" as="geometry" />
+        </mxCell>
+        <mxCell id="pi_bksvc_body" value="+ create() / createQr()&lt;br&gt;+ webhook() (lưu ThanhToanCoc)&lt;br&gt;+ cancel() (lưu HoanCoc &amp;amp; gọi hoàn tiền)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=8;fontSize=13;fontColor=#000000;whiteSpace=wrap;" vertex="1" parent="pi_bksvc">
+          <mxGeometry y="38" width="300" height="57" as="geometry" />
+        </mxCell>
+        <mxCell id="pi_gw" value="&amp;lt;&amp;lt;integration service&amp;gt;&amp;gt;&lt;br&gt;&lt;b&gt;PaymentGatewayService&lt;/b&gt;" style="swimlane;fontStyle=0;align=center;verticalAlign=middle;startSize=38;rounded=0;collapsible=0;fillColor=#FFFFFF;fontColor=#000000;strokeColor=#000000;strokeWidth=1.5;fontSize=13;html=1;" vertex="1" parent="1">
+          <mxGeometry x="30" y="335" width="450" height="115" as="geometry" />
+        </mxCell>
+        <mxCell id="pi_gw_body" value="+ verifyWebhook(secret) (timingSafeEqual)&lt;br&gt;+ taoYeuCauThanhToan(maDatPhong, soTienCoc): VietQR URL&lt;br&gt;+ hoanTien(maGiaoDich, soTienHoan, idempotencyKey)&lt;br&gt;• Hỗ trợ chuyển đổi mock mode / PAYMENT_REFUND_URL" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=8;fontSize=13;fontColor=#000000;whiteSpace=wrap;" vertex="1" parent="pi_gw">
+          <mxGeometry y="38" width="450" height="77" as="geometry" />
+        </mxCell>
+        <mxCell id="pi_invctrl" value="&amp;lt;&amp;lt;controller&amp;gt;&amp;gt;&lt;br&gt;&lt;b&gt;InvoicePaymentController&lt;/b&gt;" style="swimlane;fontStyle=0;align=center;verticalAlign=middle;startSize=38;rounded=0;collapsible=0;fillColor=#FFFFFF;fontColor=#000000;strokeColor=#000000;strokeWidth=1.5;fontSize=13;html=1;" vertex="1" parent="1">
+          <mxGeometry x="580" y="30" width="450" height="85" as="geometry" />
+        </mxCell>
+        <mxCell id="pi_invctrl_body" value="+ pay(invoiceId, dto: ConfirmInvoicePaymentDto)&lt;br&gt;+ downloadPdf(invoiceId, currentAccount): StreamableFile" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=8;fontSize=13;fontColor=#000000;whiteSpace=wrap;" vertex="1" parent="pi_invctrl">
+          <mxGeometry y="38" width="450" height="47" as="geometry" />
+        </mxCell>
+        <mxCell id="pi_billsvc" value="&amp;lt;&amp;lt;service&amp;gt;&amp;gt;&lt;br&gt;&lt;b&gt;BillingPaymentService&lt;/b&gt;" style="swimlane;fontStyle=0;align=center;verticalAlign=middle;startSize=38;rounded=0;collapsible=0;fillColor=#FFFFFF;fontColor=#000000;strokeColor=#000000;strokeWidth=1.5;fontSize=13;html=1;" vertex="1" parent="1">
+          <mxGeometry x="580" y="180" width="450" height="95" as="geometry" />
+        </mxCell>
+        <mxCell id="pi_billsvc_body" value="+ createOrUpdateCheckOutInvoice(bookingId, dto)&lt;br&gt;+ payInvoice(invoiceId, dto)&lt;br&gt;+ getPaidInvoicePdf(invoiceId, currentAccount)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=8;fontSize=13;fontColor=#000000;whiteSpace=wrap;" vertex="1" parent="pi_billsvc">
+          <mxGeometry y="38" width="450" height="57" as="geometry" />
+        </mxCell>
+        <mxCell id="pi_pdf" value="&amp;lt;&amp;lt;pdf library &amp;amp; assets&amp;gt;&amp;gt;&lt;br&gt;&lt;b&gt;PDFDocument (PDFKit) &amp;amp; Font Resolver&lt;/b&gt;" style="swimlane;fontStyle=0;align=center;verticalAlign=middle;startSize=38;rounded=0;collapsible=0;fillColor=#FFFFFF;fontColor=#000000;strokeColor=#000000;strokeWidth=1.5;fontSize=13;html=1;" vertex="1" parent="1">
+          <mxGeometry x="580" y="335" width="450" height="115" as="geometry" />
+        </mxCell>
+        <mxCell id="pi_pdf_body" value="- renderInvoicePdf(invoice: PdfInvoice): Promise&amp;lt;Buffer&amp;gt;&lt;br&gt;+ resolveInvoiceFontDirectory(moduleDirectory)&lt;br&gt;• Nhúng font NotoSans-Regular.ttf / NotoSans-Bold.ttf&lt;br&gt;  hỗ trợ xuất biên lai tiếng Việt có dấu chuẩn" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=8;fontSize=13;fontColor=#000000;whiteSpace=wrap;" vertex="1" parent="pi_pdf">
+          <mxGeometry y="38" width="450" height="77" as="geometry" />
+        </mxCell>
+        <mxCell id="e_pi_1" value="gọi" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;endSize=9;strokeColor=#000000;strokeWidth=1.35;fontColor=#000000;fontSize=13;labelBackgroundColor=#FFFFFF;dashed=1;dashPattern=5 4;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="180" y="115" as="sourcePoint" />
+            <mxPoint x="180" y="180" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_pi_2" value="tạo QR / hoàn cọc" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;endSize=9;strokeColor=#000000;strokeWidth=1.35;fontColor=#000000;fontSize=13;labelBackgroundColor=#FFFFFF;dashed=1;dashPattern=5 4;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="180" y="275" as="sourcePoint" />
+            <mxPoint x="180" y="335" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_pi_3" value="verifyWebhook()" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;endSize=9;strokeColor=#000000;strokeWidth=1.35;fontColor=#000000;fontSize=13;labelBackgroundColor=#FFFFFF;dashed=1;dashPattern=5 4;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="330" y="72" as="sourcePoint" />
+            <mxPoint x="380" y="335" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="380" y="72" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_pi_4" value="gọi" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;endSize=9;strokeColor=#000000;strokeWidth=1.35;fontColor=#000000;fontSize=13;labelBackgroundColor=#FFFFFF;dashed=1;dashPattern=5 4;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="805" y="115" as="sourcePoint" />
+            <mxPoint x="805" y="180" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_pi_5" value="kết xuất PDF" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;endSize=9;strokeColor=#000000;strokeWidth=1.35;fontColor=#000000;fontSize=13;labelBackgroundColor=#FFFFFF;dashed=1;dashPattern=5 4;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="805" y="275" as="sourcePoint" />
+            <mxPoint x="805" y="335" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
