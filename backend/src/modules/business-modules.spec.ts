@@ -5,7 +5,10 @@ import { AuthModule } from './auth/auth.module';
 import { AuthService } from './auth/auth.service';
 import { JwtStrategy } from './auth/jwt.strategy';
 import { AmenitiesModule } from './amenities/amenities.module';
+import { BillingPaymentController } from './billing-payment/billing-payment.controller';
 import { BillingPaymentModule } from './billing-payment/billing-payment.module';
+import { BillingPaymentService } from './billing-payment/billing-payment.service';
+import { InvoicePaymentController } from './billing-payment/invoice-payment.controller';
 import { CustomersModule } from './customers/customers.module';
 import { HomestayRoomsModule } from './homestay-rooms/homestay-rooms.module';
 import { HomestayModule } from './homestay/homestay.module';
@@ -33,13 +36,15 @@ describe('SweetHome Business Module Graph', () => {
     return (Reflect.getMetadata(metadataKey, moduleClass) as unknown[] | undefined) ?? [];
   };
 
-  describe('SH-04 - Modules chưa triển khai nghiệp vụ', () => {
-    const scaffoldModules = [BillingPaymentModule];
+  describe('SH-16 - Billing & Payment Module', () => {
+    it('registers the invoice and payment controllers with BillingPaymentService', () => {
+      const controllers = getModuleMetadata(BillingPaymentModule, MODULE_METADATA.CONTROLLERS);
+      const providers = getModuleMetadata(BillingPaymentModule, MODULE_METADATA.PROVIDERS);
 
-    it.each(scaffoldModules)('%p remains an empty scaffold', (moduleClass) => {
-      expect(getModuleMetadata(moduleClass, MODULE_METADATA.IMPORTS)).toEqual([]);
-      expect(getModuleMetadata(moduleClass, MODULE_METADATA.PROVIDERS)).toEqual([]);
-      expect(getModuleMetadata(moduleClass, MODULE_METADATA.CONTROLLERS)).toEqual([]);
+      expect(controllers).toEqual(
+        expect.arrayContaining([BillingPaymentController, InvoicePaymentController]),
+      );
+      expect(providers).toContain(BillingPaymentService);
     });
   });
 
