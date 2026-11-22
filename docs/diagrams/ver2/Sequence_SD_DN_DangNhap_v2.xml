@@ -1,0 +1,242 @@
+<?xml version="1.0" ?>
+<mxfile host="app.diagrams.net" pages="1">
+  <diagram id="sd_dn_dangnhap" name="SD_DN_DangNhap">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1380" pageHeight="1398" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="sd_dn_dangnhap_ll_user" parent="1" edge="1" value="" style="endArrow=none;html=1;dashed=1;dashPattern=5 5;strokeColor=#181818;strokeWidth=1;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="140" y="116" as="sourcePoint"/>
+            <mxPoint x="140" y="1268" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd_dn_dangnhap_top_user" parent="1" vertex="1" value="Người dùng" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;spacingTop=2;fillColor=#E2E2F0;strokeColor=#181818;fontColor=#000000;fontSize=13;fontStyle=1;html=1;">
+          <mxGeometry x="125" y="28" width="30" height="58" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd_dn_dangnhap_bot_user" parent="1" vertex="1" value="Người dùng" style="shape=umlActor;verticalLabelPosition=top;verticalAlign=bottom;spacingBottom=2;fillColor=#E2E2F0;strokeColor=#181818;fontColor=#000000;fontSize=13;fontStyle=1;html=1;">
+          <mxGeometry x="125" y="1296" width="30" height="58" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd_dn_dangnhap_ll_ui" parent="1" edge="1" value="" style="endArrow=none;html=1;dashed=1;dashPattern=5 5;strokeColor=#181818;strokeWidth=1;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="440" y="116" as="sourcePoint"/>
+            <mxPoint x="440" y="1268" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd_dn_dangnhap_top_ui" parent="1" vertex="1" value="LoginForm&lt;br&gt;(Giao diện)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#181818;fontColor=#000000;fontSize=13;fontStyle=1;">
+          <mxGeometry x="358" y="40" width="165" height="46" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd_dn_dangnhap_bot_ui" parent="1" vertex="1" value="LoginForm&lt;br&gt;(Giao diện)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#181818;fontColor=#000000;fontSize=13;fontStyle=1;">
+          <mxGeometry x="358" y="1280" width="165" height="46" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd_dn_dangnhap_ll_ctrl" parent="1" edge="1" value="" style="endArrow=none;html=1;dashed=1;dashPattern=5 5;strokeColor=#181818;strokeWidth=1;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="780" y="116" as="sourcePoint"/>
+            <mxPoint x="780" y="1268" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd_dn_dangnhap_top_ctrl" parent="1" vertex="1" value="AuthController&lt;br&gt;(AuthService)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#181818;fontColor=#000000;fontSize=13;fontStyle=1;">
+          <mxGeometry x="693" y="40" width="175" height="46" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd_dn_dangnhap_bot_ctrl" parent="1" vertex="1" value="AuthController&lt;br&gt;(AuthService)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#181818;fontColor=#000000;fontSize=13;fontStyle=1;">
+          <mxGeometry x="693" y="1280" width="175" height="46" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd_dn_dangnhap_ll_db" parent="1" edge="1" value="" style="endArrow=none;html=1;dashed=1;dashPattern=5 5;strokeColor=#181818;strokeWidth=1;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1120" y="116" as="sourcePoint"/>
+            <mxPoint x="1120" y="1268" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd_dn_dangnhap_top_db" parent="1" vertex="1" value="TaiKhoan&lt;br&gt;(CSDL)" style="shape=cylinder3;size=10;verticalLabelPosition=bottom;verticalAlign=top;spacingTop=2;fillColor=#E2E2F0;strokeColor=#181818;fontColor=#000000;fontSize=13;fontStyle=1;html=1;">
+          <mxGeometry x="1099" y="36" width="42" height="48" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd_dn_dangnhap_bot_db" parent="1" vertex="1" value="TaiKhoan&lt;br&gt;(CSDL)" style="shape=cylinder3;size=10;verticalLabelPosition=top;verticalAlign=bottom;spacingBottom=2;fillColor=#E2E2F0;strokeColor=#181818;fontColor=#000000;fontSize=13;fontStyle=1;html=1;">
+          <mxGeometry x="1099" y="1298" width="42" height="48" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd_dn_dangnhap_frame_0" parent="1" vertex="1" value="" style="rounded=0;fillColor=none;strokeColor=#000000;strokeWidth=1.5;">
+          <mxGeometry x="39" y="274" width="872" height="940" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd_dn_dangnhap_frame_0_tab" parent="sd_dn_dangnhap_frame_0" vertex="1" value="alt" style="rounded=0;fillColor=#EEEEEE;strokeColor=#000000;strokeWidth=1.5;fontColor=#000000;fontSize=12;fontStyle=1;align=center;verticalAlign=middle;html=1;">
+          <mxGeometry x="0" y="0" width="54" height="22" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd_dn_dangnhap_frame_0_cond" parent="sd_dn_dangnhap_frame_0" vertex="1" value="[Dữ liệu đầu vào rỗng / không hợp lệ]" style="text;html=1;fontColor=#000000;fontSize=11;fontStyle=1;align=left;verticalAlign=middle;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry x="62" y="2" width="802" height="18" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd_dn_dangnhap_frame_0_else_0" parent="sd_dn_dangnhap_frame_0" edge="1" value="" style="endArrow=none;html=1;strokeColor=#000000;strokeWidth=1;dashed=1;dashPattern=4 4;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="0" y="96" as="sourcePoint"/>
+            <mxPoint x="872" y="96" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd_dn_dangnhap_frame_0_elselbl_0" parent="sd_dn_dangnhap_frame_0" vertex="1" value="[Dữ liệu hợp lệ]" style="text;html=1;fontColor=#000000;fontSize=11;fontStyle=1;align=left;verticalAlign=middle;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry x="8" y="99" width="856" height="18" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd_dn_dangnhap_frame_1" parent="1" vertex="1" value="" style="rounded=0;fillColor=none;strokeColor=#000000;strokeWidth=1.5;">
+          <mxGeometry x="55" y="622" width="840" height="558" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd_dn_dangnhap_frame_1_tab" parent="sd_dn_dangnhap_frame_1" vertex="1" value="alt" style="rounded=0;fillColor=#EEEEEE;strokeColor=#000000;strokeWidth=1.5;fontColor=#000000;fontSize=12;fontStyle=1;align=center;verticalAlign=middle;html=1;">
+          <mxGeometry x="0" y="0" width="54" height="22" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd_dn_dangnhap_frame_1_cond" parent="sd_dn_dangnhap_frame_1" vertex="1" value="[!account || mật khẩu không khớp]" style="text;html=1;fontColor=#000000;fontSize=11;fontStyle=1;align=left;verticalAlign=middle;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry x="62" y="2" width="770" height="18" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd_dn_dangnhap_frame_1_else_0" parent="sd_dn_dangnhap_frame_1" edge="1" value="" style="endArrow=none;html=1;strokeColor=#000000;strokeWidth=1;dashed=1;dashPattern=4 4;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="0" y="140" as="sourcePoint"/>
+            <mxPoint x="840" y="140" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd_dn_dangnhap_frame_1_elselbl_0" parent="sd_dn_dangnhap_frame_1" vertex="1" value="[account.trangThai === 'LOCKED' (hoặc !== 'ACTIVE')]" style="text;html=1;fontColor=#000000;fontSize=11;fontStyle=1;align=left;verticalAlign=middle;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry x="8" y="143" width="824" height="18" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd_dn_dangnhap_frame_1_else_1" parent="sd_dn_dangnhap_frame_1" edge="1" value="" style="endArrow=none;html=1;strokeColor=#000000;strokeWidth=1;dashed=1;dashPattern=4 4;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="0" y="276" as="sourcePoint"/>
+            <mxPoint x="840" y="276" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd_dn_dangnhap_frame_1_elselbl_1" parent="sd_dn_dangnhap_frame_1" vertex="1" value="[account.trangThai === 'ACTIVE' (Xác thực thành công)]" style="text;html=1;fontColor=#000000;fontSize=11;fontStyle=1;align=left;verticalAlign=middle;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry x="8" y="279" width="824" height="18" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd_dn_dangnhap_act_0" parent="1" vertex="1" value="" style="rounded=0;fillColor=#FFFFFF;strokeColor=#181818;strokeWidth=1;">
+          <mxGeometry x="1115" y="486" width="10" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd_dn_dangnhap_act_1" parent="1" vertex="1" value="" style="rounded=0;fillColor=#FFFFFF;strokeColor=#181818;strokeWidth=1;">
+          <mxGeometry x="775" y="442" width="10" height="598" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd_dn_dangnhap_act_2" parent="1" vertex="1" value="" style="rounded=0;fillColor=#FFFFFF;strokeColor=#181818;strokeWidth=1;">
+          <mxGeometry x="435" y="180" width="10" height="1046" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd_dn_dangnhap_msg_0" parent="1" edge="1" value="&lt;b&gt;1&lt;/b&gt; Nhập username, password &amp; bấm Đăng nhập" style="endArrow=classic;endFill=1;endSize=8;html=1;strokeColor=#181818;strokeWidth=1;fontColor=#000000;fontSize=12;verticalAlign=bottom;align=center;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="140" y="180" as="sourcePoint"/>
+            <mxPoint x="435" y="180" as="targetPoint"/>
+            <mxPoint x="0" y="-8" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd_dn_dangnhap_msg_1" parent="1" edge="1" value="" style="endArrow=classic;endFill=1;endSize=8;html=1;strokeColor=#181818;strokeWidth=1;fontColor=#000000;fontSize=12;edgeStyle=orthogonalEdgeStyle;rounded=0;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="481" y="222"/>
+              <mxPoint x="481" y="244"/>
+            </Array>
+            <mxPoint x="445" y="222" as="sourcePoint"/>
+            <mxPoint x="445" y="244" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd_dn_dangnhap_msglbl_1" parent="1" vertex="1" value="&lt;b&gt;2&lt;/b&gt; Kiểm tra loginSchema (username, password không rỗng)" style="text;html=1;whiteSpace=wrap;fontColor=#000000;fontSize=12;align=left;verticalAlign=middle;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry x="487" y="216" width="230" height="34" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd_dn_dangnhap_msg_2" parent="1" edge="1" value="&lt;b&gt;3&lt;/b&gt; Hiển thị lỗi validation trên trường nhập" style="endArrow=classic;endFill=1;endSize=8;html=1;strokeColor=#181818;strokeWidth=1;fontColor=#000000;fontSize=12;dashed=1;dashPattern=3 3;verticalAlign=bottom;align=center;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="435" y="346" as="sourcePoint"/>
+            <mxPoint x="140" y="346" as="targetPoint"/>
+            <mxPoint x="0" y="-8" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd_dn_dangnhap_msg_3" parent="1" edge="1" value="&lt;b&gt;4&lt;/b&gt; POST /api/auth/login (username, password)" style="endArrow=classic;endFill=1;endSize=8;html=1;strokeColor=#181818;strokeWidth=1;fontColor=#000000;fontSize=12;verticalAlign=bottom;align=center;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="445" y="442" as="sourcePoint"/>
+            <mxPoint x="775" y="442" as="targetPoint"/>
+            <mxPoint x="0" y="-8" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd_dn_dangnhap_msg_4" parent="1" edge="1" value="&lt;b&gt;5&lt;/b&gt; findUnique(where: { username }, include: { khachHang })" style="endArrow=classic;endFill=1;endSize=8;html=1;strokeColor=#181818;strokeWidth=1;fontColor=#000000;fontSize=12;verticalAlign=bottom;align=center;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="785" y="486" as="sourcePoint"/>
+            <mxPoint x="1115" y="486" as="targetPoint"/>
+            <mxPoint x="0" y="-8" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd_dn_dangnhap_msg_5" parent="1" edge="1" value="&lt;b&gt;6&lt;/b&gt; Trả về bản ghi TaiKhoan (hoặc null)" style="endArrow=classic;endFill=1;endSize=8;html=1;strokeColor=#181818;strokeWidth=1;fontColor=#000000;fontSize=12;dashed=1;dashPattern=3 3;verticalAlign=bottom;align=center;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1115" y="528" as="sourcePoint"/>
+            <mxPoint x="785" y="528" as="targetPoint"/>
+            <mxPoint x="0" y="-8" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd_dn_dangnhap_msg_6" parent="1" edge="1" value="" style="endArrow=classic;endFill=1;endSize=8;html=1;strokeColor=#181818;strokeWidth=1;fontColor=#000000;fontSize=12;edgeStyle=orthogonalEdgeStyle;rounded=0;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="821" y="570"/>
+              <mxPoint x="821" y="592"/>
+            </Array>
+            <mxPoint x="785" y="570" as="sourcePoint"/>
+            <mxPoint x="785" y="592" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd_dn_dangnhap_msglbl_6" parent="1" vertex="1" value="&lt;b&gt;7&lt;/b&gt; bcrypt.compare(password, account.passwordHash)" style="text;html=1;whiteSpace=wrap;fontColor=#000000;fontSize=12;align=left;verticalAlign=middle;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry x="827" y="564" width="230" height="34" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd_dn_dangnhap_msg_7" parent="1" edge="1" value="&lt;b&gt;8&lt;/b&gt; 401 Unauthorized: &quot;Tên đăng nhập hoặc mật khẩu không đúng&quot;" style="endArrow=classic;endFill=1;endSize=8;html=1;strokeColor=#181818;strokeWidth=1;fontColor=#000000;fontSize=12;dashed=1;dashPattern=3 3;verticalAlign=bottom;align=center;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="775" y="696" as="sourcePoint"/>
+            <mxPoint x="445" y="696" as="targetPoint"/>
+            <mxPoint x="0" y="-8" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd_dn_dangnhap_msg_8" parent="1" edge="1" value="&lt;b&gt;9&lt;/b&gt; Hiển thị thông báo lỗi đăng nhập" style="endArrow=classic;endFill=1;endSize=8;html=1;strokeColor=#181818;strokeWidth=1;fontColor=#000000;fontSize=12;dashed=1;dashPattern=3 3;verticalAlign=bottom;align=center;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="435" y="738" as="sourcePoint"/>
+            <mxPoint x="140" y="738" as="targetPoint"/>
+            <mxPoint x="0" y="-8" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd_dn_dangnhap_msg_9" parent="1" edge="1" value="&lt;b&gt;10&lt;/b&gt; 403 Forbidden: &quot;Tài khoản của bạn đã bị khóa&quot;" style="endArrow=classic;endFill=1;endSize=8;html=1;strokeColor=#181818;strokeWidth=1;fontColor=#000000;fontSize=12;dashed=1;dashPattern=3 3;verticalAlign=bottom;align=center;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="775" y="832" as="sourcePoint"/>
+            <mxPoint x="445" y="832" as="targetPoint"/>
+            <mxPoint x="0" y="-8" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd_dn_dangnhap_msg_10" parent="1" edge="1" value="&lt;b&gt;11&lt;/b&gt; Hiển thị lỗi tài khoản bị khóa" style="endArrow=classic;endFill=1;endSize=8;html=1;strokeColor=#181818;strokeWidth=1;fontColor=#000000;fontSize=12;dashed=1;dashPattern=3 3;verticalAlign=bottom;align=center;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="435" y="874" as="sourcePoint"/>
+            <mxPoint x="140" y="874" as="targetPoint"/>
+            <mxPoint x="0" y="-8" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd_dn_dangnhap_msg_11" parent="1" edge="1" value="" style="endArrow=classic;endFill=1;endSize=8;html=1;strokeColor=#181818;strokeWidth=1;fontColor=#000000;fontSize=12;edgeStyle=orthogonalEdgeStyle;rounded=0;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="821" y="968"/>
+              <mxPoint x="821" y="990"/>
+            </Array>
+            <mxPoint x="785" y="968" as="sourcePoint"/>
+            <mxPoint x="785" y="990" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd_dn_dangnhap_msglbl_11" parent="1" vertex="1" value="&lt;b&gt;12&lt;/b&gt; jwt.signAsync({ sub: maTaiKhoan, vaiTro })" style="text;html=1;whiteSpace=wrap;fontColor=#000000;fontSize=12;align=left;verticalAlign=middle;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry x="827" y="962" width="230" height="34" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd_dn_dangnhap_msg_12" parent="1" edge="1" value="&lt;b&gt;13&lt;/b&gt; 200 OK: { accessToken, taiKhoan }" style="endArrow=classic;endFill=1;endSize=8;html=1;strokeColor=#181818;strokeWidth=1;fontColor=#000000;fontSize=12;dashed=1;dashPattern=3 3;verticalAlign=bottom;align=center;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="775" y="1040" as="sourcePoint"/>
+            <mxPoint x="445" y="1040" as="targetPoint"/>
+            <mxPoint x="0" y="-8" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd_dn_dangnhap_msg_13" parent="1" edge="1" value="" style="endArrow=classic;endFill=1;endSize=8;html=1;strokeColor=#181818;strokeWidth=1;fontColor=#000000;fontSize=12;edgeStyle=orthogonalEdgeStyle;rounded=0;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="481" y="1084"/>
+              <mxPoint x="481" y="1106"/>
+            </Array>
+            <mxPoint x="445" y="1084" as="sourcePoint"/>
+            <mxPoint x="445" y="1106" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd_dn_dangnhap_msglbl_13" parent="1" vertex="1" value="&lt;b&gt;14&lt;/b&gt; setSession(taiKhoan, accessToken) &amp; điều hướng (/admin, /staff/rooms, /)" style="text;html=1;whiteSpace=wrap;fontColor=#000000;fontSize=12;align=left;verticalAlign=middle;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry x="487" y="1078" width="230" height="34" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd_dn_dangnhap_msg_14" parent="1" edge="1" value="&lt;b&gt;15&lt;/b&gt; Hiển thị màn hình chính theo vaiTro" style="endArrow=classic;endFill=1;endSize=8;html=1;strokeColor=#181818;strokeWidth=1;fontColor=#000000;fontSize=12;dashed=1;dashPattern=3 3;verticalAlign=bottom;align=center;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="435" y="1156" as="sourcePoint"/>
+            <mxPoint x="140" y="1156" as="targetPoint"/>
+            <mxPoint x="0" y="-8" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

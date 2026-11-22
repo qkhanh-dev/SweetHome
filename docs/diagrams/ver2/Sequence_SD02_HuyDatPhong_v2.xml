@@ -1,0 +1,354 @@
+<?xml version="1.0" ?>
+<mxfile host="app.diagrams.net" pages="1">
+  <diagram id="sd02_huydatphong" name="SD02_HuyDatPhong">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1740" pageHeight="1818" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="sd02_huydatphong_ll_cust" parent="1" edge="1" value="" style="endArrow=none;html=1;dashed=1;dashPattern=5 5;strokeColor=#181818;strokeWidth=1;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="130" y="116" as="sourcePoint"/>
+            <mxPoint x="130" y="1688" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd02_huydatphong_top_cust" parent="1" vertex="1" value="Khách hàng" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;spacingTop=2;fillColor=#E2E2F0;strokeColor=#181818;fontColor=#000000;fontSize=13;fontStyle=1;html=1;">
+          <mxGeometry x="115" y="28" width="30" height="58" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd02_huydatphong_bot_cust" parent="1" vertex="1" value="Khách hàng" style="shape=umlActor;verticalLabelPosition=top;verticalAlign=bottom;spacingBottom=2;fillColor=#E2E2F0;strokeColor=#181818;fontColor=#000000;fontSize=13;fontStyle=1;html=1;">
+          <mxGeometry x="115" y="1716" width="30" height="58" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd02_huydatphong_ll_ui" parent="1" edge="1" value="" style="endArrow=none;html=1;dashed=1;dashPattern=5 5;strokeColor=#181818;strokeWidth=1;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="380" y="116" as="sourcePoint"/>
+            <mxPoint x="380" y="1688" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd02_huydatphong_top_ui" parent="1" vertex="1" value="BookingLookupUI&lt;br&gt;(Giao diện)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#181818;fontColor=#000000;fontSize=13;fontStyle=1;">
+          <mxGeometry x="293" y="40" width="175" height="46" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd02_huydatphong_bot_ui" parent="1" vertex="1" value="BookingLookupUI&lt;br&gt;(Giao diện)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#181818;fontColor=#000000;fontSize=13;fontStyle=1;">
+          <mxGeometry x="293" y="1700" width="175" height="46" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd02_huydatphong_ll_ctrl" parent="1" edge="1" value="" style="endArrow=none;html=1;dashed=1;dashPattern=5 5;strokeColor=#181818;strokeWidth=1;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="690" y="116" as="sourcePoint"/>
+            <mxPoint x="690" y="1688" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd02_huydatphong_top_ctrl" parent="1" vertex="1" value="BookingController&lt;br&gt;(BookingService)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#181818;fontColor=#000000;fontSize=13;fontStyle=1;">
+          <mxGeometry x="600" y="40" width="180" height="46" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd02_huydatphong_bot_ctrl" parent="1" vertex="1" value="BookingController&lt;br&gt;(BookingService)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#181818;fontColor=#000000;fontSize=13;fontStyle=1;">
+          <mxGeometry x="600" y="1700" width="180" height="46" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd02_huydatphong_ll_dp" parent="1" edge="1" value="" style="endArrow=none;html=1;dashed=1;dashPattern=5 5;strokeColor=#181818;strokeWidth=1;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="980" y="116" as="sourcePoint"/>
+            <mxPoint x="980" y="1688" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd02_huydatphong_top_dp" parent="1" vertex="1" value="DatPhong&lt;br&gt;(CSDL &amp; HoanCoc)" style="shape=cylinder3;size=10;verticalLabelPosition=bottom;verticalAlign=top;spacingTop=2;fillColor=#E2E2F0;strokeColor=#181818;fontColor=#000000;fontSize=13;fontStyle=1;html=1;">
+          <mxGeometry x="959" y="36" width="42" height="48" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd02_huydatphong_bot_dp" parent="1" vertex="1" value="DatPhong&lt;br&gt;(CSDL &amp; HoanCoc)" style="shape=cylinder3;size=10;verticalLabelPosition=top;verticalAlign=bottom;spacingBottom=2;fillColor=#E2E2F0;strokeColor=#181818;fontColor=#000000;fontSize=13;fontStyle=1;html=1;">
+          <mxGeometry x="959" y="1718" width="42" height="48" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd02_huydatphong_ll_gw" parent="1" edge="1" value="" style="endArrow=none;html=1;dashed=1;dashPattern=5 5;strokeColor=#181818;strokeWidth=1;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1240" y="116" as="sourcePoint"/>
+            <mxPoint x="1240" y="1688" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd02_huydatphong_top_gw" parent="1" vertex="1" value="PaymentGateway&lt;br&gt;(hoanTien)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#181818;fontColor=#000000;fontSize=13;fontStyle=1;">
+          <mxGeometry x="1155" y="40" width="170" height="46" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd02_huydatphong_bot_gw" parent="1" vertex="1" value="PaymentGateway&lt;br&gt;(hoanTien)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#181818;fontColor=#000000;fontSize=13;fontStyle=1;">
+          <mxGeometry x="1155" y="1700" width="170" height="46" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd02_huydatphong_ll_phong" parent="1" edge="1" value="" style="endArrow=none;html=1;dashed=1;dashPattern=5 5;strokeColor=#181818;strokeWidth=1;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1480" y="116" as="sourcePoint"/>
+            <mxPoint x="1480" y="1688" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd02_huydatphong_top_phong" parent="1" vertex="1" value="Phong&lt;br&gt;(CSDL)" style="shape=cylinder3;size=10;verticalLabelPosition=bottom;verticalAlign=top;spacingTop=2;fillColor=#E2E2F0;strokeColor=#181818;fontColor=#000000;fontSize=13;fontStyle=1;html=1;">
+          <mxGeometry x="1459" y="36" width="42" height="48" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd02_huydatphong_bot_phong" parent="1" vertex="1" value="Phong&lt;br&gt;(CSDL)" style="shape=cylinder3;size=10;verticalLabelPosition=top;verticalAlign=bottom;spacingBottom=2;fillColor=#E2E2F0;strokeColor=#181818;fontColor=#000000;fontSize=13;fontStyle=1;html=1;">
+          <mxGeometry x="1459" y="1718" width="42" height="48" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd02_huydatphong_frame_0" parent="1" vertex="1" value="" style="rounded=0;fillColor=none;strokeColor=#000000;strokeWidth=1.5;">
+          <mxGeometry x="29" y="850" width="1342" height="528" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd02_huydatphong_frame_0_tab" parent="sd02_huydatphong_frame_0" vertex="1" value="alt" style="rounded=0;fillColor=#EEEEEE;strokeColor=#000000;strokeWidth=1.5;fontColor=#000000;fontSize=12;fontStyle=1;align=center;verticalAlign=middle;html=1;">
+          <mxGeometry x="0" y="0" width="54" height="22" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd02_huydatphong_frame_0_cond" parent="sd02_huydatphong_frame_0" vertex="1" value="[Đơn DA_XAC_NHAN và soTienHoan &gt; 0 (50% hoặc 100%)]" style="text;html=1;fontColor=#000000;fontSize=11;fontStyle=1;align=left;verticalAlign=middle;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry x="62" y="2" width="1272" height="18" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd02_huydatphong_frame_0_else_0" parent="sd02_huydatphong_frame_0" edge="1" value="" style="endArrow=none;html=1;strokeColor=#000000;strokeWidth=1;dashed=1;dashPattern=4 4;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="0" y="406" as="sourcePoint"/>
+            <mxPoint x="1342" y="406" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd02_huydatphong_frame_0_elselbl_0" parent="sd02_huydatphong_frame_0" vertex="1" value="[Đơn CHO_COC hoặc soTienHoan === 0 (&lt; 24h)]" style="text;html=1;fontColor=#000000;fontSize=11;fontStyle=1;align=left;verticalAlign=middle;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry x="8" y="409" width="1326" height="18" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd02_huydatphong_frame_1" parent="1" vertex="1" value="" style="rounded=0;fillColor=none;strokeColor=#000000;strokeWidth=1.5;">
+          <mxGeometry x="45" y="950" width="1310" height="270" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd02_huydatphong_frame_1_tab" parent="sd02_huydatphong_frame_1" vertex="1" value="alt" style="rounded=0;fillColor=#EEEEEE;strokeColor=#000000;strokeWidth=1.5;fontColor=#000000;fontSize=12;fontStyle=1;align=center;verticalAlign=middle;html=1;">
+          <mxGeometry x="0" y="0" width="54" height="22" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd02_huydatphong_frame_1_cond" parent="sd02_huydatphong_frame_1" vertex="1" value="[Cổng hoàn tiền lỗi / timeout (503)]" style="text;html=1;fontColor=#000000;fontSize=11;fontStyle=1;align=left;verticalAlign=middle;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry x="62" y="2" width="1240" height="18" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd02_huydatphong_frame_1_else_0" parent="sd02_huydatphong_frame_1" edge="1" value="" style="endArrow=none;html=1;strokeColor=#000000;strokeWidth=1;dashed=1;dashPattern=4 4;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="0" y="180" as="sourcePoint"/>
+            <mxPoint x="1310" y="180" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd02_huydatphong_frame_1_elselbl_0" parent="sd02_huydatphong_frame_1" vertex="1" value="[Hoàn tiền thành công (THANH_CONG)]" style="text;html=1;fontColor=#000000;fontSize=11;fontStyle=1;align=left;verticalAlign=middle;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry x="8" y="183" width="1294" height="18" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd02_huydatphong_act_0" parent="1" vertex="1" value="" style="rounded=0;fillColor=#FFFFFF;strokeColor=#181818;strokeWidth=1;">
+          <mxGeometry x="975" y="268" width="10" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd02_huydatphong_act_1" parent="1" vertex="1" value="" style="rounded=0;fillColor=#FFFFFF;strokeColor=#181818;strokeWidth=1;">
+          <mxGeometry x="685" y="224" width="10" height="130" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd02_huydatphong_act_2" parent="1" vertex="1" value="" style="rounded=0;fillColor=#FFFFFF;strokeColor=#181818;strokeWidth=1;">
+          <mxGeometry x="975" y="528" width="10" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd02_huydatphong_act_3" parent="1" vertex="1" value="" style="rounded=0;fillColor=#FFFFFF;strokeColor=#181818;strokeWidth=1;">
+          <mxGeometry x="685" y="484" width="10" height="128" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd02_huydatphong_act_4" parent="1" vertex="1" value="" style="rounded=0;fillColor=#FFFFFF;strokeColor=#181818;strokeWidth=1;">
+          <mxGeometry x="975" y="786" width="10" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd02_huydatphong_act_5" parent="1" vertex="1" value="" style="rounded=0;fillColor=#FFFFFF;strokeColor=#181818;strokeWidth=1;">
+          <mxGeometry x="1235" y="926" width="10" height="96" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd02_huydatphong_act_6" parent="1" vertex="1" value="" style="rounded=0;fillColor=#FFFFFF;strokeColor=#181818;strokeWidth=1;">
+          <mxGeometry x="1235" y="1158" width="10" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd02_huydatphong_act_7" parent="1" vertex="1" value="" style="rounded=0;fillColor=#FFFFFF;strokeColor=#181818;strokeWidth=1;">
+          <mxGeometry x="975" y="1434" width="10" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd02_huydatphong_act_8" parent="1" vertex="1" value="" style="rounded=0;fillColor=#FFFFFF;strokeColor=#181818;strokeWidth=1;">
+          <mxGeometry x="1475" y="1518" width="10" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd02_huydatphong_act_9" parent="1" vertex="1" value="" style="rounded=0;fillColor=#FFFFFF;strokeColor=#181818;strokeWidth=1;">
+          <mxGeometry x="685" y="742" width="10" height="860" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd02_huydatphong_act_10" parent="1" vertex="1" value="" style="rounded=0;fillColor=#FFFFFF;strokeColor=#181818;strokeWidth=1;">
+          <mxGeometry x="375" y="180" width="10" height="1466" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd02_huydatphong_msg_0" parent="1" edge="1" value="&lt;b&gt;1&lt;/b&gt; Nhập tuKhoa (mã đặt phòng hoặc SĐT) &amp; bấm Tra cứu đơn" style="endArrow=classic;endFill=1;endSize=8;html=1;strokeColor=#181818;strokeWidth=1;fontColor=#000000;fontSize=12;verticalAlign=bottom;align=center;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="130" y="180" as="sourcePoint"/>
+            <mxPoint x="375" y="180" as="targetPoint"/>
+            <mxPoint x="0" y="-8" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd02_huydatphong_msg_1" parent="1" edge="1" value="&lt;b&gt;2&lt;/b&gt; GET /api/bookings/lookup?tuKhoa=..." style="endArrow=classic;endFill=1;endSize=8;html=1;strokeColor=#181818;strokeWidth=1;fontColor=#000000;fontSize=12;verticalAlign=bottom;align=center;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="385" y="224" as="sourcePoint"/>
+            <mxPoint x="685" y="224" as="targetPoint"/>
+            <mxPoint x="0" y="-8" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd02_huydatphong_msg_2" parent="1" edge="1" value="&lt;b&gt;3&lt;/b&gt; findMany(maDatPhong / khachHang.soDienThoai)" style="endArrow=classic;endFill=1;endSize=8;html=1;strokeColor=#181818;strokeWidth=1;fontColor=#000000;fontSize=12;verticalAlign=bottom;align=center;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="695" y="268" as="sourcePoint"/>
+            <mxPoint x="975" y="268" as="targetPoint"/>
+            <mxPoint x="0" y="-8" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd02_huydatphong_msg_3" parent="1" edge="1" value="&lt;b&gt;4&lt;/b&gt; Danh sách đơn + tinhTienHoanCoc()" style="endArrow=classic;endFill=1;endSize=8;html=1;strokeColor=#181818;strokeWidth=1;fontColor=#000000;fontSize=12;dashed=1;dashPattern=3 3;verticalAlign=bottom;align=center;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="975" y="310" as="sourcePoint"/>
+            <mxPoint x="695" y="310" as="targetPoint"/>
+            <mxPoint x="0" y="-8" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd02_huydatphong_msg_4" parent="1" edge="1" value="&lt;b&gt;5&lt;/b&gt; 200 OK: danh sách DatPhong kèm hoanCocDuKien" style="endArrow=classic;endFill=1;endSize=8;html=1;strokeColor=#181818;strokeWidth=1;fontColor=#000000;fontSize=12;dashed=1;dashPattern=3 3;verticalAlign=bottom;align=center;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="685" y="354" as="sourcePoint"/>
+            <mxPoint x="385" y="354" as="targetPoint"/>
+            <mxPoint x="0" y="-8" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd02_huydatphong_msg_5" parent="1" edge="1" value="&lt;b&gt;6&lt;/b&gt; Hiển thị đơn &amp; nút Yêu cầu hủy đơn" style="endArrow=classic;endFill=1;endSize=8;html=1;strokeColor=#181818;strokeWidth=1;fontColor=#000000;fontSize=12;dashed=1;dashPattern=3 3;verticalAlign=bottom;align=center;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="375" y="396" as="sourcePoint"/>
+            <mxPoint x="130" y="396" as="targetPoint"/>
+            <mxPoint x="0" y="-8" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd02_huydatphong_msg_6" parent="1" edge="1" value="&lt;b&gt;7&lt;/b&gt; Bấm Yêu cầu hủy đơn" style="endArrow=classic;endFill=1;endSize=8;html=1;strokeColor=#181818;strokeWidth=1;fontColor=#000000;fontSize=12;verticalAlign=bottom;align=center;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="130" y="440" as="sourcePoint"/>
+            <mxPoint x="375" y="440" as="targetPoint"/>
+            <mxPoint x="0" y="-8" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd02_huydatphong_msg_7" parent="1" edge="1" value="&lt;b&gt;8&lt;/b&gt; GET /api/bookings/:id/refund-preview" style="endArrow=classic;endFill=1;endSize=8;html=1;strokeColor=#181818;strokeWidth=1;fontColor=#000000;fontSize=12;verticalAlign=bottom;align=center;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="385" y="484" as="sourcePoint"/>
+            <mxPoint x="685" y="484" as="targetPoint"/>
+            <mxPoint x="0" y="-8" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd02_huydatphong_msg_8" parent="1" edge="1" value="&lt;b&gt;9&lt;/b&gt; Kiểm tra trạng thái (CHO_COC | DA_XAC_NHAN) &amp; tính deltaHours" style="endArrow=classic;endFill=1;endSize=8;html=1;strokeColor=#181818;strokeWidth=1;fontColor=#000000;fontSize=12;verticalAlign=bottom;align=center;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="695" y="528" as="sourcePoint"/>
+            <mxPoint x="975" y="528" as="targetPoint"/>
+            <mxPoint x="0" y="-8" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd02_huydatphong_msg_9" parent="1" edge="1" value="&lt;b&gt;10&lt;/b&gt; Mức hoàn dự kiến (100% ≥72h | 50% 24–72h | 0% &lt;24h)" style="endArrow=classic;endFill=1;endSize=8;html=1;strokeColor=#181818;strokeWidth=1;fontColor=#000000;fontSize=12;dashed=1;dashPattern=3 3;verticalAlign=bottom;align=center;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="975" y="570" as="sourcePoint"/>
+            <mxPoint x="695" y="570" as="targetPoint"/>
+            <mxPoint x="0" y="-8" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd02_huydatphong_msg_10" parent="1" edge="1" value="&lt;b&gt;11&lt;/b&gt; 200 OK: RefundPreviewResult" style="endArrow=classic;endFill=1;endSize=8;html=1;strokeColor=#181818;strokeWidth=1;fontColor=#000000;fontSize=12;dashed=1;dashPattern=3 3;verticalAlign=bottom;align=center;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="685" y="612" as="sourcePoint"/>
+            <mxPoint x="385" y="612" as="targetPoint"/>
+            <mxPoint x="0" y="-8" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd02_huydatphong_msg_11" parent="1" edge="1" value="&lt;b&gt;12&lt;/b&gt; Hiển thị hộp thoại chính sách hoàn cọc &amp; ô nhập lý do hủy" style="endArrow=classic;endFill=1;endSize=8;html=1;strokeColor=#181818;strokeWidth=1;fontColor=#000000;fontSize=12;dashed=1;dashPattern=3 3;verticalAlign=bottom;align=center;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="375" y="654" as="sourcePoint"/>
+            <mxPoint x="130" y="654" as="targetPoint"/>
+            <mxPoint x="0" y="-8" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd02_huydatphong_msg_12" parent="1" edge="1" value="&lt;b&gt;13&lt;/b&gt; Nhập lyDo &amp; bấm Xác nhận hủy" style="endArrow=classic;endFill=1;endSize=8;html=1;strokeColor=#181818;strokeWidth=1;fontColor=#000000;fontSize=12;verticalAlign=bottom;align=center;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="130" y="698" as="sourcePoint"/>
+            <mxPoint x="375" y="698" as="targetPoint"/>
+            <mxPoint x="0" y="-8" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd02_huydatphong_msg_13" parent="1" edge="1" value="&lt;b&gt;14&lt;/b&gt; POST /api/bookings/:id/cancel ({ lyDo })" style="endArrow=classic;endFill=1;endSize=8;html=1;strokeColor=#181818;strokeWidth=1;fontColor=#000000;fontSize=12;verticalAlign=bottom;align=center;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="385" y="742" as="sourcePoint"/>
+            <mxPoint x="685" y="742" as="targetPoint"/>
+            <mxPoint x="0" y="-8" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd02_huydatphong_msg_14" parent="1" edge="1" value="&lt;b&gt;15&lt;/b&gt; Tx1: Khóa FOR UPDATE &amp; tạo/tái sử dụng HoanCoc (DANG_XU_LY, soTienHoan)" style="endArrow=classic;endFill=1;endSize=8;html=1;strokeColor=#181818;strokeWidth=1;fontColor=#000000;fontSize=12;verticalAlign=bottom;align=center;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="695" y="786" as="sourcePoint"/>
+            <mxPoint x="975" y="786" as="targetPoint"/>
+            <mxPoint x="0" y="-8" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd02_huydatphong_msg_15" parent="1" edge="1" value="&lt;b&gt;16&lt;/b&gt; Trả về bản ghi HoanCoc" style="endArrow=classic;endFill=1;endSize=8;html=1;strokeColor=#181818;strokeWidth=1;fontColor=#000000;fontSize=12;dashed=1;dashPattern=3 3;verticalAlign=bottom;align=center;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="975" y="826" as="sourcePoint"/>
+            <mxPoint x="695" y="826" as="targetPoint"/>
+            <mxPoint x="0" y="-8" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd02_huydatphong_msg_16" parent="1" edge="1" value="&lt;b&gt;17&lt;/b&gt; hoanTien(maGiaoDich, soTienHoan, maGiaoDichHoan)" style="endArrow=classic;endFill=1;endSize=8;html=1;strokeColor=#181818;strokeWidth=1;fontColor=#000000;fontSize=12;verticalAlign=bottom;align=center;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="695" y="926" as="sourcePoint"/>
+            <mxPoint x="1235" y="926" as="targetPoint"/>
+            <mxPoint x="0" y="-8" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd02_huydatphong_msg_17" parent="1" edge="1" value="&lt;b&gt;18&lt;/b&gt; Lỗi kết nối / chưa xác nhận hoàn tiền" style="endArrow=classic;endFill=1;endSize=8;html=1;strokeColor=#181818;strokeWidth=1;fontColor=#000000;fontSize=12;dashed=1;dashPattern=3 3;verticalAlign=bottom;align=center;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1235" y="1022" as="sourcePoint"/>
+            <mxPoint x="695" y="1022" as="targetPoint"/>
+            <mxPoint x="0" y="-8" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd02_huydatphong_msg_18" parent="1" edge="1" value="&lt;b&gt;19&lt;/b&gt; 503 Service Unavailable (giữ nguyên đơn để thử lại an toàn)" style="endArrow=classic;endFill=1;endSize=8;html=1;strokeColor=#181818;strokeWidth=1;fontColor=#000000;fontSize=12;dashed=1;dashPattern=3 3;verticalAlign=bottom;align=center;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="685" y="1064" as="sourcePoint"/>
+            <mxPoint x="385" y="1064" as="targetPoint"/>
+            <mxPoint x="0" y="-8" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd02_huydatphong_msg_19" parent="1" edge="1" value="&lt;b&gt;20&lt;/b&gt; Hiển thị thông báo lỗi hoàn tiền, cho phép thử lại" style="endArrow=classic;endFill=1;endSize=8;html=1;strokeColor=#181818;strokeWidth=1;fontColor=#000000;fontSize=12;dashed=1;dashPattern=3 3;verticalAlign=bottom;align=center;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="375" y="1106" as="sourcePoint"/>
+            <mxPoint x="130" y="1106" as="targetPoint"/>
+            <mxPoint x="0" y="-8" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd02_huydatphong_msg_20" parent="1" edge="1" value="&lt;b&gt;21&lt;/b&gt; Xác nhận THANH_CONG" style="endArrow=classic;endFill=1;endSize=8;html=1;strokeColor=#181818;strokeWidth=1;fontColor=#000000;fontSize=12;dashed=1;dashPattern=3 3;verticalAlign=bottom;align=center;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1235" y="1198" as="sourcePoint"/>
+            <mxPoint x="695" y="1198" as="targetPoint"/>
+            <mxPoint x="0" y="-8" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd02_huydatphong_msg_21" parent="1" edge="1" value="" style="endArrow=classic;endFill=1;endSize=8;html=1;strokeColor=#181818;strokeWidth=1;fontColor=#000000;fontSize=12;edgeStyle=orthogonalEdgeStyle;rounded=0;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="731" y="1326"/>
+              <mxPoint x="731" y="1348"/>
+            </Array>
+            <mxPoint x="695" y="1326" as="sourcePoint"/>
+            <mxPoint x="695" y="1348" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd02_huydatphong_msglbl_21" parent="1" vertex="1" value="&lt;b&gt;22&lt;/b&gt; Bỏ qua gọi cổng hoàn tiền (soTienHoan = 0)" style="text;html=1;whiteSpace=wrap;fontColor=#000000;fontSize=12;align=left;verticalAlign=middle;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry x="737" y="1320" width="230" height="34" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd02_huydatphong_msg_22" parent="1" edge="1" value="&lt;b&gt;23&lt;/b&gt; Tx2: Cập nhật DatPhong.trangThai = 'DA_HUY', HoanCoc = 'THANH_CONG'" style="endArrow=classic;endFill=1;endSize=8;html=1;strokeColor=#181818;strokeWidth=1;fontColor=#000000;fontSize=12;verticalAlign=bottom;align=center;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="695" y="1434" as="sourcePoint"/>
+            <mxPoint x="975" y="1434" as="targetPoint"/>
+            <mxPoint x="0" y="-8" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd02_huydatphong_msg_23" parent="1" edge="1" value="&lt;b&gt;24&lt;/b&gt; Trả về datPhong (DA_HUY)" style="endArrow=classic;endFill=1;endSize=8;html=1;strokeColor=#181818;strokeWidth=1;fontColor=#000000;fontSize=12;dashed=1;dashPattern=3 3;verticalAlign=bottom;align=center;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="975" y="1474" as="sourcePoint"/>
+            <mxPoint x="695" y="1474" as="targetPoint"/>
+            <mxPoint x="0" y="-8" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd02_huydatphong_msg_24" parent="1" edge="1" value="&lt;b&gt;25&lt;/b&gt; refreshRoom(): Khóa FOR UPDATE &amp; mở lại Phong.trangThai = 'TRONG'" style="endArrow=classic;endFill=1;endSize=8;html=1;strokeColor=#181818;strokeWidth=1;fontColor=#000000;fontSize=12;verticalAlign=bottom;align=center;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="695" y="1518" as="sourcePoint"/>
+            <mxPoint x="1475" y="1518" as="targetPoint"/>
+            <mxPoint x="0" y="-8" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd02_huydatphong_msg_25" parent="1" edge="1" value="&lt;b&gt;26&lt;/b&gt; Trả về phong (TRONG)" style="endArrow=classic;endFill=1;endSize=8;html=1;strokeColor=#181818;strokeWidth=1;fontColor=#000000;fontSize=12;dashed=1;dashPattern=3 3;verticalAlign=bottom;align=center;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1475" y="1558" as="sourcePoint"/>
+            <mxPoint x="695" y="1558" as="targetPoint"/>
+            <mxPoint x="0" y="-8" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd02_huydatphong_msg_26" parent="1" edge="1" value="&lt;b&gt;27&lt;/b&gt; 200 OK: { datPhong, phong, hoanCoc }" style="endArrow=classic;endFill=1;endSize=8;html=1;strokeColor=#181818;strokeWidth=1;fontColor=#000000;fontSize=12;dashed=1;dashPattern=3 3;verticalAlign=bottom;align=center;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="685" y="1602" as="sourcePoint"/>
+            <mxPoint x="385" y="1602" as="targetPoint"/>
+            <mxPoint x="0" y="-8" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd02_huydatphong_msg_27" parent="1" edge="1" value="&lt;b&gt;28&lt;/b&gt; Hiển thị xác nhận đã hủy đơn &amp; số tiền hoàn trả" style="endArrow=classic;endFill=1;endSize=8;html=1;strokeColor=#181818;strokeWidth=1;fontColor=#000000;fontSize=12;dashed=1;dashPattern=3 3;verticalAlign=bottom;align=center;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="375" y="1646" as="sourcePoint"/>
+            <mxPoint x="130" y="1646" as="targetPoint"/>
+            <mxPoint x="0" y="-8" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

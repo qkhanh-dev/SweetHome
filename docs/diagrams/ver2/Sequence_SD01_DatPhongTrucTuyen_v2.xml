@@ -1,0 +1,440 @@
+<?xml version="1.0" ?>
+<mxfile host="app.diagrams.net" pages="1">
+  <diagram id="sd01_datphongtructuyen" name="SD01_DatPhongTrucTuyen">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1890" pageHeight="2194" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="sd01_datphongtructuyen_ll_cust" parent="1" edge="1" value="" style="endArrow=none;html=1;dashed=1;dashPattern=5 5;strokeColor=#181818;strokeWidth=1;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="130" y="116" as="sourcePoint"/>
+            <mxPoint x="130" y="2064" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd01_datphongtructuyen_top_cust" parent="1" vertex="1" value="Khách hàng" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;spacingTop=2;fillColor=#E2E2F0;strokeColor=#181818;fontColor=#000000;fontSize=13;fontStyle=1;html=1;">
+          <mxGeometry x="115" y="28" width="30" height="58" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd01_datphongtructuyen_bot_cust" parent="1" vertex="1" value="Khách hàng" style="shape=umlActor;verticalLabelPosition=top;verticalAlign=bottom;spacingBottom=2;fillColor=#E2E2F0;strokeColor=#181818;fontColor=#000000;fontSize=13;fontStyle=1;html=1;">
+          <mxGeometry x="115" y="2092" width="30" height="58" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd01_datphongtructuyen_ll_ui" parent="1" edge="1" value="" style="endArrow=none;html=1;dashed=1;dashPattern=5 5;strokeColor=#181818;strokeWidth=1;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="380" y="116" as="sourcePoint"/>
+            <mxPoint x="380" y="2064" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd01_datphongtructuyen_top_ui" parent="1" vertex="1" value="BookingUI&lt;br&gt;(Search / Create / QR)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#181818;fontColor=#000000;fontSize=13;fontStyle=1;">
+          <mxGeometry x="290" y="40" width="180" height="46" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd01_datphongtructuyen_bot_ui" parent="1" vertex="1" value="BookingUI&lt;br&gt;(Search / Create / QR)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#181818;fontColor=#000000;fontSize=13;fontStyle=1;">
+          <mxGeometry x="290" y="2076" width="180" height="46" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd01_datphongtructuyen_ll_ctrl" parent="1" edge="1" value="" style="endArrow=none;html=1;dashed=1;dashPattern=5 5;strokeColor=#181818;strokeWidth=1;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="690" y="116" as="sourcePoint"/>
+            <mxPoint x="690" y="2064" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd01_datphongtructuyen_top_ctrl" parent="1" vertex="1" value="BookingController&lt;br&gt;(BookingService)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#181818;fontColor=#000000;fontSize=13;fontStyle=1;">
+          <mxGeometry x="600" y="40" width="180" height="46" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd01_datphongtructuyen_bot_ctrl" parent="1" vertex="1" value="BookingController&lt;br&gt;(BookingService)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#181818;fontColor=#000000;fontSize=13;fontStyle=1;">
+          <mxGeometry x="600" y="2076" width="180" height="46" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd01_datphongtructuyen_ll_phong" parent="1" edge="1" value="" style="endArrow=none;html=1;dashed=1;dashPattern=5 5;strokeColor=#181818;strokeWidth=1;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="980" y="116" as="sourcePoint"/>
+            <mxPoint x="980" y="2064" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd01_datphongtructuyen_top_phong" parent="1" vertex="1" value="Phong&lt;br&gt;(CSDL)" style="shape=cylinder3;size=10;verticalLabelPosition=bottom;verticalAlign=top;spacingTop=2;fillColor=#E2E2F0;strokeColor=#181818;fontColor=#000000;fontSize=13;fontStyle=1;html=1;">
+          <mxGeometry x="959" y="36" width="42" height="48" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd01_datphongtructuyen_bot_phong" parent="1" vertex="1" value="Phong&lt;br&gt;(CSDL)" style="shape=cylinder3;size=10;verticalLabelPosition=top;verticalAlign=bottom;spacingBottom=2;fillColor=#E2E2F0;strokeColor=#181818;fontColor=#000000;fontSize=13;fontStyle=1;html=1;">
+          <mxGeometry x="959" y="2094" width="42" height="48" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd01_datphongtructuyen_ll_kh" parent="1" edge="1" value="" style="endArrow=none;html=1;dashed=1;dashPattern=5 5;strokeColor=#181818;strokeWidth=1;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1180" y="116" as="sourcePoint"/>
+            <mxPoint x="1180" y="2064" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd01_datphongtructuyen_top_kh" parent="1" vertex="1" value="KhachHang&lt;br&gt;(CSDL)" style="shape=cylinder3;size=10;verticalLabelPosition=bottom;verticalAlign=top;spacingTop=2;fillColor=#E2E2F0;strokeColor=#181818;fontColor=#000000;fontSize=13;fontStyle=1;html=1;">
+          <mxGeometry x="1159" y="36" width="42" height="48" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd01_datphongtructuyen_bot_kh" parent="1" vertex="1" value="KhachHang&lt;br&gt;(CSDL)" style="shape=cylinder3;size=10;verticalLabelPosition=top;verticalAlign=bottom;spacingBottom=2;fillColor=#E2E2F0;strokeColor=#181818;fontColor=#000000;fontSize=13;fontStyle=1;html=1;">
+          <mxGeometry x="1159" y="2094" width="42" height="48" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd01_datphongtructuyen_ll_dp" parent="1" edge="1" value="" style="endArrow=none;html=1;dashed=1;dashPattern=5 5;strokeColor=#181818;strokeWidth=1;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1390" y="116" as="sourcePoint"/>
+            <mxPoint x="1390" y="2064" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd01_datphongtructuyen_top_dp" parent="1" vertex="1" value="DatPhong&lt;br&gt;(CSDL &amp; ThanhToanCoc)" style="shape=cylinder3;size=10;verticalLabelPosition=bottom;verticalAlign=top;spacingTop=2;fillColor=#E2E2F0;strokeColor=#181818;fontColor=#000000;fontSize=13;fontStyle=1;html=1;">
+          <mxGeometry x="1369" y="36" width="42" height="48" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd01_datphongtructuyen_bot_dp" parent="1" vertex="1" value="DatPhong&lt;br&gt;(CSDL &amp; ThanhToanCoc)" style="shape=cylinder3;size=10;verticalLabelPosition=top;verticalAlign=bottom;spacingBottom=2;fillColor=#E2E2F0;strokeColor=#181818;fontColor=#000000;fontSize=13;fontStyle=1;html=1;">
+          <mxGeometry x="1369" y="2094" width="42" height="48" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd01_datphongtructuyen_ll_gw" parent="1" edge="1" value="" style="endArrow=none;html=1;dashed=1;dashPattern=5 5;strokeColor=#181818;strokeWidth=1;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1630" y="116" as="sourcePoint"/>
+            <mxPoint x="1630" y="2064" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd01_datphongtructuyen_top_gw" parent="1" vertex="1" value="PaymentGateway&lt;br&gt;(VietQR / Webhook)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#181818;fontColor=#000000;fontSize=13;fontStyle=1;">
+          <mxGeometry x="1543" y="40" width="175" height="46" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd01_datphongtructuyen_bot_gw" parent="1" vertex="1" value="PaymentGateway&lt;br&gt;(VietQR / Webhook)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#181818;fontColor=#000000;fontSize=13;fontStyle=1;">
+          <mxGeometry x="1543" y="2076" width="175" height="46" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd01_datphongtructuyen_frame_0" parent="1" vertex="1" value="" style="rounded=0;fillColor=none;strokeColor=#000000;strokeWidth=1.5;">
+          <mxGeometry x="45" y="624" width="1700" height="612" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd01_datphongtructuyen_frame_0_tab" parent="sd01_datphongtructuyen_frame_0" vertex="1" value="alt" style="rounded=0;fillColor=#EEEEEE;strokeColor=#000000;strokeWidth=1.5;fontColor=#000000;fontSize=12;fontStyle=1;align=center;verticalAlign=middle;html=1;">
+          <mxGeometry x="0" y="0" width="54" height="22" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd01_datphongtructuyen_frame_0_cond" parent="sd01_datphongtructuyen_frame_0" vertex="1" value="[Phòng vừa bị đặt trùng lịch / đang bảo trì / quá sức chứa]" style="text;html=1;fontColor=#000000;fontSize=11;fontStyle=1;align=left;verticalAlign=middle;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry x="62" y="2" width="1630" height="18" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd01_datphongtructuyen_frame_0_else_0" parent="sd01_datphongtructuyen_frame_0" edge="1" value="" style="endArrow=none;html=1;strokeColor=#000000;strokeWidth=1;dashed=1;dashPattern=4 4;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="0" y="180" as="sourcePoint"/>
+            <mxPoint x="1700" y="180" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd01_datphongtructuyen_frame_0_elselbl_0" parent="sd01_datphongtructuyen_frame_0" vertex="1" value="[Phòng khả dụng]" style="text;html=1;fontColor=#000000;fontSize=11;fontStyle=1;align=left;verticalAlign=middle;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry x="8" y="183" width="1684" height="18" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd01_datphongtructuyen_frame_1" parent="1" vertex="1" value="" style="rounded=0;fillColor=none;strokeColor=#000000;strokeWidth=1.5;">
+          <mxGeometry x="605" y="1522" width="1140" height="360" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd01_datphongtructuyen_frame_1_tab" parent="sd01_datphongtructuyen_frame_1" vertex="1" value="alt" style="rounded=0;fillColor=#EEEEEE;strokeColor=#000000;strokeWidth=1.5;fontColor=#000000;fontSize=12;fontStyle=1;align=center;verticalAlign=middle;html=1;">
+          <mxGeometry x="0" y="0" width="54" height="22" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd01_datphongtructuyen_frame_1_cond" parent="sd01_datphongtructuyen_frame_1" vertex="1" value="[Idempotent Replay (ThanhToanCoc đã tồn tại cho maGiaoDich)]" style="text;html=1;fontColor=#000000;fontSize=11;fontStyle=1;align=left;verticalAlign=middle;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry x="62" y="2" width="1070" height="18" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd01_datphongtructuyen_frame_1_else_0" parent="sd01_datphongtructuyen_frame_1" edge="1" value="" style="endArrow=none;html=1;strokeColor=#000000;strokeWidth=1;dashed=1;dashPattern=4 4;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="0" y="98" as="sourcePoint"/>
+            <mxPoint x="1140" y="98" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd01_datphongtructuyen_frame_1_elselbl_0" parent="sd01_datphongtructuyen_frame_1" vertex="1" value="[Hợp lệ (CHO_COC &amp; soTien === tienCoc)]" style="text;html=1;fontColor=#000000;fontSize=11;fontStyle=1;align=left;verticalAlign=middle;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry x="8" y="101" width="1124" height="18" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd01_datphongtructuyen_act_0" parent="1" vertex="1" value="" style="rounded=0;fillColor=#FFFFFF;strokeColor=#181818;strokeWidth=1;">
+          <mxGeometry x="975" y="268" width="10" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd01_datphongtructuyen_act_1" parent="1" vertex="1" value="" style="rounded=0;fillColor=#FFFFFF;strokeColor=#181818;strokeWidth=1;">
+          <mxGeometry x="685" y="224" width="10" height="200" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd01_datphongtructuyen_act_2" parent="1" vertex="1" value="" style="rounded=0;fillColor=#FFFFFF;strokeColor=#181818;strokeWidth=1;">
+          <mxGeometry x="975" y="600" width="10" height="96" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd01_datphongtructuyen_act_3" parent="1" vertex="1" value="" style="rounded=0;fillColor=#FFFFFF;strokeColor=#181818;strokeWidth=1;">
+          <mxGeometry x="975" y="832" width="10" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd01_datphongtructuyen_act_4" parent="1" vertex="1" value="" style="rounded=0;fillColor=#FFFFFF;strokeColor=#181818;strokeWidth=1;">
+          <mxGeometry x="1175" y="916" width="10" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd01_datphongtructuyen_act_5" parent="1" vertex="1" value="" style="rounded=0;fillColor=#FFFFFF;strokeColor=#181818;strokeWidth=1;">
+          <mxGeometry x="1385" y="1000" width="10" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd01_datphongtructuyen_act_6" parent="1" vertex="1" value="" style="rounded=0;fillColor=#FFFFFF;strokeColor=#181818;strokeWidth=1;">
+          <mxGeometry x="1625" y="1084" width="10" height="42" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd01_datphongtructuyen_act_7" parent="1" vertex="1" value="" style="rounded=0;fillColor=#FFFFFF;strokeColor=#181818;strokeWidth=1;">
+          <mxGeometry x="685" y="556" width="10" height="614" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd01_datphongtructuyen_act_8" parent="1" vertex="1" value="" style="rounded=0;fillColor=#FFFFFF;strokeColor=#181818;strokeWidth=1;">
+          <mxGeometry x="1385" y="1458" width="10" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd01_datphongtructuyen_act_9" parent="1" vertex="1" value="" style="rounded=0;fillColor=#FFFFFF;strokeColor=#181818;strokeWidth=1;">
+          <mxGeometry x="1385" y="1692" width="10" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd01_datphongtructuyen_act_10" parent="1" vertex="1" value="" style="rounded=0;fillColor=#FFFFFF;strokeColor=#181818;strokeWidth=1;">
+          <mxGeometry x="975" y="1776" width="10" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd01_datphongtructuyen_act_11" parent="1" vertex="1" value="" style="rounded=0;fillColor=#FFFFFF;strokeColor=#181818;strokeWidth=1;">
+          <mxGeometry x="685" y="1342" width="10" height="516" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd01_datphongtructuyen_act_12" parent="1" vertex="1" value="" style="rounded=0;fillColor=#FFFFFF;strokeColor=#181818;strokeWidth=1;">
+          <mxGeometry x="1625" y="1296" width="10" height="562" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd01_datphongtructuyen_act_13" parent="1" vertex="1" value="" style="rounded=0;fillColor=#FFFFFF;strokeColor=#181818;strokeWidth=1;">
+          <mxGeometry x="685" y="1938" width="10" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd01_datphongtructuyen_act_14" parent="1" vertex="1" value="" style="rounded=0;fillColor=#FFFFFF;strokeColor=#181818;strokeWidth=1;">
+          <mxGeometry x="375" y="180" width="10" height="1842" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd01_datphongtructuyen_msg_0" parent="1" edge="1" value="&lt;b&gt;1&lt;/b&gt; Nhập ngayNhan, ngayTra, soKhach, tienNghiIds &amp; Tìm phòng" style="endArrow=classic;endFill=1;endSize=8;html=1;strokeColor=#181818;strokeWidth=1;fontColor=#000000;fontSize=12;verticalAlign=bottom;align=center;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="130" y="180" as="sourcePoint"/>
+            <mxPoint x="375" y="180" as="targetPoint"/>
+            <mxPoint x="0" y="-8" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd01_datphongtructuyen_msg_1" parent="1" edge="1" value="&lt;b&gt;2&lt;/b&gt; GET /api/rooms/available (AvailableRoomsDto)" style="endArrow=classic;endFill=1;endSize=8;html=1;strokeColor=#181818;strokeWidth=1;fontColor=#000000;fontSize=12;verticalAlign=bottom;align=center;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="385" y="224" as="sourcePoint"/>
+            <mxPoint x="685" y="224" as="targetPoint"/>
+            <mxPoint x="0" y="-8" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd01_datphongtructuyen_msg_2" parent="1" edge="1" value="&lt;b&gt;3&lt;/b&gt; Truy vấn phòng (trangThai != BAO_TRI, sucChua ≥ soKhach, không trùng lịch)" style="endArrow=classic;endFill=1;endSize=8;html=1;strokeColor=#181818;strokeWidth=1;fontColor=#000000;fontSize=12;verticalAlign=bottom;align=center;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="695" y="268" as="sourcePoint"/>
+            <mxPoint x="975" y="268" as="targetPoint"/>
+            <mxPoint x="0" y="-8" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd01_datphongtructuyen_msg_3" parent="1" edge="1" value="&lt;b&gt;4&lt;/b&gt; Danh sách phòng khả dụng + LoaiPhong" style="endArrow=classic;endFill=1;endSize=8;html=1;strokeColor=#181818;strokeWidth=1;fontColor=#000000;fontSize=12;dashed=1;dashPattern=3 3;verticalAlign=bottom;align=center;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="975" y="310" as="sourcePoint"/>
+            <mxPoint x="695" y="310" as="targetPoint"/>
+            <mxPoint x="0" y="-8" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd01_datphongtructuyen_msg_4" parent="1" edge="1" value="" style="endArrow=classic;endFill=1;endSize=8;html=1;strokeColor=#181818;strokeWidth=1;fontColor=#000000;fontSize=12;edgeStyle=orthogonalEdgeStyle;rounded=0;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="731" y="352"/>
+              <mxPoint x="731" y="374"/>
+            </Array>
+            <mxPoint x="695" y="352" as="sourcePoint"/>
+            <mxPoint x="695" y="374" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd01_datphongtructuyen_msglbl_4" parent="1" vertex="1" value="&lt;b&gt;5&lt;/b&gt; tinhGiaPhong() (T2–T5: giaNgayThuong, T6–CN: giaCuoiTuan, tienCoc = 30%)" style="text;html=1;whiteSpace=wrap;fontColor=#000000;fontSize=12;align=left;verticalAlign=middle;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry x="737" y="346" width="230" height="34" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd01_datphongtructuyen_msg_5" parent="1" edge="1" value="&lt;b&gt;6&lt;/b&gt; 200 OK: dsPhongTrong kèm tongTienDuKien, tienCoc" style="endArrow=classic;endFill=1;endSize=8;html=1;strokeColor=#181818;strokeWidth=1;fontColor=#000000;fontSize=12;dashed=1;dashPattern=3 3;verticalAlign=bottom;align=center;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="685" y="424" as="sourcePoint"/>
+            <mxPoint x="385" y="424" as="targetPoint"/>
+            <mxPoint x="0" y="-8" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd01_datphongtructuyen_msg_6" parent="1" edge="1" value="&lt;b&gt;7&lt;/b&gt; Hiển thị danh sách phòng trống &amp; báo giá dự kiến" style="endArrow=classic;endFill=1;endSize=8;html=1;strokeColor=#181818;strokeWidth=1;fontColor=#000000;fontSize=12;dashed=1;dashPattern=3 3;verticalAlign=bottom;align=center;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="375" y="466" as="sourcePoint"/>
+            <mxPoint x="130" y="466" as="targetPoint"/>
+            <mxPoint x="0" y="-8" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd01_datphongtructuyen_msg_7" parent="1" edge="1" value="&lt;b&gt;8&lt;/b&gt; Chọn phòng, nhập hoTen, soDienThoai, email, ghiChu &amp; bấm Đặt phòng" style="endArrow=classic;endFill=1;endSize=8;html=1;strokeColor=#181818;strokeWidth=1;fontColor=#000000;fontSize=12;verticalAlign=bottom;align=center;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="130" y="512" as="sourcePoint"/>
+            <mxPoint x="375" y="512" as="targetPoint"/>
+            <mxPoint x="0" y="-8" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd01_datphongtructuyen_msg_8" parent="1" edge="1" value="&lt;b&gt;9&lt;/b&gt; POST /api/bookings (CreateBookingDto) [Serializable Tx]" style="endArrow=classic;endFill=1;endSize=8;html=1;strokeColor=#181818;strokeWidth=1;fontColor=#000000;fontSize=12;verticalAlign=bottom;align=center;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="385" y="556" as="sourcePoint"/>
+            <mxPoint x="685" y="556" as="targetPoint"/>
+            <mxPoint x="0" y="-8" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd01_datphongtructuyen_msg_9" parent="1" edge="1" value="&lt;b&gt;10&lt;/b&gt; SELECT maPhong FOR UPDATE &amp; kiểm tra trống / sức chứa" style="endArrow=classic;endFill=1;endSize=8;html=1;strokeColor=#181818;strokeWidth=1;fontColor=#000000;fontSize=12;verticalAlign=bottom;align=center;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="695" y="600" as="sourcePoint"/>
+            <mxPoint x="975" y="600" as="targetPoint"/>
+            <mxPoint x="0" y="-8" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd01_datphongtructuyen_msg_10" parent="1" edge="1" value="&lt;b&gt;11&lt;/b&gt; Không khả dụng / xung đột lịch" style="endArrow=classic;endFill=1;endSize=8;html=1;strokeColor=#181818;strokeWidth=1;fontColor=#000000;fontSize=12;dashed=1;dashPattern=3 3;verticalAlign=bottom;align=center;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="975" y="696" as="sourcePoint"/>
+            <mxPoint x="695" y="696" as="targetPoint"/>
+            <mxPoint x="0" y="-8" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd01_datphongtructuyen_msg_11" parent="1" edge="1" value="&lt;b&gt;12&lt;/b&gt; 409 Conflict / 400 Bad Request" style="endArrow=classic;endFill=1;endSize=8;html=1;strokeColor=#181818;strokeWidth=1;fontColor=#000000;fontSize=12;dashed=1;dashPattern=3 3;verticalAlign=bottom;align=center;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="685" y="738" as="sourcePoint"/>
+            <mxPoint x="385" y="738" as="targetPoint"/>
+            <mxPoint x="0" y="-8" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd01_datphongtructuyen_msg_12" parent="1" edge="1" value="&lt;b&gt;13&lt;/b&gt; Thông báo phòng vừa có người đặt hoặc không hợp lệ" style="endArrow=classic;endFill=1;endSize=8;html=1;strokeColor=#181818;strokeWidth=1;fontColor=#000000;fontSize=12;dashed=1;dashPattern=3 3;verticalAlign=bottom;align=center;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="375" y="780" as="sourcePoint"/>
+            <mxPoint x="130" y="780" as="targetPoint"/>
+            <mxPoint x="0" y="-8" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd01_datphongtructuyen_msg_13" parent="1" edge="1" value="&lt;b&gt;14&lt;/b&gt; Xác nhận phòng hợp lệ" style="endArrow=classic;endFill=1;endSize=8;html=1;strokeColor=#181818;strokeWidth=1;fontColor=#000000;fontSize=12;dashed=1;dashPattern=3 3;verticalAlign=bottom;align=center;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="975" y="872" as="sourcePoint"/>
+            <mxPoint x="695" y="872" as="targetPoint"/>
+            <mxPoint x="0" y="-8" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd01_datphongtructuyen_msg_14" parent="1" edge="1" value="&lt;b&gt;15&lt;/b&gt; findFirst / create KhachHang(hoTen, soDienThoai, email)" style="endArrow=classic;endFill=1;endSize=8;html=1;strokeColor=#181818;strokeWidth=1;fontColor=#000000;fontSize=12;verticalAlign=bottom;align=center;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="695" y="916" as="sourcePoint"/>
+            <mxPoint x="1175" y="916" as="targetPoint"/>
+            <mxPoint x="0" y="-8" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd01_datphongtructuyen_msg_15" parent="1" edge="1" value="&lt;b&gt;16&lt;/b&gt; Trả về maKH" style="endArrow=classic;endFill=1;endSize=8;html=1;strokeColor=#181818;strokeWidth=1;fontColor=#000000;fontSize=12;dashed=1;dashPattern=3 3;verticalAlign=bottom;align=center;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1175" y="956" as="sourcePoint"/>
+            <mxPoint x="695" y="956" as="targetPoint"/>
+            <mxPoint x="0" y="-8" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd01_datphongtructuyen_msg_16" parent="1" edge="1" value="&lt;b&gt;17&lt;/b&gt; create DatPhong(trangThai='CHO_COC', tongTienDuKien, tienCoc)" style="endArrow=classic;endFill=1;endSize=8;html=1;strokeColor=#181818;strokeWidth=1;fontColor=#000000;fontSize=12;verticalAlign=bottom;align=center;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="695" y="1000" as="sourcePoint"/>
+            <mxPoint x="1385" y="1000" as="targetPoint"/>
+            <mxPoint x="0" y="-8" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd01_datphongtructuyen_msg_17" parent="1" edge="1" value="&lt;b&gt;18&lt;/b&gt; Trả về datPhong (CHO_COC)" style="endArrow=classic;endFill=1;endSize=8;html=1;strokeColor=#181818;strokeWidth=1;fontColor=#000000;fontSize=12;dashed=1;dashPattern=3 3;verticalAlign=bottom;align=center;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1385" y="1040" as="sourcePoint"/>
+            <mxPoint x="695" y="1040" as="targetPoint"/>
+            <mxPoint x="0" y="-8" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd01_datphongtructuyen_msg_18" parent="1" edge="1" value="&lt;b&gt;19&lt;/b&gt; taoYeuCauThanhToan(maDatPhong, tienCoc)" style="endArrow=classic;endFill=1;endSize=8;html=1;strokeColor=#181818;strokeWidth=1;fontColor=#000000;fontSize=12;verticalAlign=bottom;align=center;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="695" y="1084" as="sourcePoint"/>
+            <mxPoint x="1625" y="1084" as="targetPoint"/>
+            <mxPoint x="0" y="-8" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd01_datphongtructuyen_msg_19" parent="1" edge="1" value="&lt;b&gt;20&lt;/b&gt; Trả về { maGiaoDich, qrCodeUrl, idempotencyKey }" style="endArrow=classic;endFill=1;endSize=8;html=1;strokeColor=#181818;strokeWidth=1;fontColor=#000000;fontSize=12;dashed=1;dashPattern=3 3;verticalAlign=bottom;align=center;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1625" y="1126" as="sourcePoint"/>
+            <mxPoint x="695" y="1126" as="targetPoint"/>
+            <mxPoint x="0" y="-8" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd01_datphongtructuyen_msg_20" parent="1" edge="1" value="&lt;b&gt;21&lt;/b&gt; 201 Created: { datPhong, paymentQr }" style="endArrow=classic;endFill=1;endSize=8;html=1;strokeColor=#181818;strokeWidth=1;fontColor=#000000;fontSize=12;dashed=1;dashPattern=3 3;verticalAlign=bottom;align=center;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="685" y="1170" as="sourcePoint"/>
+            <mxPoint x="385" y="1170" as="targetPoint"/>
+            <mxPoint x="0" y="-8" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd01_datphongtructuyen_msg_21" parent="1" edge="1" value="&lt;b&gt;22&lt;/b&gt; Mở DepositDialog hiển thị mã QR VietQR &amp; số tiền cọc 30%" style="endArrow=classic;endFill=1;endSize=8;html=1;strokeColor=#181818;strokeWidth=1;fontColor=#000000;fontSize=12;dashed=1;dashPattern=3 3;verticalAlign=bottom;align=center;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="375" y="1212" as="sourcePoint"/>
+            <mxPoint x="130" y="1212" as="targetPoint"/>
+            <mxPoint x="0" y="-8" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd01_datphongtructuyen_msg_22" parent="1" edge="1" value="&lt;b&gt;23&lt;/b&gt; Quét mã QR chuyển khoản cọc (hoặc Simulate Webhook)" style="endArrow=classic;endFill=1;endSize=8;html=1;strokeColor=#181818;strokeWidth=1;fontColor=#000000;fontSize=12;verticalAlign=bottom;align=center;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="130" y="1296" as="sourcePoint"/>
+            <mxPoint x="1625" y="1296" as="targetPoint"/>
+            <mxPoint x="0" y="-8" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd01_datphongtructuyen_msg_23" parent="1" edge="1" value="&lt;b&gt;24&lt;/b&gt; POST /api/payments/webhook (Idempotency-Key, x-webhook-secret)" style="endArrow=classic;endFill=1;endSize=8;html=1;strokeColor=#181818;strokeWidth=1;fontColor=#000000;fontSize=12;verticalAlign=bottom;align=center;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1625" y="1342" as="sourcePoint"/>
+            <mxPoint x="695" y="1342" as="targetPoint"/>
+            <mxPoint x="0" y="-8" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd01_datphongtructuyen_msg_24" parent="1" edge="1" value="" style="endArrow=classic;endFill=1;endSize=8;html=1;strokeColor=#181818;strokeWidth=1;fontColor=#000000;fontSize=12;edgeStyle=orthogonalEdgeStyle;rounded=0;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="731" y="1386"/>
+              <mxPoint x="731" y="1408"/>
+            </Array>
+            <mxPoint x="695" y="1386" as="sourcePoint"/>
+            <mxPoint x="695" y="1408" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd01_datphongtructuyen_msglbl_24" parent="1" vertex="1" value="&lt;b&gt;25&lt;/b&gt; verifyWebhook(secret) &amp; khóa DatPhong FOR UPDATE" style="text;html=1;whiteSpace=wrap;fontColor=#000000;fontSize=12;align=left;verticalAlign=middle;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry x="737" y="1380" width="230" height="34" as="geometry"/>
+        </mxCell>
+        <mxCell id="sd01_datphongtructuyen_msg_25" parent="1" edge="1" value="&lt;b&gt;26&lt;/b&gt; Kiểm tra ThanhToanCoc &amp; trạng thái DatPhong" style="endArrow=classic;endFill=1;endSize=8;html=1;strokeColor=#181818;strokeWidth=1;fontColor=#000000;fontSize=12;verticalAlign=bottom;align=center;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="695" y="1458" as="sourcePoint"/>
+            <mxPoint x="1385" y="1458" as="targetPoint"/>
+            <mxPoint x="0" y="-8" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd01_datphongtructuyen_msg_26" parent="1" edge="1" value="&lt;b&gt;27&lt;/b&gt; Trả về thông tin ThanhToanCoc &amp; DatPhong" style="endArrow=classic;endFill=1;endSize=8;html=1;strokeColor=#181818;strokeWidth=1;fontColor=#000000;fontSize=12;dashed=1;dashPattern=3 3;verticalAlign=bottom;align=center;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1385" y="1498" as="sourcePoint"/>
+            <mxPoint x="695" y="1498" as="targetPoint"/>
+            <mxPoint x="0" y="-8" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd01_datphongtructuyen_msg_27" parent="1" edge="1" value="&lt;b&gt;28&lt;/b&gt; 200 OK: { idempotentReplay: true, datPhong }" style="endArrow=classic;endFill=1;endSize=8;html=1;strokeColor=#181818;strokeWidth=1;fontColor=#000000;fontSize=12;dashed=1;dashPattern=3 3;verticalAlign=bottom;align=center;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="695" y="1596" as="sourcePoint"/>
+            <mxPoint x="1625" y="1596" as="targetPoint"/>
+            <mxPoint x="0" y="-8" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd01_datphongtructuyen_msg_28" parent="1" edge="1" value="&lt;b&gt;29&lt;/b&gt; Tạo ThanhToanCoc &amp; cập nhật DatPhong.trangThai = 'DA_XAC_NHAN'" style="endArrow=classic;endFill=1;endSize=8;html=1;strokeColor=#181818;strokeWidth=1;fontColor=#000000;fontSize=12;verticalAlign=bottom;align=center;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="695" y="1692" as="sourcePoint"/>
+            <mxPoint x="1385" y="1692" as="targetPoint"/>
+            <mxPoint x="0" y="-8" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd01_datphongtructuyen_msg_29" parent="1" edge="1" value="&lt;b&gt;30&lt;/b&gt; Xác nhận đã cập nhật" style="endArrow=classic;endFill=1;endSize=8;html=1;strokeColor=#181818;strokeWidth=1;fontColor=#000000;fontSize=12;dashed=1;dashPattern=3 3;verticalAlign=bottom;align=center;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1385" y="1732" as="sourcePoint"/>
+            <mxPoint x="695" y="1732" as="targetPoint"/>
+            <mxPoint x="0" y="-8" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd01_datphongtructuyen_msg_30" parent="1" edge="1" value="&lt;b&gt;31&lt;/b&gt; refreshRoom(): Khóa FOR UPDATE &amp; cập nhật trangThai = 'DA_DAT'" style="endArrow=classic;endFill=1;endSize=8;html=1;strokeColor=#181818;strokeWidth=1;fontColor=#000000;fontSize=12;verticalAlign=bottom;align=center;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="695" y="1776" as="sourcePoint"/>
+            <mxPoint x="975" y="1776" as="targetPoint"/>
+            <mxPoint x="0" y="-8" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd01_datphongtructuyen_msg_31" parent="1" edge="1" value="&lt;b&gt;32&lt;/b&gt; Cập nhật phòng thành công" style="endArrow=classic;endFill=1;endSize=8;html=1;strokeColor=#181818;strokeWidth=1;fontColor=#000000;fontSize=12;dashed=1;dashPattern=3 3;verticalAlign=bottom;align=center;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="975" y="1816" as="sourcePoint"/>
+            <mxPoint x="695" y="1816" as="targetPoint"/>
+            <mxPoint x="0" y="-8" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd01_datphongtructuyen_msg_32" parent="1" edge="1" value="&lt;b&gt;33&lt;/b&gt; 200 OK: { idempotentReplay: false, datPhong, phong }" style="endArrow=classic;endFill=1;endSize=8;html=1;strokeColor=#181818;strokeWidth=1;fontColor=#000000;fontSize=12;dashed=1;dashPattern=3 3;verticalAlign=bottom;align=center;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="695" y="1858" as="sourcePoint"/>
+            <mxPoint x="1625" y="1858" as="targetPoint"/>
+            <mxPoint x="0" y="-8" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd01_datphongtructuyen_msg_33" parent="1" edge="1" value="&lt;b&gt;34&lt;/b&gt; GET /api/bookings/:id (hoặc cập nhật từ phản hồi webhook)" style="endArrow=classic;endFill=1;endSize=8;html=1;strokeColor=#181818;strokeWidth=1;fontColor=#000000;fontSize=12;verticalAlign=bottom;align=center;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="385" y="1938" as="sourcePoint"/>
+            <mxPoint x="685" y="1938" as="targetPoint"/>
+            <mxPoint x="0" y="-8" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd01_datphongtructuyen_msg_34" parent="1" edge="1" value="&lt;b&gt;35&lt;/b&gt; 200 OK: datPhong (DA_XAC_NHAN)" style="endArrow=classic;endFill=1;endSize=8;html=1;strokeColor=#181818;strokeWidth=1;fontColor=#000000;fontSize=12;dashed=1;dashPattern=3 3;verticalAlign=bottom;align=center;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="685" y="1978" as="sourcePoint"/>
+            <mxPoint x="385" y="1978" as="targetPoint"/>
+            <mxPoint x="0" y="-8" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="sd01_datphongtructuyen_msg_35" parent="1" edge="1" value="&lt;b&gt;36&lt;/b&gt; Cập nhật DA_XAC_NHAN &amp; hiển thị phiếu xác nhận đặt phòng" style="endArrow=classic;endFill=1;endSize=8;html=1;strokeColor=#181818;strokeWidth=1;fontColor=#000000;fontSize=12;dashed=1;dashPattern=3 3;verticalAlign=bottom;align=center;labelBackgroundColor=#FFFFFF;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="375" y="2022" as="sourcePoint"/>
+            <mxPoint x="130" y="2022" as="targetPoint"/>
+            <mxPoint x="0" y="-8" as="offset"/>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
