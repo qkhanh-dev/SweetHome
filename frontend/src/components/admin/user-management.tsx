@@ -168,7 +168,8 @@ export function UserManagement() {
         const matchCode = user.maTaiKhoan.toLowerCase().includes(query);
         const matchCustomerName = user.khachHang?.hoTen?.toLowerCase().includes(query);
         const matchCustomerPhone = user.khachHang?.soDienThoai?.includes(query);
-        if (!matchUsername && !matchCode && !matchCustomerName && !matchCustomerPhone) {
+        const matchCustomerCccd = user.khachHang?.soCCCD?.includes(query);
+        if (!matchUsername && !matchCode && !matchCustomerName && !matchCustomerPhone && !matchCustomerCccd) {
           return false;
         }
       }

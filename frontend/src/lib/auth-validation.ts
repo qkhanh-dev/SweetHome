@@ -5,7 +5,8 @@ export const registerSchema = z.object({
     .string()
     .trim()
     .min(3, "Tên đăng nhập cần có ít nhất 3 ký tự.")
-    .max(50, "Tên đăng nhập không được quá 50 ký tự."),
+    .max(50, "Tên đăng nhập không được quá 50 ký tự.")
+    .regex(/^\S+$/, "Tên đăng nhập không được chứa khoảng trắng."),
   password: z.string().min(6, "Mật khẩu cần có ít nhất 6 ký tự."),
   hoTen: z.string().trim().min(1, "Vui lòng nhập họ tên."),
   soDienThoai: z

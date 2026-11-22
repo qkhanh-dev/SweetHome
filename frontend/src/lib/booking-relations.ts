@@ -22,6 +22,10 @@ export function mergeBookingMutation(
   const roomType = responseRoom?.loaiPhong ?? previousRoom?.loaiPhong;
   return {
     ...updated,
+    khachHang: updated.khachHang ?? current.khachHang,
+    suDungDichVus: updated.suDungDichVus ?? current.suDungDichVus,
+    hoaDon: updated.hoaDon !== undefined ? updated.hoaDon : current.hoaDon,
+    danhGia: updated.danhGia !== undefined ? updated.danhGia : current.danhGia,
     phong: {
       ...previousRoom,
       ...relationSource,

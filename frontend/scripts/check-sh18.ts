@@ -1,6 +1,4 @@
 import assert from "node:assert/strict";
-import { apiClient, ApiError } from "../src/services/apiClient";
-import { resetMockState } from "../src/mocks/mockAdapter";
 import { withMockBrowserSession } from "./mock-browser-session";
 import {
   serviceFormSchema,
@@ -23,6 +21,11 @@ function checkEnvelope(response: ApiResponse<unknown>, statusCode = 200) {
 }
 
 async function main() {
+  process.env.NEXT_PUBLIC_USE_MOCK = "true";
+  const [{ apiClient, ApiError }, { resetMockState }] = await Promise.all([
+    import("../src/services/apiClient"),
+    import("../src/mocks/mockAdapter"),
+  ]);
   assert.equal(process.env.NEXT_PUBLIC_USE_MOCK, "true");
 
   await withMockBrowserSession(async () => {

@@ -1,8 +1,6 @@
 ﻿import assert from "node:assert/strict";
-import { apiClient, ApiError, setAccessToken } from "../src/services/apiClient";
 import fixtures from "../src/mocks/fixtures.json";
 import type { ApiResponse } from "../src/types/sweethome";
-import { resetMockState, setMockAuthenticatedAccount } from "../src/mocks/mockAdapter";
 import { withMockBrowserSession } from "./mock-browser-session";
 
 function checkEnvelope(
@@ -21,6 +19,11 @@ function checkEnvelope(
 }
 
 async function main() {
+  process.env.NEXT_PUBLIC_USE_MOCK = "true";
+  const [{ apiClient, ApiError, setAccessToken }, { resetMockState, setMockAuthenticatedAccount }] = await Promise.all([
+    import("../src/services/apiClient"),
+    import("../src/mocks/mockAdapter"),
+  ]);
   assert.equal(process.env.NEXT_PUBLIC_USE_MOCK, "true");
 
   const originalFetch = globalThis.fetch;

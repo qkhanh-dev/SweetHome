@@ -1,6 +1,5 @@
 ﻿import assert from "node:assert/strict";
 import fixtures from "../src/mocks/fixtures.json";
-import { apiClient, ApiError } from "../src/services/apiClient";
 import type { ApiResponse } from "../src/types/sweethome";
 
 function checkEnvelope(
@@ -17,18 +16,19 @@ function checkEnvelope(
   assert.ok(Number.isFinite(Date.parse(response.timestamp)));
 }
 
-async function expectApiError(
-  run: () => Promise<unknown>,
-  statusCode: number,
-) {
-  await assert.rejects(
-    run,
-    (error: unknown) =>
-      error instanceof ApiError && error.statusCode === statusCode,
-  );
-}
-
 async function main() {
+  process.env.NEXT_PUBLIC_USE_MOCK = "true";
+  const { apiClient, ApiError } = await import("../src/services/apiClient");
+  async function expectApiError(
+    run: () => Promise<unknown>,
+    statusCode: number,
+  ) {
+    await assert.rejects(
+      run,
+      (error: unknown) =>
+        error instanceof ApiError && error.statusCode === statusCode,
+    );
+  }
   assert.equal(process.env.NEXT_PUBLIC_USE_MOCK, "true");
 
   const originalFetch = globalThis.fetch;
