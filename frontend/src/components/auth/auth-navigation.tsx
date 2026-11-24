@@ -35,8 +35,15 @@ export function AuthNavigation() {
 
   return (
     <div className="flex items-center gap-3 text-sm">
-      <Link href="/login" className="hover:underline">Đăng nhập</Link>
-      <Link href="/register" className="rounded-md bg-emerald-800 px-3 py-2 font-medium text-white hover:bg-emerald-900">Đăng ký</Link>
+      <Link href="/login" className="font-medium text-slate-700 transition-colors hover:text-[#065F46]">
+        Đăng nhập
+      </Link>
+      <Link
+        href="/register"
+        className="inline-flex h-9 items-center justify-center rounded-lg bg-[#065F46] px-4 font-medium text-white shadow-sm transition-colors hover:bg-emerald-900"
+      >
+        Đăng ký
+      </Link>
     </div>
   );
 }

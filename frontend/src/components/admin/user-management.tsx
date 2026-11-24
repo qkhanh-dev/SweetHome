@@ -25,6 +25,7 @@ import {
 } from "@/lib/sh18-validation";
 import { AccessibleDialog } from "@/components/ui/accessible-dialog";
 import { FormField, inputClassName } from "@/components/ui/form-field";
+import { toast } from "@/components/ui/toast";
 
 const emptyUserValues: CreateUserFormValues = {
   username: "",
@@ -109,13 +110,16 @@ export function UserManagement() {
       setUsers((current) =>
         current.map((item) => (item.maTaiKhoan === targetUser.maTaiKhoan ? res.data : item)),
       );
-      setSuccess(
+      const msg =
         nextStatus === "LOCKED"
           ? `Đã khóa tài khoản "${targetUser.username}". Người dùng này sẽ không thể đăng nhập.`
-          : `Đã mở khóa tài khoản "${targetUser.username}". Tài khoản đã hoạt động trở lại.`,
-      );
+          : `Đã mở khóa tài khoản "${targetUser.username}". Tài khoản đã hoạt động trở lại.`;
+      setSuccess(msg);
+      toast.success(msg);
     } catch (error) {
-      setPageError(apiErrorMessage(error));
+      const msg = apiErrorMessage(error);
+      setPageError(msg);
+      toast.error(msg);
     } finally {
       setUpdatingId(null);
     }
@@ -148,12 +152,14 @@ export function UserManagement() {
       const response = await apiClient.createUser(parsed.data);
       setUsers((current) => [...current, response.data]);
       setDialogOpen(false);
-      setSuccess(
-        `Đã cấp tài khoản ${response.data.vaiTro} mới thành công cho "${response.data.username}".`,
-      );
+      const msg = `Đã cấp tài khoản ${response.data.vaiTro} mới thành công cho "${response.data.username}".`;
+      setSuccess(msg);
+      toast.success(msg);
       setPageError(null);
     } catch (error) {
-      setDialogError(apiErrorMessage(error));
+      const msg = apiErrorMessage(error);
+      setDialogError(msg);
+      toast.error(msg);
     }
   });
 

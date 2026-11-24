@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+
+<html lang="vi"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_dashboard" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&amp;family=JetBrains+Mono:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script><script id="tailwind-config">tailwind.config={"darkMode":"class","theme":{"extend":{"colors":{"on-tertiary-container":"#b9c4ff","inverse-primary":"#8bd6b6","on-surface":"#0d1c2e","surface-container-low":"#eff4ff","on-tertiary-fixed":"#001453","tertiary-fixed":"#dde1ff","background":"#f8f9ff","on-primary-fixed":"#002116","on-background":"#0d1c2e","on-secondary-container":"#682c00","outline":"#6f7973","surface-bright":"#f8f9ff","secondary-fixed":"#ffdbca","inverse-on-surface":"#eaf1ff","surface-dim":"#ccdbf3","on-primary":"#ffffff","error-container":"#ffdad6","surface":"#f8f9ff","secondary-fixed-dim":"#ffb68e","on-surface-variant":"#3f4944","tertiary":"#002fa0","on-error":"#ffffff","surface-container-high":"#dce9ff","primary":"#004532","tertiary-container":"#2949b7","on-error-container":"#93000a","surface-variant":"#d5e3fc","on-secondary-fixed":"#331200","outline-variant":"#bec9c2","secondary":"#9b4500","primary-fixed-dim":"#8bd6b6","on-primary-container":"#8bd6b7","tertiary-fixed-dim":"#b8c4ff","primary-fixed":"#a6f2d1","on-tertiary-fixed-variant":"#173bab","surface-container":"#e6eeff","surface-container-highest":"#d5e3fc","on-primary-fixed-variant":"#00513b","surface-tint":"#1b6b51","secondary-container":"#fd8a42","surface-container-lowest":"#ffffff","inverse-surface":"#233144","on-secondary":"#ffffff","on-tertiary":"#ffffff","on-secondary-fixed-variant":"#763300","primary-container":"#065f46","error":"#ba1a1a"},"borderRadius":{"DEFAULT":"0.125rem","lg":"0.25rem","xl":"0.5rem","full":"0.75rem"},"spacing":{"space-sm":"0.75rem","gutter":"1.5rem","margin":"2rem","space-xl":"2rem","margin-wide":"3rem","gutter-dense":"1rem","space-md":"1rem","space-2xl":"3rem","space-lg":"1.5rem","space-xs":"0.5rem","space-2xs":"0.25rem"},"fontFamily":{"currency-tabular":["Geist"],"code-id":["JetBrains Mono"],"headline-2":["Geist"],"body-regular":["Geist"],"body-sm":["Geist"],"headline-3":["Geist"],"headline-1":["Geist"],"eyebrow":["Geist"],"caption":["Geist"],"body-medium":["Geist"],"display":["Geist"]},"fontSize":{"currency-tabular":["14px",{"lineHeight":"20px","letterSpacing":"0em","fontWeight":"600"}],"code-id":["13px",{"lineHeight":"18px","letterSpacing":"-0.01em","fontWeight":"500"}],"headline-2":["20px",{"lineHeight":"28px","letterSpacing":"-0.015em","fontWeight":"600"}],"body-regular":["14px",{"lineHeight":"20px","letterSpacing":"0em","fontWeight":"400"}],"body-sm":["13px",{"lineHeight":"18px","letterSpacing":"0em","fontWeight":"400"}],"headline-3":["17px",{"lineHeight":"24px","letterSpacing":"-0.01em","fontWeight":"600"}],"headline-1":["28px",{"lineHeight":"36px","letterSpacing":"-0.02em","fontWeight":"700"}],"eyebrow":["12px",{"lineHeight":"16px","letterSpacing":"0.06em","fontWeight":"600"}],"caption":["12px",{"lineHeight":"16px","letterSpacing":"0em","fontWeight":"400"}],"body-medium":["14px",{"lineHeight":"20px","letterSpacing":"0em","fontWeight":"500"}],"display":["36px",{"lineHeight":"44px","letterSpacing":"-0.025em","fontWeight":"700"}]}}}}</script></head><body class="bg-surface font-body-regular text-body-regular text-on-surface antialiased min-h-screen"><aside class="fixed left-0 top-0 h-full w-64 bg-surface-container-low border-r border-outline-variant/30 z-50 flex flex-col justify-between shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="flex flex-col"><div class="h-16 px-space-md flex items-center gap-space-sm border-b border-outline-variant/30"><div class="w-9 h-9 rounded-lg bg-primary-container flex items-center justify-center text-on-primary shrink-0 shadow-xs"><span class="material-symbols-outlined text-[20px]">forest</span></div><div class="flex flex-col min-w-0"><div class="flex items-center gap-space-2xs"><span class="font-headline-3 text-headline-3 text-on-surface tracking-tight truncate">SweetHome</span><span class="px-1.5 py-0.5 rounded bg-primary-fixed text-on-primary-fixed font-eyebrow text-eyebrow leading-none">PRO</span></div><span class="font-caption text-caption text-on-surface-variant truncate uppercase tracking-wider">Hệ thống lễ tân</span></div></div><div class="px-space-md py-space-sm"><div class="px-space-xs py-space-2xs mb-space-2xs"><span class="font-eyebrow text-eyebrow text-on-surface-variant uppercase tracking-wider">Vận hành lễ tân</span></div><nav class="flex flex-col gap-space-2xs" data-active-classes="bg-primary-container text-on-primary font-body-medium shadow-xs"><a class="flex items-center gap-space-sm px-space-sm py-2 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="staff-rooms" href="#"><span class="material-symbols-outlined text-[20px]">grid_view</span><span class="font-body-regular text-body-regular">Sơ đồ phòng</span></a><a class="flex items-center gap-space-sm px-space-sm py-2 rounded-lg bg-primary-container text-on-primary font-body-medium shadow-xs" data-path="staff-check-in" href="#"><span class="material-symbols-outlined text-[20px]">login</span><span class="font-body-regular text-body-regular">Nhận phòng (Check-in)</span></a><a class="flex items-center gap-space-sm px-space-sm py-2 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="staff-services" href="#"><span class="material-symbols-outlined text-[20px]">room_service</span><span class="font-body-regular text-body-regular">Dịch vụ &amp; Phụ phí</span></a><a class="flex items-center gap-space-sm px-space-sm py-2 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="staff-check-out" href="#"><span class="material-symbols-outlined text-[20px]">logout</span><span class="font-body-regular text-body-regular">Trả phòng (Check-out)</span></a></nav></div><div class="px-space-md py-space-xs"><div class="px-space-xs py-space-2xs mb-space-2xs"><span class="font-eyebrow text-eyebrow text-on-surface-variant uppercase tracking-wider">Tài khoản &amp; Hệ thống</span></div><nav class="flex flex-col gap-space-2xs"><a class="flex items-center gap-space-sm px-space-sm py-2 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="staff-change-password" href="#"><span class="material-symbols-outlined text-[20px]">key</span><span class="font-body-regular text-body-regular">Đổi mật khẩu</span></a><a class="flex items-center gap-space-sm px-space-sm py-2 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="guest-home" href="#"><span class="material-symbols-outlined text-[20px]">storefront</span><span class="font-body-regular text-body-regular">Về trang khách</span></a></nav></div></div><div class="p-space-md border-t border-outline-variant/30 bg-surface-container-lowest/70"><div class="flex items-center gap-space-sm mb-space-sm"><div class="relative shrink-0"><div class="w-9 h-9 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div><span class="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-primary-fixed-dim ring-2 ring-surface-container-lowest"></span></div><div class="flex flex-col min-w-0 flex-1"><span class="font-body-medium text-body-medium text-on-surface truncate">Nguyễn Minh Anh</span><div class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-primary-container"></span><span class="font-caption text-caption text-on-surface-variant truncate">Lễ tân · Online</span></div></div></div><a class="w-full flex items-center justify-center gap-space-xs px-space-sm py-1.5 rounded border border-outline-variant/40 bg-surface-container-lowest text-on-surface hover:bg-surface-container hover:text-on-surface transition-colors font-body-sm text-body-sm" data-path="logout" href="#"><span class="material-symbols-outlined text-[16px]">power_settings_new</span><span>Đăng xuất</span></a></div></aside><div class="pl-64"><header class="fixed top-0 left-64 right-0 h-16 bg-surface/90 backdrop-blur-md border-b border-outline-variant/30 z-40 px-space-lg flex items-center justify-between shadow-[0_1px_8px_rgba(0,0,0,0.02)]"><div class="flex items-center gap-space-md"><div class="flex items-center gap-space-xs text-on-surface-variant font-body-sm text-body-sm"><span class="material-symbols-outlined text-[18px]">hotel</span><span>SweetHome Đà Lạt Heritage</span></div><span class="text-outline-variant">/</span><span class="px-2 py-0.5 rounded bg-surface-container text-on-surface-variant font-eyebrow text-eyebrow">CA SÁNG · 06:00 - 14:00</span></div><div class="flex items-center gap-space-md"><button class="flex items-center gap-space-xs px-space-sm py-1.5 rounded-lg border border-outline-variant/40 bg-surface-container-lowest hover:bg-surface-container text-on-surface-variant hover:text-on-surface transition-colors font-body-sm text-body-sm shadow-xs" type="button"><span class="material-symbols-outlined text-[18px]">search</span><span>Tìm nhanh phòng/khách (Ctrl+K)</span></button><button class="w-9 h-9 rounded-lg border border-outline-variant/40 bg-surface-container-lowest flex items-center justify-center text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors shadow-xs relative" type="button"><span class="material-symbols-outlined text-[20px]">notifications</span><span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-secondary-container"></span></button><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></header><main class="relative pt-16 bg-background min-h-screen w-full px-space-lg py-space-lg"><div class="flex flex-col w-full">
+<!-- PRINT STYLING HELPER -->
+<style>
+    @media print {
+      body { background-color: #ffffff !important; }
+      aside, header, #checkout-stay, #payment-action-card, #hk-turnover-queue, #top-management-header {
+        display: none !important;
+      }
+      .pl-64 { padding-left: 0 !important; }
+      main { padding: 0 !important; }
+      #invoice-HD003 {
+        box-shadow: none !important;
+        margin: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        border: none !important;
+      }
+    }
+  </style>
+<!-- TOP MANAGEMENT ACTION BAR (print:hidden) -->
+<header class="print:hidden mb-space-lg flex flex-col md:flex-row md:items-center justify-between gap-space-sm pb-space-sm" id="top-management-header">
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-space-xs mb-1">
+<span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-surface-container-high text-primary font-eyebrow text-eyebrow">
+<span class="w-1.5 h-1.5 rounded-full bg-primary-container"></span>
+          PHÂN HỆ 3 &amp; 4 · UC3.3 · UC3.4 · UC4.1 · UC4.2 · SD05
+        </span>
+<span class="text-outline-variant font-caption text-caption">/</span>
+<span class="text-on-surface-variant font-eyebrow text-eyebrow uppercase tracking-wider">Lễ tân &amp; Buồng phòng</span>
+</div>
+<h1 class="font-headline-1 text-headline-1 text-on-surface tracking-tight">Trả phòng &amp; Quyết toán hóa đơn</h1>
+<p class="font-body-regular text-body-regular text-on-surface-variant mt-0.5">
+        Kiểm tra chi phí lưu trú, quyết toán hóa đơn thanh toán và điều phối buồng phòng dọn dẹp sạch sẽ.
+      </p>
+</div>
+<!-- Right utility controls -->
+<div class="flex items-center gap-space-sm self-start md:self-auto shrink-0">
+<div class="hidden xl:flex items-center gap-space-xs px-space-sm py-1.5 rounded-lg bg-surface-container-lowest shadow-sm text-on-surface-variant font-body-sm text-body-sm">
+<span class="material-symbols-outlined text-[18px] text-primary">schedule</span>
+<span>Ca hiện tại:</span>
+<span class="font-body-medium text-body-medium text-on-surface">11:45 · 24/11/2026</span>
+</div>
+<button class="inline-flex items-center gap-1.5 px-space-sm py-2 rounded-lg bg-surface-container-lowest text-on-surface hover:bg-surface-container shadow-xs font-body-medium text-body-medium transition-colors" onclick="location.reload()" type="button">
+<span class="material-symbols-outlined text-[18px]">refresh</span>
+<span>Làm mới danh sách</span>
+</button>
+<button class="inline-flex items-center gap-1.5 px-space-sm py-2 rounded-lg bg-surface-container-lowest text-on-surface hover:bg-surface-container shadow-xs font-body-medium text-body-medium transition-colors" type="button">
+<span class="material-symbols-outlined text-[18px]">receipt_long</span>
+<span>Xem lịch sử hóa đơn</span>
+</button>
+</div>
+</header>
+<!-- OPERATIONAL 2-COLUMN WORKSPACE -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-lg w-full items-start">
+<!-- LEFT COLUMN: Settlement & Checkout Folio (1.35fr -> ~7 cols on 12-col grid, lg:col-span-8) -->
+<div class="lg:col-span-8 flex flex-col gap-space-lg">
+<!-- CARD 1: Stay & Booking Selector (print:hidden) -->
+<section class="print:hidden bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col gap-space-md" id="checkout-stay">
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-space-sm">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-primary-container text-[22px]">bedroom_parent</span>
+<label class="font-headline-3 text-headline-3 text-on-surface" for="stay-select">Chọn kỳ lưu trú đang thanh toán</label>
+</div>
+<span class="inline-flex items-center gap-1 text-on-surface-variant font-caption text-caption">
+<span class="w-2 h-2 rounded-full bg-secondary-container animate-pulse"></span>
+            Đến hạn trả phòng hôm nay (12:00)
+          </span>
+</div>
+<!-- Master Select Dropdown -->
+<div class="relative w-full">
+<select class="w-full h-11 pl-space-md pr-10 rounded-lg bg-surface-container-low font-body-medium text-body-medium text-on-surface appearance-none focus:outline-none focus:bg-surface-container cursor-pointer shadow-inner" id="stay-select">
+<option selected="" value="DP003">P302 · Nguyễn Văn Thụy · 22/11/2026 → 24/11/2026 · #DP003 (Romantic Valley Penthouse)</option>
+<option value="DP004">P104 · Trần Thị Mai Hương · 23/11/2026 → 24/11/2026 · #DP004 (Garden Studio Pine)</option>
+<option value="DP005">P205 · Lê Hoàng Nam · 20/11/2026 → 24/11/2026 · #DP005 (Balcony Sunset Suite)</option>
+</select>
+<span class="material-symbols-outlined pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant">unfold_more</span>
+</div>
+<!-- Quick Info Ribbon -->
+<div class="grid grid-cols-2 md:grid-cols-4 gap-space-xs p-space-sm rounded-lg bg-surface-container-low/70">
+<div class="flex flex-col min-w-0">
+<span class="font-caption text-caption text-on-surface-variant">Khách lưu trú</span>
+<span class="font-body-medium text-body-medium text-on-surface truncate">Nguyễn Văn Thụy</span>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="font-caption text-caption text-on-surface-variant">Số điện thoại</span>
+<span class="font-code-id text-code-id text-on-surface truncate">0912 345 678</span>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="font-caption text-caption text-on-surface-variant">Thời gian trả dự kiến</span>
+<span class="font-body-medium text-body-medium text-secondary truncate">12:00 Hôm nay</span>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="font-caption text-caption text-on-surface-variant">Đã thanh toán trước (30%)</span>
+<span class="font-currency-tabular text-currency-tabular text-primary truncate">960.000 ₫</span>
+</div>
+</div>
+<!-- Dual Operational State Pipeline -->
+<div class="pt-space-xs flex flex-col sm:flex-row items-center justify-between gap-space-sm bg-surface-container-high/40 p-space-sm rounded-lg">
+<!-- Flow 1: Đơn đặt -->
+<div class="flex items-center gap-space-xs w-full sm:w-auto">
+<span class="font-eyebrow text-eyebrow text-on-surface-variant uppercase">Hồ sơ đơn:</span>
+<span class="inline-flex items-center px-2 py-0.5 rounded font-caption text-caption bg-secondary-fixed text-on-secondary-fixed">
+              ĐANG LƯU TRÚ
+            </span>
+<span class="material-symbols-outlined text-[16px] text-outline">arrow_forward</span>
+<span class="inline-flex items-center px-2 py-0.5 rounded font-caption text-caption bg-primary-fixed text-on-primary-fixed font-medium">
+              HOÀN TẤT
+            </span>
+</div>
+<!-- Divider -->
+<span class="hidden sm:inline text-outline-variant">|</span>
+<!-- Flow 2: Phòng vật lý -->
+<div class="flex items-center gap-space-xs w-full sm:w-auto">
+<span class="font-eyebrow text-eyebrow text-on-surface-variant uppercase">Trạng thái phòng:</span>
+<span class="inline-flex items-center px-2 py-0.5 rounded font-caption text-caption bg-tertiary-fixed text-on-tertiary-fixed">
+              ĐANG SỬ DỤNG
+            </span>
+<span class="material-symbols-outlined text-[16px] text-outline">arrow_forward</span>
+<span class="inline-flex items-center px-2 py-0.5 rounded font-caption text-caption bg-surface-container-highest text-tertiary font-medium">
+              CHỜ DỌN DẸP
+            </span>
+</div>
+</div>
+</section>
+<!-- CARD 2: Detailed Printable Settlement Folio (#invoice-HD003) -->
+<section class="bg-surface-container-lowest rounded-xl p-space-xl shadow-md flex flex-col gap-space-lg relative overflow-hidden" id="invoice-HD003">
+<!-- Visual Accent Corner Watermark for Boutique Brand -->
+<div class="absolute -right-8 -top-8 w-32 h-32 rounded-full bg-primary-fixed-dim/20 pointer-events-none"></div>
+<!-- Folio Header -->
+<div class="flex flex-col sm:flex-row sm:items-start justify-between gap-space-md pb-space-md border-b-2 border-surface-container-high">
+<div class="flex flex-col">
+<div class="flex items-center gap-space-xs mb-1">
+<span class="px-2 py-0.5 rounded bg-surface-container font-eyebrow text-eyebrow text-on-surface tracking-wider uppercase">Boutique Folio</span>
+<span class="font-caption text-caption text-on-surface-variant">Mã đối soát: <strong class="font-code-id text-code-id text-on-surface">#DP003</strong></span>
+</div>
+<h2 class="font-headline-1 text-headline-1 text-on-surface tracking-tight">Hóa đơn quyết toán · HD003</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">SweetHome Đà Lạt Heritage · 35 Đường Khởi Nghĩa Bắc Sơn, Phường 10, Đà Lạt</p>
+</div>
+<div class="flex flex-col items-start sm:items-end gap-1.5">
+<!-- Distinct Status Badge -->
+<div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary-fixed text-on-secondary-fixed font-eyebrow text-eyebrow shadow-xs" id="invoice-status-pill">
+<span class="w-2 h-2 rounded-full bg-secondary animate-ping"></span>
+<span class="tracking-wider uppercase">CHƯA THANH TOÁN</span>
+</div>
+<span class="font-caption text-caption text-on-surface-variant">Thời điểm xuất: 24/11/2026 11:45</span>
+</div>
+</div>
+<!-- Room & Guest Information Grid -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-space-md p-space-md rounded-lg bg-surface-container-low/60">
+<div class="flex flex-col">
+<span class="font-eyebrow text-eyebrow uppercase text-on-surface-variant mb-1">Thông tin khách hàng</span>
+<span class="font-body-medium text-body-medium text-on-surface">Nguyễn Văn Thụy</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">SĐT: 0912 345 678</span>
+<span class="font-caption text-caption text-on-surface-variant">CCCD: 040098****** (Đã xác minh)</span>
+</div>
+<div class="flex flex-col">
+<span class="font-eyebrow text-eyebrow uppercase text-on-surface-variant mb-1">Hạng phòng chỉ định</span>
+<span class="font-body-medium text-body-medium text-on-surface">P302 · Romantic Valley Penthouse</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Tầng 3 · Hướng thung lũng thông reo</span>
+<span class="font-caption text-caption text-on-surface-variant">Tiêu chuẩn: 02 người lớn</span>
+</div>
+<div class="flex flex-col">
+<span class="font-eyebrow text-eyebrow uppercase text-on-surface-variant mb-1">Thời gian lưu trú</span>
+<span class="font-body-medium text-body-medium text-on-surface">2 đêm (22/11 → 24/11/2026)</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Check-in: 22/11/2026 · 14:15</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Check-out: 24/11/2026 · 11:30</span>
+</div>
+</div>
+<!-- FINANCIAL SETTLEMENT LEDGER (5 Distinct Rows) -->
+<div class="flex flex-col">
+<div class="flex items-center justify-between pb-space-xs mb-space-xs">
+<span class="font-eyebrow text-eyebrow uppercase tracking-wider text-on-surface-variant">Bảng kê chi phí quyết toán lưu trú</span>
+<span class="font-caption text-caption text-on-surface-variant">Đơn vị tính: VNĐ (Việt Nam Đồng)</span>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-high/60 text-on-surface-variant font-eyebrow text-eyebrow uppercase tracking-wider">
+<th class="py-2.5 px-space-sm rounded-l">Khoản mục tài chính</th>
+<th class="py-2.5 px-space-sm text-center">Số lượng / Diễn giải</th>
+<th class="py-2.5 px-space-sm text-right">Đơn giá</th>
+<th class="py-2.5 px-space-sm rounded-r text-right">Thành tiền</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-surface-container">
+<!-- Row 1: Tiền phòng -->
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="py-space-sm px-space-sm">
+<div class="flex items-center gap-space-xs">
+<span class="w-5 h-5 rounded-full bg-primary-fixed flex items-center justify-center text-on-primary-fixed text-[13px] font-bold">1</span>
+<div class="flex flex-col">
+<span class="font-body-medium text-body-medium text-on-surface">(+) Tiền phòng lưu trú</span>
+<span class="font-caption text-caption text-on-surface-variant">Phòng P302 Romantic Valley Penthouse</span>
+</div>
+</div>
+</td>
+<td class="py-space-sm px-space-sm text-center font-body-sm text-body-sm text-on-surface">2 đêm</td>
+<td class="py-space-sm px-space-sm text-right font-code-id text-code-id text-on-surface-variant">1.600.000 ₫</td>
+<td class="py-space-sm px-space-sm text-right font-currency-tabular text-currency-tabular text-on-surface">3.200.000 ₫</td>
+</tr>
+<!-- Row 2: Tiền dịch vụ phát sinh -->
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="py-space-sm px-space-sm">
+<div class="flex items-center gap-space-xs">
+<span class="w-5 h-5 rounded-full bg-primary-fixed flex items-center justify-center text-on-primary-fixed text-[13px] font-bold">2</span>
+<div class="flex flex-col">
+<span class="font-body-medium text-body-medium text-on-surface">(+) Dịch vụ homestay phát sinh</span>
+<span class="font-caption text-caption text-on-surface-variant">Đồng bộ từ S-12: BBQ sân vườn (350k) · Giặt ủi (70k) · Củi sưởi (80k)</span>
+</div>
+</div>
+</td>
+<td class="py-space-sm px-space-sm text-center font-body-sm text-body-sm text-on-surface">3 dịch vụ</td>
+<td class="py-space-sm px-space-sm text-right font-caption text-caption text-on-surface-variant">Chi tiết mục</td>
+<td class="py-space-sm px-space-sm text-right font-currency-tabular text-currency-tabular text-on-surface">500.000 ₫</td>
+</tr>
+<!-- Row 3: Phụ phí / hư tổn -->
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="py-space-sm px-space-sm">
+<div class="flex items-center gap-space-xs">
+<span class="w-5 h-5 rounded-full bg-surface-container-high flex items-center justify-center text-on-surface-variant text-[13px] font-bold">3</span>
+<div class="flex flex-col">
+<span class="font-body-medium text-body-medium text-on-surface">(+) Phụ phí trả phòng muộn / hư hao tài sản</span>
+<span class="font-caption text-caption text-on-surface-variant">Kiểm buồng 11:30: Trang thiết bị nguyên vẹn, trả đúng hạn quy định</span>
+</div>
+</div>
+</td>
+<td class="py-space-sm px-space-sm text-center font-caption text-caption text-on-surface-variant">Không phát sinh</td>
+<td class="py-space-sm px-space-sm text-right font-code-id text-code-id text-on-surface-variant">0 ₫</td>
+<td class="py-space-sm px-space-sm text-right font-currency-tabular text-currency-tabular text-on-surface-variant">0 ₫</td>
+</tr>
+<!-- Row 4: Đã thanh toán trước / Tiền cọc -->
+<tr class="hover:bg-surface-container-low transition-colors bg-surface-container-low/40">
+<td class="py-space-sm px-space-sm">
+<div class="flex items-center gap-space-xs">
+<span class="w-5 h-5 rounded-full bg-secondary-fixed flex items-center justify-center text-on-secondary-fixed text-[13px] font-bold">4</span>
+<div class="flex flex-col">
+<span class="font-body-medium text-body-medium text-secondary">(−) Tiền cọc giữ phòng trực tuyến (30%)</span>
+<span class="font-caption text-caption text-on-surface-variant">Cổng thanh toán OnePay/QR lúc đặt phòng (GD: #DEP-90812)</span>
+</div>
+</div>
+</td>
+<td class="py-space-sm px-space-sm text-center font-caption text-caption text-secondary">Đã cấn trừ</td>
+<td class="py-space-sm px-space-sm text-right font-caption text-caption text-on-surface-variant">30% phòng</td>
+<td class="py-space-sm px-space-sm text-right font-currency-tabular text-currency-tabular text-secondary font-bold">− 960.000 ₫</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Ledger Row 5: FINAL SETTLEMENT SUM (Hospitality Formula) -->
+<div class="mt-space-md p-space-md rounded-xl bg-surface-container-low flex flex-col md:flex-row md:items-center justify-between gap-space-sm">
+<div class="flex flex-col">
+<div class="flex items-center gap-1.5">
+<span class="w-2.5 h-2.5 rounded-full bg-primary-container"></span>
+<span class="font-eyebrow text-eyebrow uppercase tracking-wider text-on-surface">5. Tổng số tiền cần thanh toán thực tế</span>
+</div>
+<span class="font-caption text-caption text-on-surface-variant mt-0.5">
+                Công thức: (Tiền phòng 3.200.000 + Dịch vụ 500.000 + Phụ phí 0) − Tiền cọc 960.000
+              </span>
+</div>
+<div class="flex flex-col md:items-end">
+<span class="font-caption text-caption text-on-surface-variant uppercase">Còn lại phải thu:</span>
+<div class="flex items-baseline gap-1">
+<span class="font-display text-display text-primary tracking-tight font-extrabold">2.740.000</span>
+<span class="font-headline-2 text-headline-2 text-primary font-bold">₫</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Post-Payment Receipt State Actions (Hidden initially, toggled or printable) -->
+<div class="hidden p-space-md rounded-lg bg-primary-fixed/20 flex flex-col sm:flex-row items-center justify-between gap-space-sm" id="settled-receipt-actions">
+<div class="flex items-center gap-space-xs text-primary font-body-medium text-body-medium">
+<span class="material-symbols-outlined text-[20px]">verified</span>
+<span>Đã hoàn tất thanh toán &amp; quyết toán ngày 24/11/2026. Mã đối chiếu: <strong>QR-20261124-8842</strong></span>
+</div>
+<div class="flex items-center gap-space-xs">
+<button class="px-space-sm py-1.5 rounded-lg bg-surface-container-lowest text-primary hover:bg-surface-container font-body-sm text-body-sm shadow-xs flex items-center gap-1" onclick="window.print()" type="button">
+<span class="material-symbols-outlined text-[16px]">print</span>
+<span>In biên lai quyết toán</span>
+</button>
+<button class="px-space-sm py-1.5 rounded-lg bg-surface-container-lowest text-on-surface hover:bg-surface-container font-body-sm text-body-sm shadow-xs flex items-center gap-1" type="button">
+<span class="material-symbols-outlined text-[16px]">download</span>
+<span>Tải PDF</span>
+</button>
+</div>
+</div>
+<!-- Footer Sign-off (for Print) -->
+<div class="pt-space-md grid grid-cols-2 text-center text-on-surface-variant font-caption text-caption">
+<div class="flex flex-col items-center">
+<span class="font-body-medium text-body-medium text-on-surface">Khách hàng lưu trú</span>
+<span class="mt-8 italic">(Ký và ghi rõ họ tên)</span>
+<span class="mt-1 font-body-sm text-body-sm text-on-surface">Nguyễn Văn Thụy</span>
+</div>
+<div class="flex flex-col items-center">
+<span class="font-body-medium text-body-medium text-on-surface">Lễ tân thực hiện ca</span>
+<span class="mt-8 italic">(Đã quyết toán hệ thống)</span>
+<span class="mt-1 font-body-sm text-body-sm text-on-surface">Nguyễn Minh Anh</span>
+</div>
+</div>
+</section>
+<!-- CARD 3: Payment Confirmation & Checkout Submission (print:hidden) -->
+<section class="print:hidden bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col gap-space-md" id="payment-action-card">
+<!-- Safety Alert / Policy Note -->
+<div class="p-space-sm rounded-lg bg-surface-container-high/40 flex items-start gap-space-xs">
+<span class="material-symbols-outlined text-primary text-[20px] shrink-0 mt-0.5">verified_user</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+<strong class="text-on-surface font-medium">Quy chuẩn bàn giao:</strong> Đơn đặt phòng và phòng lưu trú chỉ hoàn tất trả phòng khi hóa đơn thanh toán thành công 100%. Phòng P302 sẽ tự động chuyển sang hàng đợi dọn dẹp ngay sau bước này.
+          </p>
+</div>
+<!-- Form for Payment Method & Checkout -->
+<form class="flex flex-col gap-space-md" id="checkout-form" onsubmit="event.preventDefault(); completeCheckoutFlow();">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-space-md">
+<!-- Payment Mode Selection -->
+<div class="flex flex-col gap-1.5">
+<label class="font-eyebrow text-eyebrow uppercase text-on-surface-variant">Phương thức thu tiền thực tế</label>
+<div class="grid grid-cols-2 gap-space-xs">
+<!-- QR Mode -->
+<label class="flex items-center gap-space-xs p-space-sm rounded-lg bg-surface-container-low cursor-pointer hover:bg-surface-container transition-colors">
+<input checked="" class="text-primary focus:ring-primary-fixed" name="pay-method" type="radio" value="qr"/>
+<div class="flex flex-col min-w-0">
+<span class="font-body-medium text-body-medium text-on-surface truncate">Chuyển khoản QR</span>
+<span class="font-caption text-caption text-on-surface-variant truncate">VietQR / Napas247</span>
+</div>
+</label>
+<!-- Cash Mode -->
+<label class="flex items-center gap-space-xs p-space-sm rounded-lg bg-surface-container-low cursor-pointer hover:bg-surface-container transition-colors">
+<input class="text-primary focus:ring-primary-fixed" name="pay-method" type="radio" value="cash"/>
+<div class="flex flex-col min-w-0">
+<span class="font-body-medium text-body-medium text-on-surface truncate">Tiền mặt</span>
+<span class="font-caption text-caption text-on-surface-variant truncate">Thu tại quầy lễ tân</span>
+</div>
+</label>
+</div>
+</div>
+<!-- Transaction Reference Code -->
+<div class="flex flex-col gap-1.5">
+<label class="font-eyebrow text-eyebrow uppercase text-on-surface-variant" for="txn-ref">Mã giao dịch / Mã tham chiếu ngân hàng</label>
+<div class="relative">
+<input class="w-full h-11 px-space-md rounded-lg bg-surface-container-low font-code-id text-code-id text-on-surface focus:outline-none focus:bg-surface-container shadow-inner" id="txn-ref" placeholder="Nhập mã biên lai hoặc tra soát..." type="text" value="QR-20261124-8842"/>
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-[18px] text-primary">qr_code_2</span>
+</div>
+</div>
+</div>
+<!-- Notes or Extra Adjustment Toggle -->
+<div class="flex items-center justify-between pt-1">
+<button class="text-primary hover:text-primary-container font-body-sm text-body-sm inline-flex items-center gap-1" type="button">
+<span class="material-symbols-outlined text-[16px]">add_circle</span>
+<span>Cập nhật phụ phí phát sinh (nếu có bổ sung)</span>
+</button>
+<button class="text-on-surface-variant hover:text-on-surface font-body-sm text-body-sm inline-flex items-center gap-1" onclick="window.print()" type="button">
+<span class="material-symbols-outlined text-[16px]">receipt</span>
+<span>In hóa đơn tạm tính</span>
+</button>
+</div>
+<!-- Primary Submit Action Button -->
+<div class="pt-space-xs flex flex-col gap-2">
+<button class="w-full py-3.5 px-space-lg rounded-xl bg-primary-container text-on-primary hover:opacity-95 active:scale-[0.99] font-headline-3 text-headline-3 shadow-md flex items-center justify-center gap-space-xs transition-all" id="btn-submit-checkout" type="submit">
+<span class="material-symbols-outlined text-[24px]">task_alt</span>
+<span>Xác nhận thanh toán &amp; Hoàn tất trả phòng (2.740.000 ₫) →</span>
+</button>
+<span class="text-center font-caption text-caption text-on-surface-variant">
+              Thao tác này sẽ đóng hồ sơ lưu trú #DP003 và phát lệnh dọn buồng phòng P302 đến bộ phận Housekeeping.
+            </span>
+</div>
+</form>
+</section>
+</div>
+<!-- RIGHT COLUMN: Housekeeping Turnover Queue (0.65fr -> lg:col-span-4) -->
+<div class="lg:col-span-4 flex flex-col gap-space-lg print:hidden" id="hk-turnover-queue">
+<!-- Card: Housekeeping Turnover Queue Manager -->
+<section class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col gap-space-md sticky top-20">
+<!-- Queue Header -->
+<div class="flex items-start justify-between gap-space-xs pb-space-xs">
+<div class="flex flex-col">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-tertiary text-[20px]">cleaning_services</span>
+<h2 class="font-headline-2 text-headline-2 text-on-surface">Phòng chờ dọn dẹp</h2>
+</div>
+<span class="font-caption text-caption text-on-surface-variant mt-0.5">Quy trình điều phối buồng phòng</span>
+</div>
+<div class="flex items-center gap-1">
+<span class="px-2 py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed font-eyebrow text-eyebrow font-bold" id="queue-badge-count">1 phòng cần dọn</span>
+</div>
+</div>
+<!-- Explanation card -->
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed p-space-sm rounded-lg bg-surface-container-low">
+          Khi khách trả phòng thành công, phòng tự động chuyển sang <strong class="text-on-surface font-medium">Chờ dọn dẹp</strong>. Nhân viên buồng phòng dọn xong sẽ xác nhận để chuyển về <strong class="text-primary font-medium">Trống</strong> sẵn sàng đón khách mới.
+        </p>
+<!-- Room Queue List -->
+<div class="flex flex-col gap-space-sm" id="hk-room-list">
+<!-- P202: Active In-Queue Room -->
+<div class="p-space-md rounded-xl bg-surface-container-low/70 flex flex-col gap-space-sm transition-all shadow-xs" id="room-card-p202">
+<div class="flex items-start justify-between gap-space-xs">
+<div class="flex flex-col">
+<span class="font-headline-3 text-headline-3 text-on-surface">Phòng P202</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Standard Pine View (Tầng 2)</span>
+</div>
+<span class="px-2.5 py-0.5 rounded bg-tertiary-fixed text-on-tertiary-fixed font-eyebrow text-eyebrow font-bold uppercase tracking-wider">
+                CHỜ DỌN DẸP
+              </span>
+</div>
+<div class="flex flex-col gap-1 text-on-surface-variant font-caption text-caption pt-1">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[15px]">schedule</span>
+<span>Khách trả lúc: <strong>11:30 hôm nay</strong></span>
+</div>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[15px]">person</span>
+<span>Phân công HK: <strong>Chị Lan (Tổ buồng 1)</strong></span>
+</div>
+</div>
+<!-- Complete cleaning action button -->
+<button class="mt-1 w-full py-2 px-space-sm rounded-lg bg-primary text-on-primary hover:bg-primary-container font-body-medium text-body-medium shadow-xs flex items-center justify-center gap-1.5 transition-colors" id="btn-clean-p202" onclick="markRoomCleaned('p202', 'P202')" type="button">
+<span class="material-symbols-outlined text-[18px]">check_circle</span>
+<span>Hoàn tất dọn phòng P202</span>
+</button>
+</div>
+<!-- Dynamic container for P302 when checked-out -->
+<div class="hidden" id="room-card-p302-placeholder"></div>
+</div>
+<!-- Recent Completion Alert Box -->
+<div class="p-space-sm rounded-lg bg-primary-fixed/30 flex items-start gap-space-xs text-on-primary-fixed" id="recent-cleaned-box">
+<span class="material-symbols-outlined text-[18px] text-primary shrink-0 mt-0.5">check</span>
+<div class="flex flex-col font-caption text-caption">
+<span class="font-body-medium text-body-medium text-on-primary-fixed font-semibold">Phòng P101: Đã hoàn tất dọn dẹp</span>
+<span class="text-on-surface-variant">10:15 hôm nay ➔ Trạng thái hiện tại: <strong>Trống (Sẵn sàng đón khách)</strong></span>
+</div>
+</div>
+<!-- Quick Inventory & Status Snapshot -->
+<div class="pt-space-xs border-t border-surface-container flex flex-col gap-space-xs">
+<span class="font-eyebrow text-eyebrow uppercase text-on-surface-variant">Tổng quan buồng phòng khu vực</span>
+<div class="grid grid-cols-3 gap-2 text-center">
+<div class="p-2 rounded-lg bg-surface-container-low flex flex-col">
+<span class="font-headline-2 text-headline-2 text-primary font-bold">2</span>
+<span class="font-caption text-caption text-on-surface-variant">Trống sẵn sàng</span>
+</div>
+<div class="p-2 rounded-lg bg-surface-container-low flex flex-col">
+<span class="font-headline-2 text-headline-2 text-tertiary font-bold" id="stat-cleaning-count">1</span>
+<span class="font-caption text-caption text-on-surface-variant">Đang / Chờ dọn</span>
+</div>
+<div class="p-2 rounded-lg bg-surface-container-low flex flex-col">
+<span class="font-headline-2 text-headline-2 text-on-surface-variant font-bold">1</span>
+<span class="font-caption text-caption text-on-surface-variant">Bảo trì thiết bị</span>
+</div>
+</div>
+</div>
+<!-- Housekeeping Visual Context -->
+<div class="mt-2 rounded-lg overflow-hidden relative h-28 bg-surface-container">
+<img class="w-full h-full object-cover" data-alt="Warm and clean Vietnamese boutique homestay bedroom in Da Lat pine forest with freshly folded crisp white linen, wooden minimalist furniture, soft morning sunlight, no people" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAfwOm7oJCY5toU7jUqHnblSOqUEfVOeQDRfBYQ5rqcK2YNaV0oiigf6ugDkARz5mXHHABXekM2RS3ojnW-IteZIQEDICMDt882xF7M_nKpDyTBX0SZTp9k7mcW2mVjWQ2DXeaTm9SbAB6KEGRVFpUNsqlNc4aeqji2KdesTJwUEtXYbnJWaHrt6EbBXufgo04xT3VbVUwbzePG4FizjBGGgKhdrKqMgTbZpS896P8"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest/90 via-surface-container-lowest/30 to-transparent flex items-end p-space-sm">
+<span class="font-caption text-caption text-on-surface font-medium flex items-center gap-1">
+<span class="material-symbols-outlined text-[15px] text-primary">eco</span>
+              Tiêu chuẩn vệ sinh buồng phòng SweetHome
+            </span>
+</div>
+</div>
+</section>
+</div>
+</div>
+<!-- INTERACTIVE LOGIC SCRIPT (Zero dependencies) -->
+<script>
+    // Handles checkout completion workflow
+    function completeCheckoutFlow() {
+      const btn = document.getElementById('btn-submit-checkout');
+      const invoiceBadge = document.getElementById('invoice-status-pill');
+      const settledActions = document.getElementById('settled-receipt-actions');
+      const p302Slot = document.getElementById('room-card-p302-placeholder');
+      const queueBadge = document.getElementById('queue-badge-count');
+      const statCleaning = document.getElementById('stat-cleaning-count');
+
+      // Update button state to simulate immediate transaction recording
+      btn.disabled = true;
+      btn.innerHTML = `<span class="material-symbols-outlined text-[20px] animate-spin">sync</span><span>Đang xử lý quyết toán &amp; chuyển buồng phòng...</span>`;
+
+      setTimeout(() => {
+        // 1. Update Invoice Folio to SETTLED
+        invoiceBadge.className = "inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary-fixed text-on-primary-fixed font-eyebrow text-eyebrow shadow-xs";
+        invoiceBadge.innerHTML = `<span class="material-symbols-outlined text-[14px]">check</span><span class="tracking-wider uppercase">ĐÃ THANH TOÁN</span>`;
+        settledActions.classList.remove('hidden');
+
+        // 2. Hide Payment Form or Change to Done Notice
+        const payCard = document.getElementById('payment-action-card');
+        payCard.innerHTML = `
+          <div class="p-space-md rounded-xl bg-primary-fixed/20 flex flex-col md:flex-row items-center justify-between gap-space-sm">
+            <div class="flex items-center gap-space-sm">
+              <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-on-primary shrink-0">
+                <span class="material-symbols-outlined text-[22px]">done_all</span>
+              </div>
+              <div class="flex flex-col">
+                <span class="font-headline-3 text-headline-3 text-on-surface">Đã trả phòng thành công!</span>
+                <span class="font-body-sm text-body-sm text-on-surface-variant">Đơn #DP003 đã chuyển trạng thái HOÀN TẤT. Phòng P302 hiện đã vào hàng đợi dọn buồng.</span>
+              </div>
+            </div>
+            <button type="button" onclick="window.print()" class="px-space-md py-2 rounded-lg bg-primary text-on-primary hover:bg-primary-container font-body-medium text-body-medium shadow-xs shrink-0 flex items-center gap-1">
+              <span class="material-symbols-outlined text-[18px]">print</span>
+              <span>In biên lai</span>
+            </button>
+          </div>
+        `;
+
+        // 3. Add P302 dynamically to Housekeeping Queue
+        p302Slot.className = "p-space-md rounded-xl bg-surface-container-low/70 flex flex-col gap-space-sm transition-all shadow-xs";
+        p302Slot.id = "room-card-p302";
+        p302Slot.innerHTML = `
+          <div class="flex items-start justify-between gap-space-xs">
+            <div class="flex flex-col">
+              <span class="font-headline-3 text-headline-3 text-on-surface">Phòng P302</span>
+              <span class="font-body-sm text-body-sm text-on-surface-variant">Romantic Valley Penthouse (Tầng 3)</span>
+            </div>
+            <span class="px-2.5 py-0.5 rounded bg-tertiary-fixed text-on-tertiary-fixed font-eyebrow text-eyebrow font-bold uppercase tracking-wider animate-pulse">
+              CHỜ DỌN DẸP
+            </span>
+          </div>
+
+          <div class="flex flex-col gap-1 text-on-surface-variant font-caption text-caption pt-1">
+            <div class="flex items-center gap-1">
+              <span class="material-symbols-outlined text-[15px]">schedule</span>
+              <span>Khách vừa trả lúc: <strong>Vừa xong</strong></span>
+            </div>
+            <div class="flex items-center gap-1">
+              <span class="material-symbols-outlined text-[15px]">person</span>
+              <span>Phân công HK: <strong>Anh Minh (Tổ buồng 2)</strong></span>
+            </div>
+          </div>
+
+          <button id="btn-clean-p302" type="button" onclick="markRoomCleaned('p302', 'P302')" class="mt-1 w-full py-2 px-space-sm rounded-lg bg-primary text-on-primary hover:bg-primary-container font-body-medium text-body-medium shadow-xs flex items-center justify-center gap-1.5 transition-colors">
+            <span class="material-symbols-outlined text-[18px]">check_circle</span>
+            <span>Hoàn tất dọn phòng P302</span>
+          </button>
+        `;
+
+        // Update indicators
+        queueBadge.textContent = "2 phòng cần dọn";
+        statCleaning.textContent = "2";
+
+      }, 650);
+    }
+
+    // Handles Housekeeping Room Cleaned Confirmation
+    function markRoomCleaned(elementId, roomCode) {
+      const card = document.getElementById('room-card-' + elementId);
+      const recentBox = document.getElementById('recent-cleaned-box');
+      const queueBadge = document.getElementById('queue-badge-count');
+      const statCleaning = document.getElementById('stat-cleaning-count');
+
+      if (card) {
+        card.style.opacity = '0.5';
+        card.innerHTML = `
+          <div class="py-space-sm text-center font-body-sm text-body-sm text-primary font-medium flex items-center justify-center gap-1">
+            <span class="material-symbols-outlined text-[18px]">verified</span>
+            <span>Đã xác nhận phòng ${roomCode} hoàn tất dọn dẹp!</span>
+          </div>
+        `;
+        setTimeout(() => {
+          card.remove();
+          // Update recent cleaned alert
+          const now = new Date();
+          const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+          recentBox.innerHTML = `
+            <span class="material-symbols-outlined text-[18px] text-primary shrink-0 mt-0.5">check</span>
+            <div class="flex flex-col font-caption text-caption">
+              <span class="font-body-medium text-body-medium text-on-primary-fixed font-semibold">Phòng ${roomCode}: Đã hoàn tất dọn dẹp</span>
+              <span class="text-on-surface-variant">${timeStr} hôm nay ➔ Trạng thái hiện tại: <strong>Trống (Sẵn sàng đón khách)</strong></span>
+            </div>
+          `;
+          
+          // Re-calculate visible cards
+          const remaining = document.querySelectorAll('#hk-room-list > div[id^="room-card-"]').length;
+          queueBadge.textContent = remaining > 0 ? `${remaining} phòng cần dọn` : `Tất cả phòng đã dọn xong`;
+          statCleaning.textContent = remaining.toString();
+        }, 800);
+      }
+    }
+  </script>
+</div></main></div></body></html>

@@ -128,6 +128,49 @@ npx prisma db seed
 docker compose --profile fullstack up --build -d
 ```
 
+### 3.3. Danh sách tài khoản đăng nhập mẫu theo quyền (`backend/prisma/seed.ts`)
+
+Sau khi chạy `npx prisma db seed` (hoặc khởi động `docker compose`), hệ thống có sẵn 6 tài khoản mẫu với mật khẩu chung **`123456`**:
+
+| Vai trò | Username | Mật khẩu | Trạng thái | Đường dẫn chính |
+| :--- | :--- | :--- | :--- | :--- |
+| **Chủ homestay (`ADMIN`)** | `admin` | `123456` | `ACTIVE` | `/admin` |
+| **Lễ tân (`STAFF`)** | `staff_dalat` | `123456` | `ACTIVE` | `/staff/rooms` |
+| **Lễ tân (`STAFF`)** | `staff_dalat2` | `123456` | `ACTIVE` | `/staff/rooms` |
+| **Khách hàng (`CUSTOMER`)** | `khanh_customer` | `123456` | `ACTIVE` | `/` |
+| **Khách hàng (`CUSTOMER`)** | `hoang_customer` | `123456` | `ACTIVE` | `/` |
+| **Khách hàng (`CUSTOMER`)** | `locked_user` | `123456` | `LOCKED` *(kiểm thử chặn đăng nhập `403`)* | — |
+
+### 3.4. Hướng dẫn demo xác nhận thanh toán cọc (`CHO_COC` $\rightarrow$ `DA_XAC_NHAN`)
+
+Khi tạo đơn đặt phòng ở `/booking`, hệ thống tạo đơn ở trạng thái **Chờ cọc (`CHO_COC`)** và mở hộp thoại **Thanh toán tiền cọc** kèm mã VietQR, **Mã đơn đặt phòng**, **Mã giao dịch** (`PAY_...`) và **Số tiền cọc**. Để chuyển sang trạng thái đã nhận thanh toán (**Đã xác nhận / `DA_XAC_NHAN`**) khi trình diễn:
+
+#### Cách 1: Bấm nút giả lập ngay trên giao diện (khi chạy Dev local `npm run dev`)
+Phù hợp khi chạy local với `frontend/.env.local` có `NEXT_PUBLIC_ENABLE_PAYMENT_SIMULATOR=true` và `NODE_ENV=development`:
+1. Tại popup **Thanh toán tiền cọc**, bấm nút màu xanh **`Xác nhận đã chuyển khoản (Simulate Webhook)`**.
+2. Hệ thống tự động gọi `POST /api/payments/webhook`, chuyển đơn từ `CHO_COC` $\rightarrow$ `DA_XAC_NHAN` và chuyển phòng sang trạng thái `DA_DAT`.
+3. Bấm **`Xem phiếu xác nhận`** (hoặc vào `/staff/rooms`) để kiểm tra trạng thái đã cập nhật.
+   - *Mẹo:* Nếu đã lỡ đóng popup khi đơn vẫn ở `CHO_COC`, vào trang chi tiết đơn `/booking/[maDatPhong]` (hoặc tra cứu tại `/booking/lookup`) và bấm **`Mở lại QR cọc`**.
+
+#### Cách 2: Gọi Webhook qua Swagger / Postman (khi chạy Docker Production hoặc demo luồng bên thứ 3)
+Khi chạy qua `docker-compose.yml` (`NODE_ENV=production` và `NEXT_PUBLIC_ENABLE_PAYMENT_SIMULATOR=false`), nút **`Xác nhận đã chuyển khoản (Simulate Webhook)`** tự động bị ẩn để bảo mật production. Thực hiện theo 3 bước sau:
+1. Giữ nguyên popup **Thanh toán tiền cọc** trên trình duyệt để lấy **Mã đơn đặt phòng**, **Mã giao dịch** (`PAY_...`) và **Số tiền cọc**.
+2. Mở **Swagger UI** tại `http://localhost:3001/api/docs` $\rightarrow$ mục **`Payments - SD01`** $\rightarrow$ **`POST /api/payments/webhook`** (hoặc dùng Postman / `curl`):
+   - **Headers:**
+     - `idempotency-key`: `idem-<maDatPhong>` *(chống cộng tiền trùng lặp)*
+     - `x-webhook-secret`: `sweethome_webhook_secret_2026` *(giá trị cấu hình trong `PAYMENT_WEBHOOK_SECRET`, bắt buộc khi `NODE_ENV=production`)*
+   - **Body JSON:**
+     ```json
+     {
+       "maDatPhong": "<Mã đơn đặt phòng trên popup>",
+       "maGiaoDich": "<Mã giao dịch PAY_... trên popup>",
+       "soTien": 360000,
+       "trangThaiGiaoDich": "THANH_CONG"
+     }
+     ```
+     *(Thay `360000` bằng đúng số tiền cọc nguyên hiển thị trên popup, không có dấu phân cách).*
+3. Quay lại tab trình duyệt và bấm nút **`Kiểm tra trạng thái thanh toán`** trên popup $\rightarrow$ giao diện gọi `GET /api/bookings/:id` và hiển thị thông báo xác nhận thanh toán cọc thành công.
+
 ---
 
 ## 4. QUY ƯỚC PHÂN NHÁNH GIT (BRANCHING STRATEGY) & COMMIT

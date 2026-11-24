@@ -1,0 +1,237 @@
+{
+  "projectId": "3436766563803029007",
+  "title": "SweetHome Management Platform",
+  "screens": [
+    {
+      "code": "S-01",
+      "title": "S-01 · Tìm kiếm & Chọn phòng trống (Desktop 16:9)",
+      "screenName": "projects/3436766563803029007/screens/927a9ae4dc47474896dea1d9a8c8d20e",
+      "width": "2560",
+      "height": "5134",
+      "imageFile": "S-01.png",
+      "imageBytes": 2254800,
+      "htmlFile": "S-01.html",
+      "htmlBytes": 31485
+    },
+    {
+      "code": "S-02",
+      "title": "S-02 · Chi tiết phòng & Đánh giá (Desktop 16:9)",
+      "screenName": "projects/3436766563803029007/screens/e0e969afc6be4e15817c777e53a5cf49",
+      "width": "2560",
+      "height": "4096",
+      "imageFile": "S-02.png",
+      "imageBytes": 1306796,
+      "htmlFile": "S-02.html",
+      "htmlBytes": 38002
+    },
+    {
+      "code": "S-03",
+      "title": "S-03 · Đặt phòng trực tuyến & Thanh toán cọc QR (Desktop 16:9)",
+      "screenName": "projects/3436766563803029007/screens/8941662ad06945f38275cb6885f9624f",
+      "width": "2560",
+      "height": "2750",
+      "imageFile": "S-03.png",
+      "imageBytes": 753950,
+      "htmlFile": "S-03.html",
+      "htmlBytes": 31853
+    },
+    {
+      "code": "S-04",
+      "title": "S-04 · Tra cứu & Hủy đặt phòng / Hoàn cọc (Desktop 16:9)",
+      "screenName": "projects/3436766563803029007/screens/fb149c8ad4cd4f1abcb75612cb534232",
+      "width": "2560",
+      "height": "2508",
+      "imageFile": "S-04.png",
+      "imageBytes": 670544,
+      "htmlFile": "S-04.html",
+      "htmlBytes": 30117
+    },
+    {
+      "code": "S-05",
+      "title": "S-05 · Phiếu xác nhận đặt phòng, Biên lai & Đánh giá (Desktop 16:9)",
+      "screenName": "projects/3436766563803029007/screens/e4a543825d0d47299fd8fad9d4dcf00a",
+      "width": "2560",
+      "height": "4570",
+      "imageFile": "S-05.png",
+      "imageBytes": 1163588,
+      "htmlFile": "S-05.html",
+      "htmlBytes": 37420
+    },
+    {
+      "code": "S-06",
+      "title": "S-06 · Đánh giá cộng đồng từ khách lưu trú (Desktop 16:9)",
+      "screenName": "projects/3436766563803029007/screens/62c37de4085041478aef8a947a4a8d36",
+      "width": "2560",
+      "height": "3272",
+      "imageFile": "S-06.png",
+      "imageBytes": 513538,
+      "htmlFile": "S-06.html",
+      "htmlBytes": 34184
+    },
+    {
+      "code": "S-07",
+      "title": "S-07 · Đăng nhập (Desktop 16:9)",
+      "screenName": "projects/3436766563803029007/screens/35cc8a4c03994c198a56e63dc125aacb",
+      "width": "2560",
+      "height": "2228",
+      "imageFile": "S-07.png",
+      "imageBytes": 283015,
+      "htmlFile": "S-07.html",
+      "htmlBytes": 16799
+    },
+    {
+      "code": "S-08",
+      "title": "S-08 · Đăng ký tài khoản khách hàng (Desktop 16:9)",
+      "screenName": "projects/3436766563803029007/screens/56066c9506164bbba24298d136e5840e",
+      "width": "2560",
+      "height": "2048",
+      "imageFile": "S-08.png",
+      "imageBytes": 313444,
+      "htmlFile": "S-08.html",
+      "htmlBytes": 13334
+    },
+    {
+      "code": "S-09",
+      "title": "S-09 · Đổi mật khẩu (Desktop 16:9)",
+      "screenName": "projects/3436766563803029007/screens/0de7039018c4428099592d5d506d0911",
+      "width": "2560",
+      "height": "2392",
+      "imageFile": "S-09.png",
+      "imageBytes": 549031,
+      "htmlFile": "S-09.html",
+      "htmlBytes": 22234
+    },
+    {
+      "code": "S-10",
+      "title": "S-10 · Sơ đồ trạng thái phòng (Desktop 16:9)",
+      "screenName": "projects/3436766563803029007/screens/9dacbb640aa04acfa7c5147685761d75",
+      "width": "2560",
+      "height": "3010",
+      "imageFile": "S-10.png",
+      "imageBytes": 1694271,
+      "htmlFile": "S-10.html",
+      "htmlBytes": 40920
+    },
+    {
+      "code": "S-11",
+      "title": "S-11 · Tiếp nhận Check-in & Định danh CCCD (Desktop 16:9)",
+      "screenName": "projects/3436766563803029007/screens/2265099fdbc1499482c1d30e81c9c333",
+      "width": "2560",
+      "height": "3028",
+      "imageFile": "S-11.png",
+      "imageBytes": 645712,
+      "htmlFile": "S-11.html",
+      "htmlBytes": 37709
+    },
+    {
+      "code": "S-12",
+      "title": "S-12 · Ghi nhận dịch vụ phát sinh (Desktop 16:9)",
+      "screenName": "projects/3436766563803029007/screens/019bcda0a20d4310b90ff33985318ee6",
+      "width": "2560",
+      "height": "2646",
+      "imageFile": "S-12.png",
+      "imageBytes": 486584,
+      "htmlFile": "S-12.html",
+      "htmlBytes": 35894
+    },
+    {
+      "code": "S-13",
+      "title": "S-13 · Trả phòng, Quyết toán hóa đơn & Hoàn tất dọn phòng (Desktop 16:9)",
+      "screenName": "projects/3436766563803029007/screens/b4d976cc83e5455db4cde0c5781c49a7",
+      "width": "2560",
+      "height": "4110",
+      "imageFile": "S-13.png",
+      "imageBytes": 1026392,
+      "htmlFile": "S-13.html",
+      "htmlBytes": 46882
+    },
+    {
+      "code": "S-14",
+      "title": "S-14 · Dashboard Thống kê Doanh thu & Tỷ lệ lấp đầy (Desktop 16:9)",
+      "screenName": "projects/3436766563803029007/screens/0cbdef05aec546bd8fa70a355263d64b",
+      "width": "2560",
+      "height": "4968",
+      "imageFile": "S-14.png",
+      "imageBytes": 882495,
+      "htmlFile": "S-14.html",
+      "htmlBytes": 54829
+    },
+    {
+      "code": "S-15",
+      "title": "S-15 · Quản lý Đánh giá & Phản hồi Host (Desktop 16:9)",
+      "screenName": "projects/3436766563803029007/screens/ddb50cb3d77b45a7bac00be76b9009c5",
+      "width": "2560",
+      "height": "3288",
+      "imageFile": "S-15.png",
+      "imageBytes": 670048,
+      "htmlFile": "S-15.html",
+      "htmlBytes": 43558
+    },
+    {
+      "code": "S-16",
+      "title": "S-16 · Quản lý Thông tin Homestay (Desktop 16:9)",
+      "screenName": "projects/3436766563803029007/screens/f463d7b19bf64f49bb692d5a2e0e3358",
+      "width": "2560",
+      "height": "2638",
+      "imageFile": "S-16.png",
+      "imageBytes": 553987,
+      "htmlFile": "S-16.html",
+      "htmlBytes": 30881
+    },
+    {
+      "code": "S-17",
+      "title": "S-17 · Quản lý Loại phòng & Bảng giá (Desktop 16:9)",
+      "screenName": "projects/3436766563803029007/screens/e29aab8db03b4259a02e471ce54ad26d",
+      "width": "2560",
+      "height": "2048",
+      "imageFile": "S-17.png",
+      "imageBytes": 869523,
+      "htmlFile": "S-17.html",
+      "htmlBytes": 39328
+    },
+    {
+      "code": "S-18",
+      "title": "S-18 · Quản lý Danh mục Tiện nghi (Desktop 16:9)",
+      "screenName": "projects/3436766563803029007/screens/9bb6f7eef8844fafbbc2e260eccad093",
+      "width": "2560",
+      "height": "2048",
+      "imageFile": "S-18.png",
+      "imageBytes": 495133,
+      "htmlFile": "S-18.html",
+      "htmlBytes": 50357
+    },
+    {
+      "code": "S-19",
+      "title": "S-19 · Quản lý Phòng (Desktop 16:9)",
+      "screenName": "projects/3436766563803029007/screens/9c38425cb04a4f6a9f62c38e32d64a9a",
+      "width": "2560",
+      "height": "3702",
+      "imageFile": "S-19.png",
+      "imageBytes": 593158,
+      "htmlFile": "S-19.html",
+      "htmlBytes": 41036
+    },
+    {
+      "code": "S-20",
+      "title": "S-20 · Quản lý Danh mục Dịch vụ (Desktop 16:9)",
+      "screenName": "projects/3436766563803029007/screens/b6d4ea5812424807b3bf56523873af2e",
+      "width": "2560",
+      "height": "2286",
+      "imageFile": "S-20.png",
+      "imageBytes": 816107,
+      "htmlFile": "S-20.html",
+      "htmlBytes": 39821
+    },
+    {
+      "code": "S-21",
+      "title": "S-21 · Quản lý Tài khoản & Phân quyền (Desktop 16:9)",
+      "screenName": "projects/3436766563803029007/screens/b776258833e24ba2acc4ecf573a9d287",
+      "width": "2560",
+      "height": "2220",
+      "imageFile": "S-21.png",
+      "imageBytes": 478982,
+      "htmlFile": "S-21.html",
+      "htmlBytes": 44011
+    }
+  ]
+}

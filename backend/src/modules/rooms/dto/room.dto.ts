@@ -40,6 +40,21 @@ export class CreateRoomDto {
   @IsEnum(TrangThaiPhong)
   trangThai?: TrangThaiPhong;
 
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  tenPhong?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  moTa?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  hinhAnh?: string;
+
   @ApiProperty({ type: [String] })
   @IsArray()
   @ArrayUnique()
@@ -68,6 +83,21 @@ export class UpdateRoomDto {
   @IsOptional()
   @IsEnum(TrangThaiPhong)
   trangThai?: TrangThaiPhong;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  tenPhong?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  moTa?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  hinhAnh?: string;
 
   @ApiProperty({ type: [String] })
   @IsArray()

@@ -76,6 +76,9 @@ model TienNghi {
 model Phong {
   maPhong     String          @id @default(cuid())
   soPhong     String          @unique
+  tenPhong    String?
+  moTa        String?         @db.Text
+  hinhAnh     String?         @db.Text
   tang        Int
   trangThai   TrangThaiPhong  @default(TRONG)
   maHomestay  String

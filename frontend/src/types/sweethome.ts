@@ -53,6 +53,9 @@ export interface TienNghi {
 export interface Phong {
   maPhong: string;
   soPhong: string;
+  tenPhong?: string | null;
+  moTa?: string | null;
+  hinhAnh?: string | null;
   tang: number;
   trangThai: TrangThaiPhong;
   maHomestay: string;

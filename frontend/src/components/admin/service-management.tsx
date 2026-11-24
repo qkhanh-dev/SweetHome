@@ -14,6 +14,7 @@ import {
 } from "@/lib/sh18-validation";
 import { AccessibleDialog } from "@/components/ui/accessible-dialog";
 import { FormField, inputClassName } from "@/components/ui/form-field";
+import { toast } from "@/components/ui/toast";
 
 const emptyValues: ServiceFormValues = {
   tenDichVu: "",
@@ -123,16 +124,22 @@ export function ServiceManagement() {
         setItems((current) =>
           current.map((item) => (item.maDichVu === editing.maDichVu ? response.data : item)),
         );
-        setSuccess(`Đã cập nhật dịch vụ "${response.data.tenDichVu}".`);
+        const msg = `Đã cập nhật dịch vụ "${response.data.tenDichVu}".`;
+        setSuccess(msg);
+        toast.success(msg);
       } else {
         const response = await apiClient.createService(parsed.data);
         setItems((current) => [...current, response.data]);
-        setSuccess(`Đã thêm dịch vụ mới "${response.data.tenDichVu}".`);
+        const msg = `Đã thêm dịch vụ mới "${response.data.tenDichVu}".`;
+        setSuccess(msg);
+        toast.success(msg);
       }
       setDialogOpen(false);
       setPageError(null);
     } catch (error) {
-      setDialogError(apiErrorMessage(error));
+      const msg = apiErrorMessage(error);
+      setDialogError(msg);
+      toast.error(msg);
     }
   });
 
@@ -148,9 +155,13 @@ export function ServiceManagement() {
     try {
       await apiClient.deleteService(item.maDichVu);
       setItems((current) => current.filter((cand) => cand.maDichVu !== item.maDichVu));
-      setSuccess(`Đã ngưng cung cấp dịch vụ "${item.tenDichVu}".`);
+      const msg = `Đã ngưng cung cấp dịch vụ "${item.tenDichVu}".`;
+      setSuccess(msg);
+      toast.success(msg);
     } catch (error) {
-      setPageError(apiErrorMessage(error));
+      const msg = apiErrorMessage(error);
+      setPageError(msg);
+      toast.error(msg);
     } finally {
       setDeletingId(null);
     }

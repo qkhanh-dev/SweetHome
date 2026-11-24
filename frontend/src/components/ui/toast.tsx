@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { AlertCircle, CheckCircle2, Info, X } from "lucide-react";
 import { create } from "zustand";
 
@@ -93,21 +93,24 @@ export const toast = {
 
 const VARIANT_STYLES: Record<
   ToastVariant,
-  { container: string; iconClass: string; Icon: typeof CheckCircle2 }
+  { container: string; iconBox: string; titleClass: string; Icon: typeof CheckCircle2 }
 > = {
   success: {
-    container: "border-emerald-200 bg-emerald-50 text-emerald-950",
-    iconClass: "text-emerald-700",
+    container: "border-emerald-200 bg-white/95 text-slate-900",
+    iconBox: "bg-emerald-100 text-[#065F46]",
+    titleClass: "text-[#065F46]",
     Icon: CheckCircle2,
   },
   error: {
-    container: "border-rose-200 bg-rose-50 text-rose-950",
-    iconClass: "text-rose-700",
+    container: "border-rose-200 bg-white/95 text-slate-900",
+    iconBox: "bg-rose-100 text-rose-700",
+    titleClass: "text-rose-800",
     Icon: AlertCircle,
   },
   info: {
-    container: "border-slate-200 bg-white text-slate-900",
-    iconClass: "text-slate-700",
+    container: "border-slate-200 bg-white/95 text-slate-900",
+    iconBox: "bg-slate-100 text-[#065F46]",
+    titleClass: "text-slate-900",
     Icon: Info,
   },
 };
@@ -115,6 +118,7 @@ const VARIANT_STYLES: Record<
 export function Toaster() {
   const toasts = useToastStore((state) => state.toasts);
   const dismiss = useToastStore((state) => state.dismiss);
+  const popoverRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     return () => {
@@ -123,32 +127,49 @@ export function Toaster() {
     };
   }, []);
 
+  useEffect(() => {
+    const el = popoverRef.current;
+    if (!el || typeof el.showPopover !== "function") return;
+    // Promote Toaster to the top of the browser Top Layer on every toast change
+    // so it stays crisp above any open <dialog>.showModal() backdrop blur.
+    try {
+      if (el.matches(":popover-open")) el.hidePopover();
+      if (toasts.length > 0) el.showPopover();
+    } catch {
+      // Ignore environments without full Popover API support.
+    }
+  }, [toasts]);
+
   if (toasts.length === 0) return null;
 
   return (
     <div
+      ref={popoverRef}
+      popover="manual"
       aria-label="Thông báo hệ thống"
-      className="pointer-events-none fixed bottom-4 right-4 z-50 flex w-full max-w-sm flex-col gap-2 px-4 sm:px-0 print:hidden"
+      className="pointer-events-none fixed inset-auto left-auto right-4 top-20 z-[60] m-0 flex w-full max-w-sm flex-col gap-2.5 border-0 bg-transparent p-0 px-4 text-inherit sm:px-0 print:hidden"
     >
       {toasts.map((item) => {
-        const { container, iconClass, Icon } = VARIANT_STYLES[item.variant];
+        const { container, iconBox, titleClass, Icon } = VARIANT_STYLES[item.variant];
         return (
           <div
             key={item.id}
             role={item.variant === "error" ? "alert" : "status"}
             aria-live={item.variant === "error" ? "assertive" : "polite"}
-            className={`pointer-events-auto flex items-start gap-3 rounded-xl border p-3.5 shadow-lg ${container}`}
+            className={`pointer-events-auto flex items-start gap-3 rounded-2xl border p-3.5 shadow-xl backdrop-blur-md ${container}`}
           >
-            <Icon className={`mt-0.5 h-5 w-5 shrink-0 ${iconClass}`} aria-hidden="true" />
+            <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${iconBox}`}>
+              <Icon className="h-4 w-4" aria-hidden="true" />
+            </span>
             <div className="min-w-0 flex-1 text-sm">
-              {item.title ? <p className="font-semibold">{item.title}</p> : null}
-              <p className="mt-0.5 break-words leading-5">{item.message}</p>
+              {item.title ? <p className={`font-semibold leading-tight ${titleClass}`}>{item.title}</p> : null}
+              <p className="mt-1 break-words text-xs leading-5 text-slate-600">{item.message}</p>
             </div>
             <button
               type="button"
               onClick={() => dismiss(item.id)}
               aria-label="Đóng thông báo"
-              className="rounded-md p-1 opacity-70 hover:bg-black/5 hover:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600"
+              className="rounded-lg p-1 text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600"
             >
               <X className="h-4 w-4" aria-hidden="true" />
             </button>
