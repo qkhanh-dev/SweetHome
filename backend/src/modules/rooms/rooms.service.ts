@@ -66,6 +66,9 @@ export class RoomsService {
       return await this.prisma.phong.create({
         data: {
           soPhong: dto.soPhong,
+          tenPhong: dto.tenPhong,
+          moTa: dto.moTa,
+          hinhAnh: dto.hinhAnh,
           tang: dto.tang,
           trangThai: TrangThaiPhong.TRONG,
           homestay: { connect: { maHomestay: dto.maHomestay } },
@@ -97,6 +100,9 @@ export class RoomsService {
             where: { maPhong: id, trangThai: room.trangThai },
             data: {
               soPhong: dto.soPhong,
+              ...(dto.tenPhong !== undefined && { tenPhong: dto.tenPhong }),
+              ...(dto.moTa !== undefined && { moTa: dto.moTa }),
+              ...(dto.hinhAnh !== undefined && { hinhAnh: dto.hinhAnh }),
               tang: dto.tang,
               ...(dto.trangThai && { trangThai: dto.trangThai }),
               loaiPhong: { connect: { maLoaiPhong: dto.maLoaiPhong } },

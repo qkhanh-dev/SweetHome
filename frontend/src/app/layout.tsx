@@ -1,22 +1,10 @@
 import type { Metadata } from "next";
-import localFont from "next/font/local";
 import { Toaster } from "@/components/ui/toast";
 import "./globals.css";
 
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900",
-});
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
-});
-
 export const metadata: Metadata = {
-  title: "SweetHome",
-  description: "Khung giao diện quản lý homestay SweetHome",
+  title: "SweetHome Đà Lạt — Đặt phòng & Quản lý Homestay",
+  description: "Hệ thống đặt phòng trực tuyến và quản lý homestay SweetHome Đà Lạt",
 };
 
 export default function RootLayout({
@@ -25,8 +13,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="vi" className={`${geistSans.variable} ${geistMono.variable}`}>
-      <body className="font-sans antialiased">
+    <html lang="vi">
+      <body className="min-h-screen bg-[#FAF9F6] font-sans text-slate-900 antialiased">
         {children}
         <Toaster />
       </body>

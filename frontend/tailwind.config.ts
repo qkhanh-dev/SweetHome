@@ -13,10 +13,17 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ["var(--font-geist-sans)", "ui-sans-serif", "system-ui", "sans-serif"],
-        mono: ["var(--font-geist-mono)", "ui-monospace", "monospace"],
+        sans: ["Geist", "ui-sans-serif", "system-ui", "sans-serif"],
+        mono: ["JetBrains Mono", "ui-monospace", "monospace"],
       },
       colors: {
+        brand: {
+          DEFAULT: "#065F46",
+          dark: "#044E39",
+          light: "#ECFDF5",
+          alabaster: "#FAF9F6",
+          border: "#E2E8F0",
+        },
         border: color("border"),
         input: color("input"),
         ring: color("ring"),

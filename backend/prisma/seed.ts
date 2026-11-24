@@ -69,9 +69,9 @@ async function main() {
     },
   });
 
-  const tkStaffVungtau = await prisma.taiKhoan.create({
+  const tkStaffMorning = await prisma.taiKhoan.create({
     data: {
-      username: 'staff_vungtau',
+      username: 'staff_dalat2',
       passwordHash: defaultPasswordHash,
       vaiTro: 'STAFF',
       trangThai: 'ACTIVE',
@@ -106,39 +106,17 @@ async function main() {
   });
 
   // --------------------------------------------------------------------------
-  // BƯỚC 3: KHỞI TẠO CƠ SỞ HOMESTAY (Homestay - 3 cơ sở tại Đà Lạt, Vũng Tàu, Hội An)
+  // BƯỚC 3: KHỞI TẠO CƠ SỞ HOMESTAY (Homestay tại Đà Lạt)
   // --------------------------------------------------------------------------
-  console.log('3. Đang tạo dữ liệu Homestay...');
+  console.log('3. Đang tạo dữ liệu Homestay Đà Lạt...');
   const hsDalat = await prisma.homestay.create({
     data: {
-      tenHomestay: 'SweetHome Đà Lạt - Thung Lũng Mây',
+      tenHomestay: 'SweetHome Đà Lạt Heritage',
       diaChi: '48 Khởi Nghĩa Bắc Sơn, Phường 10, TP. Đà Lạt, Lâm Đồng',
       hotline: '0901234567',
       email: 'dalat@sweethome.vn',
       quyDinhChung:
-        'Check-in từ 14:00, check-out trước 12:00. Nghiêm cấm hút thuốc trong phòng ngủ. Giữ yên tĩnh chung sau 22:00 để bảo đảm không gian nghỉ dưỡng.',
-    },
-  });
-
-  const hsVungtau = await prisma.homestay.create({
-    data: {
-      tenHomestay: 'SweetHome Vũng Tàu - Biển Xanh',
-      diaChi: '12 Lê Hồng Phong, Phường Thắng Tam, TP. Vũng Tàu, Bà Rịa - Vũng Tàu',
-      hotline: '0902345678',
-      email: 'vungtau@sweethome.vn',
-      quyDinhChung:
-        'Check-in từ 14:00, check-out trước 12:00. Vui lòng tắm tráng nước ngọt tại sảnh trước khi lên phòng sau khi tắm biển.',
-    },
-  });
-
-  const hsHoian = await prisma.homestay.create({
-    data: {
-      tenHomestay: 'SweetHome Hội An - Phố Cổ Heritage',
-      diaChi: '86 Trần Phú, Phường Minh An, TP. Hội An, Quảng Nam',
-      hotline: '0903456789',
-      email: 'hoian@sweethome.vn',
-      quyDinhChung:
-        'Check-in từ 14:00, check-out trước 12:00. Giữ gìn vệ sinh và bảo tồn kiến trúc nhà gỗ cổ kính của Homestay.',
+        'Check-in từ 14:00, check-out trước 12:00. Nghiêm cấm hút thuốc trong phòng ngủ. Giữ yên tĩnh chung sau 22:00 để bảo đảm không gian nghỉ dưỡng giữa rừng thông Đà Lạt.',
     },
   });
 
@@ -156,7 +134,7 @@ async function main() {
     data: { tenTienNghi: 'Máy chiếu phim 4K 120-inch & Netflix', loaiTienNghi: 'Giải trí' },
   });
   const tnBanCong = await prisma.tienNghi.create({
-    data: { tenTienNghi: 'Ban công ngắm bình minh & thung lũng', loaiTienNghi: 'Không gian' },
+    data: { tenTienNghi: 'Ban công ngắm bình minh & đồi thông', loaiTienNghi: 'Không gian' },
   });
   const tnBbq = await prisma.tienNghi.create({
     data: { tenTienNghi: 'Khu vực bếp nướng BBQ ngoài trời', loaiTienNghi: 'Ăn uống' },
@@ -197,7 +175,7 @@ async function main() {
       sucChuaToiDa: 2,
       giaNgayThuong: 800000,
       giaCuoiTuan: 1000000,
-      moTa: 'Hạng phòng cao cấp với ban công riêng biệt ngắm trọn thung lũng hoặc bãi biển, trang bị bồn tắm nằm và máy chiếu 4K.',
+      moTa: 'Hạng phòng cao cấp với ban công riêng biệt ngắm trọn đồi thông Đà Lạt, trang bị bồn tắm nằm và máy chiếu 4K.',
     },
   });
 
@@ -220,6 +198,9 @@ async function main() {
   const phong101 = await prisma.phong.create({
     data: {
       soPhong: 'P101',
+      tenPhong: 'Warm Pine Morning',
+      moTa: 'Không gian ốp gỗ ấm áp với đèn ngủ ánh vàng dịu nhẹ, cửa sổ đón nắng sớm và nội thất tối giản tinh tế dành cho cặp đôi tìm kiếm sự bình yên tại Đà Lạt.',
+      hinhAnh: 'https://images.unsplash.com/photo-1618773928121-c32242e63f39?auto=format&fit=crop&w=1200&q=80',
       tang: 1,
       trangThai: TrangThaiPhong.TRONG,
       maHomestay: hsDalat.maHomestay,
@@ -233,6 +214,9 @@ async function main() {
   const phong102 = await prisma.phong.create({
     data: {
       soPhong: 'P102',
+      tenPhong: 'Quiet Twilight Blue',
+      moTa: 'Phong cách boutique hiện đại với mảng đầu giường bọc nỉ xanh lam trầm ấm, ánh sáng dịu nhẹ và không gian riêng tư tuyệt đối cho kỳ nghỉ thư giãn.',
+      hinhAnh: 'https://images.unsplash.com/photo-1566665797739-1674de7a421a?auto=format&fit=crop&w=1200&q=80',
       tang: 1,
       trangThai: TrangThaiPhong.DA_DAT,
       maHomestay: hsDalat.maHomestay,
@@ -253,6 +237,9 @@ async function main() {
   const phong201 = await prisma.phong.create({
     data: {
       soPhong: 'P201',
+      tenPhong: 'Cedar Whisper Hideaway',
+      moTa: 'Phòng gỗ tuyết tùng ấm áp với ban công riêng ngắm tán thông xanh rì rào gió núi, trang bị bồn tắm nằm và máy chiếu 4K cho buổi tối thư giãn tại Đà Lạt.',
+      hinhAnh: 'https://images.unsplash.com/photo-1616594039964-ae9021a400a0?auto=format&fit=crop&w=1200&q=80',
       tang: 2,
       trangThai: TrangThaiPhong.TRONG,
       maHomestay: hsDalat.maHomestay,
@@ -272,6 +259,9 @@ async function main() {
   const phong202 = await prisma.phong.create({
     data: {
       soPhong: 'P202',
+      tenPhong: 'Pine Sunset Suite',
+      moTa: 'Căn suite rộng rãi có góc tiếp khách với bộ ghế bành êm ái, bàn làm việc riêng và cửa sổ lớn ngắm toàn cảnh sương chiều Đà Lạt.',
+      hinhAnh: 'https://images.unsplash.com/photo-1591088398332-8a7791972843?auto=format&fit=crop&w=1200&q=80',
       tang: 2,
       trangThai: TrangThaiPhong.CHO_DON_DEP,
       maHomestay: hsDalat.maHomestay,
@@ -292,6 +282,9 @@ async function main() {
   const phong301 = await prisma.phong.create({
     data: {
       soPhong: 'P301',
+      tenPhong: 'Misty Heritage Suite',
+      moTa: 'Không gian nghỉ dưỡng sang trọng kết hợp sofa nhung cao cấp, rèm cửa trần cao thoáng đãng và khu sinh hoạt riêng tư cho gia đình 4 người.',
+      hinhAnh: 'https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=1200&q=80',
       tang: 3,
       trangThai: TrangThaiPhong.BAO_TRI,
       maHomestay: hsDalat.maHomestay,
@@ -307,13 +300,16 @@ async function main() {
     },
   });
 
-  // Phòng Vũng Tàu
+  // Các phòng tầng 1-3 còn lại tại SweetHome Đà Lạt Heritage
   const phong103 = await prisma.phong.create({
     data: {
       soPhong: 'P103',
+      tenPhong: 'Morning Mist Blossom',
+      moTa: 'Không gian sáng sủa tràn ngập nắng sớm qua khung cửa sổ rộng, tông trắng – gỗ sồi thanh lịch phù hợp cho kỳ nghỉ cuối tuần nhẹ nhàng tại Đà Lạt.',
+      hinhAnh: 'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?auto=format&fit=crop&w=1200&q=80',
       tang: 1,
       trangThai: TrangThaiPhong.TRONG,
-      maHomestay: hsVungtau.maHomestay,
+      maHomestay: hsDalat.maHomestay,
       maLoaiPhong: lpStandard.maLoaiPhong,
       tienNghis: {
         connect: [{ maTienNghi: tnWifi.maTienNghi }, { maTienNghi: tnDieuHoa.maTienNghi }, { maTienNghi: tnMaySay.maTienNghi }],
@@ -324,9 +320,12 @@ async function main() {
   const phong203 = await prisma.phong.create({
     data: {
       soPhong: 'P203',
+      tenPhong: 'Amber Sunset Studio',
+      moTa: 'Phòng nghỉ mang dấu ấn nghệ thuật đương đại với tranh sơn dầu ấm áp, đôn nhung cam đất và khung cửa kính lớn đón ánh hoàng hôn se lạnh phố núi Đà Lạt.',
+      hinhAnh: 'https://images.unsplash.com/photo-1540518614846-7eded433c457?auto=format&fit=crop&w=1200&q=80',
       tang: 2,
       trangThai: TrangThaiPhong.TRONG,
-      maHomestay: hsVungtau.maHomestay,
+      maHomestay: hsDalat.maHomestay,
       maLoaiPhong: lpDeluxe.maLoaiPhong,
       tienNghis: {
         connect: [
@@ -342,9 +341,12 @@ async function main() {
   const phong302 = await prisma.phong.create({
     data: {
       soPhong: 'P302',
+      tenPhong: 'Starlight Attic Suite',
+      moTa: 'Căn suite áp mái thoáng rộng với phòng tắm vách kính nghệ thuật, sofa phòng khách cỡ lớn và khung cửa rộng ngắm đồi thông sương đêm Đà Lạt.',
+      hinhAnh: 'https://images.unsplash.com/photo-1578683010236-d716f9a3f461?auto=format&fit=crop&w=1200&q=80',
       tang: 3,
       trangThai: TrangThaiPhong.DANG_SU_DUNG,
-      maHomestay: hsVungtau.maHomestay,
+      maHomestay: hsDalat.maHomestay,
       maLoaiPhong: lpFamily.maLoaiPhong,
       tienNghis: {
         connect: [
@@ -357,13 +359,15 @@ async function main() {
     },
   });
 
-  // Phòng Hội An
   const phong104 = await prisma.phong.create({
     data: {
       soPhong: 'P104',
+      tenPhong: 'Emerald Garden Nook',
+      moTa: 'Căn phòng tông gỗ nâu trầm ấm áp ẩn mình giữa vườn hoa Đà Lạt, cửa trượt kính hướng tiểu cảnh cây xanh mát mắt cùng set trà chiều ấm cúng.',
+      hinhAnh: 'https://images.unsplash.com/photo-1611892440504-42a792e24d32?auto=format&fit=crop&w=1200&q=80',
       tang: 1,
       trangThai: TrangThaiPhong.TRONG,
-      maHomestay: hsHoian.maHomestay,
+      maHomestay: hsDalat.maHomestay,
       maLoaiPhong: lpStandard.maLoaiPhong,
       tienNghis: {
         connect: [{ maTienNghi: tnWifi.maTienNghi }, { maTienNghi: tnDieuHoa.maTienNghi }, { maTienNghi: tnAmNuoc.maTienNghi }],
@@ -374,9 +378,12 @@ async function main() {
   const phong204 = await prisma.phong.create({
     data: {
       soPhong: 'P204',
+      tenPhong: 'Sunlit Veranda Retreat',
+      moTa: 'Thiết kế trần gỗ mộc kết hợp hệ cửa kính lớn mở ra khoảng xanh sân vườn rợp nắng cao nguyên, ghế thư giãn thủ công mang đậm nét bình yên Đà Lạt.',
+      hinhAnh: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=1200&q=80',
       tang: 2,
       trangThai: TrangThaiPhong.TRONG,
-      maHomestay: hsHoian.maHomestay,
+      maHomestay: hsDalat.maHomestay,
       maLoaiPhong: lpDeluxe.maLoaiPhong,
       tienNghis: {
         connect: [
@@ -572,7 +579,7 @@ async function main() {
       maDatPhong: dp1.maDatPhong,
       soSao: 5,
       noiDung:
-        'Phòng view thung lũng ngắm mây cực kỳ đẹp, máy chiếu xem phim buổi tối chill lắm! Host nhiệt tình, đồ ăn BBQ rất ngon và tươi sạch.',
+        'Phòng gỗ tuyết tùng thơm nhẹ, ban công nhìn ra đồi thông Đà Lạt cực kỳ thơ mộng, máy chiếu xem phim buổi tối chill lắm! Host nhiệt tình, đồ ăn BBQ rất ngon và tươi sạch.',
       ngayDanhGia: ngayTra1,
       phanHoiHost:
         'Cảm ơn bạn Khánh và bạn đời đã lựa chọn SweetHome! Rất hân hạnh được đón tiếp hai bạn trong những kỳ nghỉ kỷ niệm tiếp theo ạ!',
@@ -652,7 +659,7 @@ async function main() {
 
   // --------------------------------------------------------------------------
   // KỊCH BẢN 3: ĐƠN ĐANG LƯU TRÚ (DANG_LUU_TRU) - Khách đã Check-in bằng CCCD
-  // Khách: Nguyễn Văn Thụy - Phòng: P302 (Family Vũng Tàu)
+  // Khách: Nguyễn Văn Thụy - Phòng: P302 (Starlight Attic Suite - Đà Lạt)
   // --------------------------------------------------------------------------
   const ngayNhan3 = toUtcMidnight(new Date(now.getTime() - 1 * 24 * 60 * 60 * 1000));
   const ngayTra3 = toUtcMidnight(new Date(now.getTime() + 1 * 24 * 60 * 60 * 1000));
@@ -746,7 +753,7 @@ async function main() {
 
   // --------------------------------------------------------------------------
   // KỊCH BẢN 5: ĐƠN CHỜ THANH TOÁN CỌC (CHO_COC) - Khách vừa tạo đơn
-  // Khách: Huỳnh Nguyễn Khắc Huy - Phòng: P203 (Deluxe Vũng Tàu)
+  // Khách: Huỳnh Nguyễn Khắc Huy - Phòng: P203 (Amber Sunset Studio - Đà Lạt)
   // --------------------------------------------------------------------------
   const ngayNhan5 = toUtcMidnight(new Date(now.getTime() + 10 * 24 * 60 * 60 * 1000));
   const ngayTra5 = toUtcMidnight(new Date(now.getTime() + 13 * 24 * 60 * 60 * 1000));

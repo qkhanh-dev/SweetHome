@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+
+<html lang="vi"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_dashboard" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{colors:{"on-tertiary-fixed-variant":"#173bab","secondary":"#9b4500","on-primary-container":"#8bd6b7","primary-fixed":"#a6f2d1","inverse-on-surface":"#eaf1ff","on-tertiary-fixed":"#001453","secondary-fixed":"#ffdbca","surface-tint":"#1b6b51","primary":"#004532","on-primary-fixed":"#002116","tertiary-container":"#2949b7","on-primary-fixed-variant":"#00513b","background":"#f8f9ff","on-secondary-container":"#682c00","surface-container-low":"#eff4ff","on-secondary":"#ffffff","error":"#ba1a1a","surface-bright":"#f8f9ff","surface-container-high":"#dce9ff","secondary-fixed-dim":"#ffb68e","on-secondary-fixed-variant":"#763300","on-error":"#ffffff","on-surface":"#0d1c2e","primary-fixed-dim":"#8bd6b6","on-secondary-fixed":"#331200","on-tertiary":"#ffffff","surface-dim":"#ccdbf3","tertiary":"#002fa0","surface-variant":"#d5e3fc","tertiary-fixed":"#dde1ff","surface-container-lowest":"#ffffff","on-primary":"#ffffff","on-background":"#0d1c2e","on-error-container":"#93000a","on-surface-variant":"#3f4944","tertiary-fixed-dim":"#b8c4ff","inverse-surface":"#233144","secondary-container":"#fd8a42","primary-container":"#065f46","surface":"#f8f9ff","error-container":"#ffdad6","outline-variant":"#bec9c2","inverse-primary":"#8bd6b6","surface-container-highest":"#d5e3fc","outline":"#6f7973","surface-container":"#e6eeff","on-tertiary-container":"#b9c4ff"},borderRadius:{"DEFAULT":"0.125rem","lg":"0.25rem","xl":"0.5rem","full":"0.75rem"},spacing:{"space-xl":"2rem","space-sm":"0.75rem","space-2xs":"0.25rem","margin":"2rem","gutter-dense":"1rem","space-xs":"0.5rem","margin-wide":"3rem","space-md":"1rem","gutter":"1.5rem","space-2xl":"3rem","space-lg":"1.5rem"},fontFamily:{"currency-tabular":["Geist"],"eyebrow":["Geist"],"caption":["Geist"],"headline-1":["Geist"],"headline-3":["Geist"],"headline-2":["Geist"],"body-regular":["Geist"],"code-id":["JetBrains Mono"],"display":["Geist"],"body-sm":["Geist"],"body-medium":["Geist"]},fontSize:{"currency-tabular":["14px",{lineHeight:"20px",letterSpacing:"0em",fontWeight:"600"}],"eyebrow":["12px",{lineHeight:"16px",letterSpacing:"0.06em",fontWeight:"600"}],"caption":["12px",{lineHeight:"16px",letterSpacing:"0em",fontWeight:"400"}],"headline-1":["28px",{lineHeight:"36px",letterSpacing:"-0.02em",fontWeight:"700"}],"headline-3":["17px",{lineHeight:"24px",letterSpacing:"-0.01em",fontWeight:"600"}],"headline-2":["20px",{lineHeight:"28px",letterSpacing:"-0.015em",fontWeight:"600"}],"body-regular":["14px",{lineHeight:"20px",letterSpacing:"0em",fontWeight:"400"}],"code-id":["13px",{lineHeight:"18px",letterSpacing:"-0.01em",fontWeight:"500"}],"display":["36px",{lineHeight:"44px",letterSpacing:"-0.025em",fontWeight:"700"}],"body-sm":["13px",{lineHeight:"18px",letterSpacing:"0em",fontWeight:"400"}],"body-medium":["14px",{lineHeight:"20px",letterSpacing:"0em",fontWeight:"500"}]}}}}</script></head><body class="bg-[#F6F7F5] font-body-regular text-body-regular text-on-surface antialiased"><aside class="fixed left-0 top-0 h-full w-64 bg-[#F8FAF9] z-50 flex flex-col justify-between shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="flex flex-col flex-1 overflow-y-auto"><div class="h-16 px-space-md flex items-center gap-space-xs bg-[#F8FAF9]"><div class="w-9 h-9 rounded-lg bg-primary-container flex items-center justify-center text-on-primary flex-shrink-0"><span class="material-symbols-outlined text-[20px]">cottage</span></div><div class="flex flex-col leading-tight min-w-0"><span class="font-headline-3 text-[14px] leading-tight font-bold text-primary tracking-tight truncate">SweetHome</span><span class="font-eyebrow text-[10px] uppercase tracking-wider text-outline truncate">Đà Lạt Homestay</span></div></div><div class="px-space-xs py-space-sm flex flex-col gap-space-md"><div class="flex flex-col gap-space-2xs"><span class="px-space-xs font-eyebrow text-eyebrow uppercase text-outline tracking-wider">Tổng quan quản trị</span><nav class="flex flex-col gap-0.5" data-active-classes="bg-primary-container text-on-primary font-medium rounded-lg"><a class="flex items-center gap-space-xs px-space-xs py-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors font-body-regular text-body-regular" data-path="dashboard" href="#"><span class="material-symbols-outlined text-[18px]">space_dashboard</span><span>Dashboard thống kê</span></a><a class="flex items-center gap-space-xs px-space-xs py-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors font-body-regular text-body-regular" data-path="so-do-phong" href="#"><span class="material-symbols-outlined text-[18px]">grid_view</span><span>Sơ đồ phòng</span></a><a class="flex items-center gap-space-xs px-space-xs py-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors font-body-regular text-body-regular" data-path="nhan-phong" href="#"><span class="material-symbols-outlined text-[18px]">login</span><span>Nhận phòng</span></a><a class="flex items-center gap-space-xs px-space-xs py-1.5 rounded-lg text-on-surface-variant hover:bg-space-container-high hover:text-on-surface transition-colors font-body-regular text-body-regular" data-path="dich-vu-va-phu-phi" href="#"><span class="material-symbols-outlined text-[18px]">receipt_long</span><span>Dịch vụ & Phụ phí</span></a><a class="flex items-center gap-space-xs px-space-xs py-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors font-body-regular text-body-regular" data-path="tra-phong" href="#"><span class="material-symbols-outlined text-[18px]">logout</span><span>Trả phòng</span></a></nav></div><div class="flex flex-col gap-space-2xs"><span class="px-space-xs font-eyebrow text-eyebrow uppercase text-outline tracking-wider">Cấu hình & Hệ thống</span><nav class="flex flex-col gap-0.5" data-active-classes="bg-primary-container text-on-primary font-medium rounded-lg"><a class="flex items-center gap-space-xs px-space-xs py-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors font-body-regular text-body-regular" data-path="thong-tin-homestay" href="#"><span class="material-symbols-outlined text-[18px]">storefront</span><span>Thông tin Homestay</span></a><a class="flex items-center gap-space-xs px-space-xs py-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors font-body-regular text-body-regular" data-path="loai-phong-va-gia" href="#"><span class="material-symbols-outlined text-[18px]">sell</span><span>Loại phòng & giá</span></a><a class="flex items-center gap-space-xs px-space-xs py-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors font-body-regular text-body-regular" data-path="quan-ly-tien-nghi" href="#"><span class="material-symbols-outlined text-[18px]">local_laundry_service</span><span>Quản lý Tiện nghi</span></a><a class="flex items-center gap-space-xs px-space-xs py-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors font-body-regular text-body-regular" data-path="quan-ly-phong" href="#"><span class="material-symbols-outlined text-[18px]">meeting_room</span><span>Quản lý Phòng</span></a><a class="flex items-center gap-space-xs px-space-xs py-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors font-body-regular text-body-regular" data-path="quan-ly-dich-vu" href="#"><span class="material-symbols-outlined text-[18px]">room_service</span><span>Quản lý Dịch vụ</span></a><a class="flex items-center gap-space-xs px-space-xs py-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors font-body-regular text-body-regular" data-path="danh-gia-va-phan-hoi" href="#"><span class="material-symbols-outlined text-[18px]">hotel_class</span><span>Đánh giá & Phản hồi</span></a><a class="flex items-center gap-space-xs px-space-xs py-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors font-body-regular text-body-regular" data-path="quan-ly-tai-khoan" href="#"><span class="material-symbols-outlined text-[18px]">manage_accounts</span><span>Quản lý Tài khoản</span></a></nav></div><div class="flex flex-col gap-space-2xs"><span class="px-space-xs font-eyebrow text-eyebrow uppercase text-outline tracking-wider">Tài khoản</span><nav class="flex flex-col gap-0.5" data-active-classes="bg-primary-container text-on-primary font-medium rounded-lg"><a class="flex items-center gap-space-xs px-space-xs py-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors font-body-regular text-body-regular" data-path="doi-mat-khau" href="#"><span class="material-symbols-outlined text-[18px]">lock_reset</span><span>Đổi mật khẩu</span></a><a class="flex items-center gap-space-xs px-space-xs py-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors font-body-regular text-body-regular" data-path="ve-trang-khach" href="#"><span class="material-symbols-outlined text-[18px]">open_in_new</span><span>Về trang khách</span></a></nav></div></div></div><div class="px-space-md py-space-sm bg-surface-container-lowest/80 mx-space-xs mb-space-sm rounded-lg flex items-center justify-between"><div class="flex items-center gap-space-2xs"><span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span><span class="font-code-id text-code-id text-on-surface-variant text-[11px]">SweetHome OS</span></div><span class="font-code-id text-code-id text-outline text-[11px]">v2.4</span></div></aside><div class="pl-64"><header class="fixed top-0 left-64 right-0 h-16 bg-surface-container-lowest/90 backdrop-blur-xl z-40 shadow-[0_1px_8px_rgba(0,0,0,0.04)] px-space-lg flex items-center justify-between"><div class="flex items-center gap-space-md flex-1 max-w-2xl"><div class="flex items-center gap-space-2xs px-space-xs py-1 rounded bg-surface-container-low text-on-surface font-body-medium text-body-sm cursor-pointer hover:bg-surface-container-high transition-colors flex-shrink-0"><span class="material-symbols-outlined text-primary text-[18px]">location_on</span><span>Chi nhánh Trại Mát</span><span class="material-symbols-outlined text-outline text-[16px]">expand_more</span></div><div class="flex items-center gap-space-xs px-space-sm py-1.5 rounded bg-surface-container-low w-full max-w-md focus-within:bg-surface-container-lowest transition-colors"><span class="material-symbols-outlined text-outline text-[18px]">search</span><input class="bg-transparent border-0 outline-none w-full font-body-regular text-body-sm text-on-surface placeholder:text-outline" placeholder="Tìm đặt phòng, phòng, dịch vụ, khách hàng... (Ctrl+K)" type="text"/></div></div><div class="flex items-center gap-space-md"><div class="flex items-center gap-space-2xs px-space-xs py-1 rounded-full bg-primary-fixed text-on-primary-fixed font-eyebrow text-eyebrow tracking-wide"><span class="material-symbols-outlined text-[14px]">schedule</span><span>Ca sáng: 07:00 - 15:00</span></div><div class="relative flex items-center justify-center w-8 h-8 rounded-full hover:bg-surface-container-low text-on-surface-variant transition-colors cursor-pointer"><span class="material-symbols-outlined text-[20px]">notifications</span><span class="absolute top-1 right-1 w-2 h-2 rounded-full bg-error"></span></div><div class="flex items-center gap-space-xs cursor-pointer"><div class="flex flex-col text-right leading-tight"><span class="font-body-medium text-body-sm text-on-surface">Nguyễn Quản Trị Viên</span><span class="font-eyebrow text-[10px] uppercase text-outline tracking-wider">Administrator</span></div><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="relative pt-16 bg-[#F6F7F5] min-h-screen"><div class="max-w-[1440px] mx-auto p-space-lg"><div class="flex flex-col w-full">
+<!-- Top Header Row -->
+<div class="flex flex-col md:flex-row md:items-end justify-between pb-space-lg mb-space-lg gap-space-md">
+<div class="flex flex-col gap-1 max-w-3xl">
+<div class="flex items-center gap-space-xs">
+<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-primary/10 text-primary font-eyebrow text-eyebrow uppercase tracking-wider">
+<span class="material-symbols-outlined text-[14px]">sell</span>
+          PHÂN HỆ 4 · UC4.3
+        </span>
+<span class="font-caption text-caption text-outline">Boutique Catalog Engine</span>
+</div>
+<h1 class="font-headline-1 text-headline-1 text-on-surface tracking-tight">
+        Quản lý Danh mục Dịch vụ
+      </h1>
+<p class="font-body-regular text-body-regular text-on-surface-variant">
+        Chủ homestay tạo mới, sửa đổi hoặc ngưng cung cấp các dịch vụ gia tăng (BBQ sân vườn, thuê xe máy, giặt sấy, bữa sáng...) kèm đơn giá niêm yết đồng bộ toàn hệ thống.
+      </p>
+</div>
+<!-- Actions -->
+<div class="flex items-center gap-space-xs flex-shrink-0">
+<button class="h-10 px-space-md bg-primary-container hover:bg-primary text-on-primary rounded font-body-medium text-body-medium shadow-sm transition-all flex items-center gap-space-xs focus:ring-2 focus:ring-primary-fixed focus:outline-none" id="openModalBtn" type="button">
+<span class="material-symbols-outlined text-[20px]">add_circle</span>
+<span>Thêm dịch vụ mới</span>
+</button>
+</div>
+</div>
+<!-- Quick KPI / Stats Strip -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-space-md mb-space-xl">
+<!-- Stat 1 -->
+<div class="p-space-md bg-surface-container-lowest rounded-xl shadow-sm flex items-start justify-between">
+<div class="flex flex-col gap-1">
+<span class="font-eyebrow text-eyebrow text-outline uppercase tracking-wider">Tổng số dịch vụ</span>
+<div class="flex items-baseline gap-space-2xs">
+<span class="font-headline-2 text-headline-2 text-on-surface">6</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">mục niêm yết</span>
+</div>
+<div class="flex items-center gap-1 text-primary text-caption font-caption mt-1">
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+<span>100% đang sẵn sàng phục vụ</span>
+</div>
+</div>
+<div class="w-10 h-10 rounded-lg bg-surface-container-low text-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-[22px]">room_service</span>
+</div>
+</div>
+<!-- Stat 2 -->
+<div class="p-space-md bg-surface-container-lowest rounded-xl shadow-sm flex items-start justify-between">
+<div class="flex flex-col gap-1 min-w-0">
+<span class="font-eyebrow text-eyebrow text-outline uppercase tracking-wider">Danh mục phổ biến</span>
+<div class="font-headline-3 text-headline-3 text-on-surface truncate">
+          Ẩm thực • Di chuyển • Giặt ủi
+        </div>
+<span class="font-caption text-caption text-outline truncate">Bao gồm 4 nhóm phụ trợ trải nghiệm khách</span>
+</div>
+<div class="w-10 h-10 rounded-lg bg-surface-container-low text-secondary flex items-center justify-center">
+<span class="material-symbols-outlined text-[22px]">category</span>
+</div>
+</div>
+<!-- Stat 3 -->
+<div class="p-space-md bg-surface-container-lowest rounded-xl shadow-sm flex items-start justify-between">
+<div class="flex flex-col gap-1">
+<span class="font-eyebrow text-eyebrow text-outline uppercase tracking-wider">Đồng bộ lễ tân & khách</span>
+<div class="flex items-center gap-1.5 text-primary font-body-medium text-body-medium">
+<span class="material-symbols-outlined text-[18px]">sync_alt</span>
+<span>Tự động tại S-12 & S-13</span>
+</div>
+<span class="font-caption text-caption text-outline">Tính tiền tức thì khi check-out</span>
+</div>
+<div class="w-10 h-10 rounded-lg bg-surface-container-low text-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-[22px]">receipt_long</span>
+</div>
+</div>
+</div>
+<!-- Main Service Catalog Table Card -->
+<div class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden mb-space-xl">
+<!-- Table Header Strip -->
+<div class="bg-surface-container-low px-space-lg py-3 flex flex-wrap items-center justify-between gap-space-xs text-body-sm font-body-sm">
+<div class="flex items-center gap-space-xs font-body-medium text-on-surface">
+<span class="material-symbols-outlined text-[18px] text-primary">view_list</span>
+<span>Hiện diện danh mục: <strong class="text-primary font-body-medium">6 dịch vụ</strong> đang mở</span>
+</div>
+<div class="flex items-center gap-space-xs text-outline font-caption text-caption">
+<span class="material-symbols-outlined text-[15px]">payments</span>
+<span>Đơn vị tính: VNĐ • Giá đã bao gồm thuế tiêu thụ & phí dịch vụ</span>
+</div>
+</div>
+<!-- Responsive Table Wrapper -->
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container text-outline font-eyebrow text-eyebrow uppercase tracking-wider h-10">
+<th class="py-2.5 px-space-lg w-[140px]">Mã DV</th>
+<th class="py-2.5 px-space-md">Tên dịch vụ & Đặc tính</th>
+<th class="py-2.5 px-space-md w-[180px] text-right">Đơn giá niêm yết</th>
+<th class="py-2.5 px-space-md w-[140px] text-center">Đơn vị tính</th>
+<th class="py-2.5 px-space-lg w-[210px] text-right">Thao tác</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-surface-container-low text-on-surface font-body-regular text-body-regular">
+<!-- DV01 -->
+<tr class="hover:bg-surface-container-low/60 transition-colors">
+<td class="py-space-md px-space-lg align-top">
+<span class="font-code-id text-code-id px-2.5 py-1 bg-surface-container rounded text-on-surface font-semibold">DV01</span>
+</td>
+<td class="py-space-md px-space-md align-top">
+<div class="flex items-start gap-space-sm">
+<div class="w-9 h-9 rounded-full bg-secondary-fixed/50 text-secondary flex items-center justify-center flex-shrink-0 mt-0.5">
+<span class="material-symbols-outlined text-[20px]">two_wheeler</span>
+</div>
+<div class="flex flex-col">
+<span class="font-body-medium text-body-medium text-on-surface font-semibold">Thuê xe máy tay ga (AirBlade 125cc)</span>
+<span class="font-caption text-caption text-outline mt-0.5">Xe đời mới kèm 02 mũ bảo hiểm đạt chuẩn & áo mưa tiện lợi</span>
+</div>
+</div>
+</td>
+<td class="py-space-md px-space-md text-right align-top">
+<span class="font-currency-tabular text-currency-tabular text-primary font-bold text-[16px]">150.000 ₫</span>
+</td>
+<td class="py-space-md px-space-md text-center align-top">
+<span class="inline-block px-3 py-0.5 rounded-full bg-surface-container text-on-surface-variant font-caption text-caption font-semibold">Ngày</span>
+</td>
+<td class="py-space-md px-space-lg text-right align-top">
+<div class="flex items-center justify-end gap-1.5">
+<button class="h-8 px-2.5 rounded bg-surface-container hover:bg-surface-container-high text-on-surface font-body-sm text-body-sm flex items-center gap-1 transition-colors" type="button">
+<span class="material-symbols-outlined text-[16px] text-primary">edit</span>
+<span>Sửa</span>
+</button>
+<button class="h-8 px-2.5 rounded bg-error-container/30 hover:bg-error-container text-error font-body-sm text-body-sm flex items-center gap-1 transition-colors" type="button">
+<span class="material-symbols-outlined text-[16px]">pause_circle</span>
+<span>Ngưng</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- DV02 -->
+<tr class="hover:bg-surface-container-low/60 transition-colors">
+<td class="py-space-md px-space-lg align-top">
+<span class="font-code-id text-code-id px-2.5 py-1 bg-surface-container rounded text-on-surface font-semibold">DV02</span>
+</td>
+<td class="py-space-md px-space-md align-top">
+<div class="flex items-start gap-space-sm">
+<div class="w-9 h-9 rounded-full bg-primary-fixed/40 text-primary flex items-center justify-center flex-shrink-0 mt-0.5">
+<span class="material-symbols-outlined text-[20px]">outdoor_grill</span>
+</div>
+<div class="flex flex-col">
+<span class="font-body-medium text-body-medium text-on-surface font-semibold">Set nướng BBQ sân vườn hải sản & thịt bò</span>
+<span class="font-caption text-caption text-outline mt-0.5">Bao gồm than hoa, gia vị ướp Đà Lạt, rau xà lách & bếp nướng riêng</span>
+</div>
+</div>
+</td>
+<td class="py-space-md px-space-md text-right align-top">
+<span class="font-currency-tabular text-currency-tabular text-primary font-bold text-[16px]">350.000 ₫</span>
+</td>
+<td class="py-space-md px-space-md text-center align-top">
+<span class="inline-block px-3 py-0.5 rounded-full bg-surface-container text-on-surface-variant font-caption text-caption font-semibold">Set</span>
+</td>
+<td class="py-space-md px-space-lg text-right align-top">
+<div class="flex items-center justify-end gap-1.5">
+<button class="h-8 px-2.5 rounded bg-surface-container hover:bg-surface-container-high text-on-surface font-body-sm text-body-sm flex items-center gap-1 transition-colors" type="button">
+<span class="material-symbols-outlined text-[16px] text-primary">edit</span>
+<span>Sửa</span>
+</button>
+<button class="h-8 px-2.5 rounded bg-error-container/30 hover:bg-error-container text-error font-body-sm text-body-sm flex items-center gap-1 transition-colors" type="button">
+<span class="material-symbols-outlined text-[16px]">pause_circle</span>
+<span>Ngưng</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- DV03 -->
+<tr class="hover:bg-surface-container-low/60 transition-colors">
+<td class="py-space-md px-space-lg align-top">
+<span class="font-code-id text-code-id px-2.5 py-1 bg-surface-container rounded text-on-surface font-semibold">DV03</span>
+</td>
+<td class="py-space-md px-space-md align-top">
+<div class="flex items-start gap-space-sm">
+<div class="w-9 h-9 rounded-full bg-tertiary-fixed/60 text-tertiary flex items-center justify-center flex-shrink-0 mt-0.5">
+<span class="material-symbols-outlined text-[20px]">local_laundry_service</span>
+</div>
+<div class="flex flex-col">
+<span class="font-body-medium text-body-medium text-on-surface font-semibold">Giặt ủi sấy thơm lấy nhanh</span>
+<span class="font-caption text-caption text-outline mt-0.5">Giặt sấy khô hoàn toàn, gấp gọn gàng giao tận cửa phòng trong vòng 4 tiếng</span>
+</div>
+</div>
+</td>
+<td class="py-space-md px-space-md text-right align-top">
+<span class="font-currency-tabular text-currency-tabular text-primary font-bold text-[16px]">40.000 ₫</span>
+</td>
+<td class="py-space-md px-space-md text-center align-top">
+<span class="inline-block px-3 py-0.5 rounded-full bg-surface-container text-on-surface-variant font-caption text-caption font-semibold">Kg</span>
+</td>
+<td class="py-space-md px-space-lg text-right align-top">
+<div class="flex items-center justify-end gap-1.5">
+<button class="h-8 px-2.5 rounded bg-surface-container hover:bg-surface-container-high text-on-surface font-body-sm text-body-sm flex items-center gap-1 transition-colors" type="button">
+<span class="material-symbols-outlined text-[16px] text-primary">edit</span>
+<span>Sửa</span>
+</button>
+<button class="h-8 px-2.5 rounded bg-error-container/30 hover:bg-error-container text-error font-body-sm text-body-sm flex items-center gap-1 transition-colors" type="button">
+<span class="material-symbols-outlined text-[16px]">pause_circle</span>
+<span>Ngưng</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- DV04 -->
+<tr class="hover:bg-surface-container-low/60 transition-colors">
+<td class="py-space-md px-space-lg align-top">
+<span class="font-code-id text-code-id px-2.5 py-1 bg-surface-container rounded text-on-surface font-semibold">DV04</span>
+</td>
+<td class="py-space-md px-space-md align-top">
+<div class="flex items-start gap-space-sm">
+<div class="w-9 h-9 rounded-full bg-secondary-fixed/60 text-secondary flex items-center justify-center flex-shrink-0 mt-0.5">
+<span class="material-symbols-outlined text-[20px]">coffee</span>
+</div>
+<div class="flex flex-col">
+<span class="font-body-medium text-body-medium text-on-surface font-semibold">Bữa sáng đặc sản địa phương & Cà phê</span>
+<span class="font-caption text-caption text-outline mt-0.5">Bánh mì xíu mại chén / hủ tiếu nóng + Cà phê phin Cầu Đất nguyên chất</span>
+</div>
+</div>
+</td>
+<td class="py-space-md px-space-md text-right align-top">
+<span class="font-currency-tabular text-currency-tabular text-primary font-bold text-[16px]">65.000 ₫</span>
+</td>
+<td class="py-space-md px-space-md text-center align-top">
+<span class="inline-block px-3 py-0.5 rounded-full bg-surface-container text-on-surface-variant font-caption text-caption font-semibold">Suất</span>
+</td>
+<td class="py-space-md px-space-lg text-right align-top">
+<div class="flex items-center justify-end gap-1.5">
+<button class="h-8 px-2.5 rounded bg-surface-container hover:bg-surface-container-high text-on-surface font-body-sm text-body-sm flex items-center gap-1 transition-colors" type="button">
+<span class="material-symbols-outlined text-[16px] text-primary">edit</span>
+<span>Sửa</span>
+</button>
+<button class="h-8 px-2.5 rounded bg-error-container/30 hover:bg-error-container text-error font-body-sm text-body-sm flex items-center gap-1 transition-colors" type="button">
+<span class="material-symbols-outlined text-[16px]">pause_circle</span>
+<span>Ngưng</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- DV05 -->
+<tr class="hover:bg-surface-container-low/60 transition-colors">
+<td class="py-space-md px-space-lg align-top">
+<span class="font-code-id text-code-id px-2.5 py-1 bg-surface-container rounded text-on-surface font-semibold">DV05</span>
+</td>
+<td class="py-space-md px-space-md align-top">
+<div class="flex items-start gap-space-sm">
+<div class="w-9 h-9 rounded-full bg-surface-container-high text-tertiary flex items-center justify-center flex-shrink-0 mt-0.5">
+<span class="material-symbols-outlined text-[20px]">directions_car</span>
+</div>
+<div class="flex flex-col">
+<span class="font-body-medium text-body-medium text-on-surface font-semibold">Đưa đón sân bay / ga tàu 7 chỗ</span>
+<span class="font-caption text-caption text-outline mt-0.5">Xe Fortuner/Innova đời mới đón trả tận sảnh homestay theo lịch trình hẹn trước</span>
+</div>
+</div>
+</td>
+<td class="py-space-md px-space-md text-right align-top">
+<span class="font-currency-tabular text-currency-tabular text-primary font-bold text-[16px]">300.000 ₫</span>
+</td>
+<td class="py-space-md px-space-md text-center align-top">
+<span class="inline-block px-3 py-0.5 rounded-full bg-surface-container text-on-surface-variant font-caption text-caption font-semibold">Chuyến</span>
+</td>
+<td class="py-space-md px-space-lg text-right align-top">
+<div class="flex items-center justify-end gap-1.5">
+<button class="h-8 px-2.5 rounded bg-surface-container hover:bg-surface-container-high text-on-surface font-body-sm text-body-sm flex items-center gap-1 transition-colors" type="button">
+<span class="material-symbols-outlined text-[16px] text-primary">edit</span>
+<span>Sửa</span>
+</button>
+<button class="h-8 px-2.5 rounded bg-error-container/30 hover:bg-error-container text-error font-body-sm text-body-sm flex items-center gap-1 transition-colors" type="button">
+<span class="material-symbols-outlined text-[16px]">pause_circle</span>
+<span>Ngưng</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- DV06 -->
+<tr class="hover:bg-surface-container-low/60 transition-colors">
+<td class="py-space-md px-space-lg align-top">
+<span class="font-code-id text-code-id px-2.5 py-1 bg-surface-container rounded text-on-surface font-semibold">DV06</span>
+</td>
+<td class="py-space-md px-space-md align-top">
+<div class="flex items-start gap-space-sm">
+<div class="w-9 h-9 rounded-full bg-error-container/60 text-error flex items-center justify-center flex-shrink-0 mt-0.5">
+<span class="material-symbols-outlined text-[20px]">local_fire_department</span>
+</div>
+<div class="flex flex-col">
+<span class="font-body-medium text-body-medium text-on-surface font-semibold">Bó củi thông sưởi lửa trại sân vườn</span>
+<span class="font-caption text-caption text-outline mt-0.5">Củi thông khô thơm khói tự nhiên, hỗ trợ nhóm lửa trại và khoai bắp nướng</span>
+</div>
+</div>
+</td>
+<td class="py-space-md px-space-md text-right align-top">
+<span class="font-currency-tabular text-currency-tabular text-primary font-bold text-[16px]">80.000 ₫</span>
+</td>
+<td class="py-space-md px-space-md text-center align-top">
+<span class="inline-block px-3 py-0.5 rounded-full bg-surface-container text-on-surface-variant font-caption text-caption font-semibold">Bó</span>
+</td>
+<td class="py-space-md px-space-lg text-right align-top">
+<div class="flex items-center justify-end gap-1.5">
+<button class="h-8 px-2.5 rounded bg-surface-container hover:bg-surface-container-high text-on-surface font-body-sm text-body-sm flex items-center gap-1 transition-colors" type="button">
+<span class="material-symbols-outlined text-[16px] text-primary">edit</span>
+<span>Sửa</span>
+</button>
+<button class="h-8 px-2.5 rounded bg-error-container/30 hover:bg-error-container text-error font-body-sm text-body-sm flex items-center gap-1 transition-colors" type="button">
+<span class="material-symbols-outlined text-[16px]">pause_circle</span>
+<span>Ngưng</span>
+</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Table Footer / Helper text -->
+<div class="p-space-md bg-surface-container-low/50 flex flex-col md:flex-row items-center justify-between gap-space-xs font-caption text-caption text-outline">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-primary">info</span>
+<span>Khi chọn <strong>"Ngưng cung cấp"</strong>, dịch vụ sẽ bị ẩn khỏi menu lễ tân nhưng vẫn lưu vết ở các hóa đơn đã thanh toán.</span>
+</div>
+<div>
+<span>Hiển thị 6 / 6 dịch vụ</span>
+</div>
+</div>
+</div>
+<!-- Accessible Dialog / Create Service Modal Backdrop & Container -->
+<div class="fixed inset-0 z-50 flex items-center justify-center p-space-md bg-on-surface/40 backdrop-blur-sm transition-opacity duration-200" id="serviceModal">
+<!-- Modal Card Content -->
+<div class="bg-surface-container-lowest rounded-2xl shadow-2xl w-full max-w-[560px] overflow-hidden flex flex-col animate-in fade-in zoom-in-95 duration-150">
+<!-- Modal Header -->
+<div class="p-space-lg bg-surface-container-low flex items-start justify-between">
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-space-xs">
+<span class="font-eyebrow text-eyebrow uppercase tracking-wider text-primary font-bold">TẠO MẪU NIÊM YẾT</span>
+<span class="px-2 py-0.5 rounded text-[11px] font-code-id bg-primary-fixed text-on-primary-fixed font-semibold">DV07</span>
+</div>
+<h2 class="font-headline-2 text-headline-2 text-on-surface">Thêm dịch vụ gia tăng mới</h2>
+<p class="font-caption text-caption text-on-surface-variant">
+            Dịch vụ tạo tại đây sẽ tự động đồng bộ vào màn hình Lễ tân Ghi nhận dịch vụ phát sinh (S-12).
+          </p>
+</div>
+<button class="w-8 h-8 rounded-full hover:bg-surface-container text-outline hover:text-on-surface flex items-center justify-center transition-colors" id="closeModalBtn" type="button">
+<span class="material-symbols-outlined text-[20px]">close</span>
+</button>
+</div>
+<!-- Modal Body -->
+<div class="p-space-lg flex flex-col gap-space-md overflow-y-auto max-h-[calc(100vh-220px)]">
+<!-- Quick Preset Selection Pill Box -->
+<div class="p-space-sm bg-primary/5 rounded-xl flex flex-col gap-space-xs">
+<div class="flex items-center gap-1.5 font-eyebrow text-eyebrow uppercase tracking-wide text-primary">
+<span class="material-symbols-outlined text-[16px]">auto_fix_high</span>
+<span>Gợi ý chọn nhanh mẫu dịch vụ phổ biến:</span>
+</div>
+<div class="grid grid-cols-2 gap-space-xs">
+<!-- Preset 1 -->
+<button class="px-2.5 py-1.5 rounded-lg bg-surface-container-lowest hover:bg-surface-container text-left transition-colors flex items-center justify-between text-body-sm font-body-sm text-on-surface shadow-xs" onclick="setPreset('Set nướng BBQ sân vườn', '250.000', 'Phần')" type="button">
+<span class="truncate">🍖 BBQ sân vườn</span>
+<span class="font-caption text-caption text-primary font-semibold ml-1">250k/P</span>
+</button>
+<!-- Preset 2 (Selected / Highlight) -->
+<button class="px-2.5 py-1.5 rounded-lg bg-primary-container text-on-primary text-left transition-colors flex items-center justify-between text-body-sm font-body-sm shadow-xs" onclick="setPreset('Thuê xe máy tay ga (AirBlade 125cc)', '150.000', 'Ngày')" type="button">
+<span class="truncate">🛵 Thuê xe máy ga</span>
+<span class="font-caption text-caption font-semibold ml-1">150k/Ng</span>
+</button>
+<!-- Preset 3 -->
+<button class="px-2.5 py-1.5 rounded-lg bg-surface-container-lowest hover:bg-surface-container text-left transition-colors flex items-center justify-between text-body-sm font-body-sm text-on-surface shadow-xs" onclick="setPreset('Giặt ủi sấy thơm lấy nhanh', '50.000', 'Kg')" type="button">
+<span class="truncate">🧺 Giặt sấy khô</span>
+<span class="font-caption text-caption text-primary font-semibold ml-1">50k/Kg</span>
+</button>
+<!-- Preset 4 -->
+<button class="px-2.5 py-1.5 rounded-lg bg-surface-container-lowest hover:bg-surface-container text-left transition-colors flex items-center justify-between text-body-sm font-body-sm text-on-surface shadow-xs" onclick="setPreset('Bữa sáng đặc sản & Cà phê phin', '85.000', 'Suất')" type="button">
+<span class="truncate">☕ Bữa sáng + Cafe</span>
+<span class="font-caption text-caption text-primary font-semibold ml-1">85k/S</span>
+</button>
+</div>
+</div>
+<!-- Form fields -->
+<form class="flex flex-col gap-space-md" id="createServiceForm" onsubmit="event.preventDefault(); submitService();">
+<!-- Field 1: Service Name -->
+<div class="flex flex-col gap-1">
+<label class="font-body-medium text-body-medium text-on-surface" for="serviceName">
+              Tên dịch vụ <span class="text-error">*</span>
+</label>
+<div class="relative">
+<input class="w-full h-10 px-3 bg-surface-container-lowest rounded text-on-surface font-body-regular text-body-regular shadow-xs outline-none focus:bg-surface-container-low transition-colors" id="serviceName" maxlength="100" placeholder="Ví dụ: Set nướng BBQ sân vườn, Thuê xe máy, Giặt sấy..." required="" type="text" value="Thuê xe máy tay ga (AirBlade 125cc)"/>
+</div>
+<span class="font-caption text-caption text-outline">
+              Tối đa 100 ký tự. Tên dịch vụ hiển thị đầy đủ trong hóa đơn thanh toán của khách.
+            </span>
+</div>
+<!-- Fields 2 & 3: Price & Unit -->
+<div class="grid grid-cols-2 gap-space-md">
+<!-- Price -->
+<div class="flex flex-col gap-1">
+<label class="font-body-medium text-body-medium text-on-surface" for="servicePrice">
+                Đơn giá niêm yết (VNĐ) <span class="text-error">*</span>
+</label>
+<div class="relative flex items-center">
+<input class="w-full h-10 pl-3 pr-8 bg-surface-container-lowest rounded text-on-surface font-currency-tabular text-currency-tabular shadow-xs outline-none focus:bg-surface-container-low transition-colors text-right" id="servicePrice" placeholder="150.000" required="" type="text" value="150.000"/>
+<span class="absolute right-3 font-body-medium text-body-medium text-outline pointer-events-none">₫</span>
+</div>
+<span class="font-caption text-caption text-outline">Đơn giá phải lớn hơn 0 và là số nguyên</span>
+</div>
+<!-- Unit -->
+<div class="flex flex-col gap-1">
+<label class="font-body-medium text-body-medium text-on-surface" for="serviceUnit">
+                Đơn vị tính <span class="text-error">*</span>
+</label>
+<input class="w-full h-10 px-3 bg-surface-container-lowest rounded text-on-surface font-body-regular text-body-regular shadow-xs outline-none focus:bg-surface-container-low transition-colors" id="serviceUnit" placeholder="Ví dụ: Ngày, Set, Kg, Suất..." required="" type="text" value="Ngày"/>
+<span class="font-caption text-caption text-outline">Gợi ý: Phần, Ngày, Kg, Suất, Tour</span>
+</div>
+</div>
+<!-- Bottom Notice -->
+<div class="p-space-sm bg-surface-container-low rounded-lg flex items-center gap-space-xs text-on-surface-variant font-caption text-caption">
+<span class="material-symbols-outlined text-[18px] text-primary flex-shrink-0">verified</span>
+<span>Dịch vụ mới tạo sẽ có mã số tiếp theo (<strong>DV07</strong>) và sẵn sàng xuất hóa đơn ngay lập tức.</span>
+</div>
+</form>
+</div>
+<!-- Modal Footer -->
+<div class="px-space-lg py-space-md bg-surface-container-low flex items-center justify-end gap-space-xs">
+<button class="h-9 px-space-md bg-surface-container-lowest hover:bg-surface-container text-on-surface rounded font-body-medium text-body-medium transition-colors shadow-xs" id="cancelModalBtn" type="button">
+          Hủy bỏ
+        </button>
+<button class="h-9 px-space-lg bg-primary-container hover:bg-primary text-on-primary rounded font-body-medium text-body-medium shadow-sm flex items-center gap-1.5 transition-colors" onclick="submitService()" type="button">
+<span class="material-symbols-outlined text-[18px]">save</span>
+<span>Lưu dịch vụ</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<script>
+  function setPreset(name, price, unit) {
+    document.getElementById('serviceName').value = name;
+    document.getElementById('servicePrice').value = price;
+    document.getElementById('serviceUnit').value = unit;
+  }
+
+  const modal = document.getElementById('serviceModal');
+  const openBtn = document.getElementById('openModalBtn');
+  const closeBtn = document.getElementById('closeModalBtn');
+  const cancelBtn = document.getElementById('cancelModalBtn');
+
+  function openModal() {
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+  }
+
+  function closeModal() {
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+  }
+
+  openBtn.addEventListener('click', openModal);
+  closeBtn.addEventListener('click', closeModal);
+  cancelBtn.addEventListener('click', closeModal);
+
+  // Close modal when clicking on backdrop
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) {
+      closeModal();
+    }
+  });
+
+  function submitService() {
+    // Micro-interaction: dismiss modal smoothly
+    closeModal();
+  }
+</script></div></main></div></body></html>

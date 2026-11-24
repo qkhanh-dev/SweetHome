@@ -41,6 +41,9 @@ export interface CreateUserDto {
 
 export interface CreateRoomDto {
   soPhong: string;
+  tenPhong?: string;
+  moTa?: string;
+  hinhAnh?: string;
   tang: number;
   maHomestay: string;
   maLoaiPhong: string;

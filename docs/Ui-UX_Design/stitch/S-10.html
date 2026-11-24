@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+
+<html lang="vi"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_dashboard" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={"darkMode":"class","theme":{"extend":{"colors":{"on-tertiary-container":"#b9c4ff","inverse-primary":"#8bd6b6","on-surface":"#0d1c2e","surface-container-low":"#eff4ff","on-tertiary-fixed":"#001453","tertiary-fixed":"#dde1ff","background":"#f8f9ff","on-primary-fixed":"#002116","on-background":"#0d1c2e","on-secondary-container":"#682c00","outline":"#6f7973","surface-bright":"#f8f9ff","secondary-fixed":"#ffdbca","inverse-on-surface":"#eaf1ff","surface-dim":"#ccdbf3","on-primary":"#ffffff","error-container":"#ffdad6","surface":"#f8f9ff","secondary-fixed-dim":"#ffb68e","on-surface-variant":"#3f4944","tertiary":"#002fa0","on-error":"#ffffff","surface-container-high":"#dce9ff","primary":"#004532","tertiary-container":"#2949b7","on-error-container":"#93000a","surface-variant":"#d5e3fc","on-secondary-fixed":"#331200","outline-variant":"#bec9c2","secondary":"#9b4500","primary-fixed-dim":"#8bd6b6","on-primary-container":"#8bd6b7","tertiary-fixed-dim":"#b8c4ff","primary-fixed":"#a6f2d1","on-tertiary-fixed-variant":"#173bab","surface-container":"#e6eeff","surface-container-highest":"#d5e3fc","on-primary-fixed-variant":"#00513b","surface-tint":"#1b6b51","secondary-container":"#fd8a42","surface-container-lowest":"#ffffff","inverse-surface":"#233144","on-secondary":"#ffffff","on-tertiary":"#ffffff","on-secondary-fixed-variant":"#763300","primary-container":"#065f46","error":"#ba1a1a"},"borderRadius":{"DEFAULT":"0.125rem","lg":"0.25rem","xl":"0.5rem","full":"0.75rem"},"spacing":{"space-sm":"0.75rem","gutter":"1.5rem","margin":"2rem","space-xl":"2rem","margin-wide":"3rem","gutter-dense":"1rem","space-md":"1rem","space-2xl":"3rem","space-lg":"1.5rem","space-xs":"0.5rem","space-2xs":"0.25rem"},"fontFamily":{"currency-tabular":["Geist"],"code-id":["JetBrains Mono"],"headline-2":["Geist"],"body-regular":["Geist"],"body-sm":["Geist"],"headline-3":["Geist"],"headline-1":["Geist"],"eyebrow":["Geist"],"caption":["Geist"],"body-medium":["Geist"],"display":["Geist"]},"fontSize":{"currency-tabular":["14px",{"lineHeight":"20px","letterSpacing":"0em","fontWeight":"600"}],"code-id":["13px",{"lineHeight":"18px","letterSpacing":"-0.01em","fontWeight":"500"}],"headline-2":["20px",{"lineHeight":"28px","letterSpacing":"-0.015em","fontWeight":"600"}],"body-regular":["14px",{"lineHeight":"20px","letterSpacing":"0em","fontWeight":"400"}],"body-sm":["13px",{"lineHeight":"18px","letterSpacing":"0em","fontWeight":"400"}],"headline-3":["17px",{"lineHeight":"24px","letterSpacing":"-0.01em","fontWeight":"600"}],"headline-1":["28px",{"lineHeight":"36px","letterSpacing":"-0.02em","fontWeight":"700"}],"eyebrow":["12px",{"lineHeight":"16px","letterSpacing":"0.06em","fontWeight":"600"}],"caption":["12px",{"lineHeight":"16px","letterSpacing":"0em","fontWeight":"400"}],"body-medium":["14px",{"lineHeight":"20px","letterSpacing":"0em","fontWeight":"500"}],"display":["36px",{"lineHeight":"44px","letterSpacing":"-0.025em","fontWeight":"700"}]}}}}</script></head><body class="bg-surface font-body-regular text-body-regular text-on-surface antialiased min-h-screen"><aside class="fixed left-0 top-0 h-full w-64 bg-surface-container-low border-r border-outline-variant/30 z-50 flex flex-col justify-between shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="flex flex-col"><div class="h-16 px-space-md flex items-center gap-space-sm border-b border-outline-variant/30"><div class="w-9 h-9 rounded-lg bg-primary-container flex items-center justify-center text-on-primary shrink-0 shadow-xs"><span class="material-symbols-outlined text-[20px]">forest</span></div><div class="flex flex-col min-w-0"><div class="flex items-center gap-space-2xs"><span class="font-headline-3 text-headline-3 text-on-surface tracking-tight truncate">SweetHome</span><span class="px-1.5 py-0.5 rounded bg-primary-fixed text-on-primary-fixed font-eyebrow text-eyebrow leading-none">PRO</span></div><span class="font-caption text-caption text-on-surface-variant truncate uppercase tracking-wider">Hệ thống lễ tân</span></div></div><div class="px-space-md py-space-sm"><div class="px-space-xs py-space-2xs mb-space-2xs"><span class="font-eyebrow text-eyebrow text-on-surface-variant uppercase tracking-wider">Vận hành lễ tân</span></div><nav class="flex flex-col gap-space-2xs" data-active-classes="bg-primary-container text-on-primary font-body-medium shadow-xs"><a aria-current="page" class="flex items-center gap-space-sm px-space-sm py-2 rounded-lg transition-colors bg-primary-container text-on-primary font-body-medium shadow-xs" data-path="staff-rooms" href="#"><span class="material-symbols-outlined text-[20px]">grid_view</span><span class="font-body-regular text-body-regular">Sơ đồ phòng</span></a><a class="flex items-center gap-space-sm px-space-sm py-2 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="staff-check-in" href="#"><span class="material-symbols-outlined text-[20px]">login</span><span class="font-body-regular text-body-regular">Nhận phòng (Check-in)</span></a><a class="flex items-center gap-space-sm px-space-sm py-2 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="staff-services" href="#"><span class="material-symbols-outlined text-[20px]">room_service</span><span class="font-body-regular text-body-regular">Dịch vụ & Phụ phí</span></a><a class="flex items-center gap-space-sm px-space-sm py-2 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="staff-check-out" href="#"><span class="material-symbols-outlined text-[20px]">logout</span><span class="font-body-regular text-body-regular">Trả phòng (Check-out)</span></a></nav></div><div class="px-space-md py-space-xs"><div class="px-space-xs py-space-2xs mb-space-2xs"><span class="font-eyebrow text-eyebrow text-on-surface-variant uppercase tracking-wider">Tài khoản & Hệ thống</span></div><nav class="flex flex-col gap-space-2xs" data-active-classes="bg-primary-container text-on-primary font-body-medium shadow-xs"><a class="flex items-center gap-space-sm px-space-sm py-2 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="staff-change-password" href="#"><span class="material-symbols-outlined text-[20px]">key</span><span class="font-body-regular text-body-regular">Đổi mật khẩu</span></a><a class="flex items-center gap-space-sm px-space-sm py-2 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" data-path="guest-home" href="#"><span class="material-symbols-outlined text-[20px]">storefront</span><span class="font-body-regular text-body-regular">Về trang khách</span></a></nav></div></div><div class="p-space-md border-t border-outline-variant/30 bg-surface-container-lowest/70"><div class="flex items-center gap-space-sm mb-space-sm"><div class="relative shrink-0"><div class="w-9 h-9 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div><span class="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-primary-fixed-dim ring-2 ring-surface-container-lowest"></span></div><div class="flex flex-col min-w-0 flex-1"><span class="font-body-medium text-body-medium text-on-surface truncate">Nguyễn Minh Anh</span><div class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-primary-container"></span><span class="font-caption text-caption text-on-surface-variant truncate">Lễ tân · Online</span></div></div></div><a class="w-full flex items-center justify-center gap-space-xs px-space-sm py-1.5 rounded border border-outline-variant/40 bg-surface-container-lowest text-on-surface hover:bg-surface-container hover:text-on-surface transition-colors font-body-sm text-body-sm" data-path="logout" href="#"><span class="material-symbols-outlined text-[16px]">power_settings_new</span><span>Đăng xuất</span></a></div></aside><div class="pl-64"><header class="fixed top-0 left-64 right-0 h-16 bg-surface/90 backdrop-blur-md border-b border-outline-variant/30 z-40 px-space-lg flex items-center justify-between shadow-[0_1px_8px_rgba(0,0,0,0.02)]"><div class="flex items-center gap-space-md"><div class="flex items-center gap-space-xs text-on-surface-variant font-body-sm text-body-sm"><span class="material-symbols-outlined text-[18px]">hotel</span><span>SweetHome Đà Lạt Heritage</span></div><span class="text-outline-variant">/</span><span class="px-2 py-0.5 rounded bg-surface-container text-on-surface-variant font-eyebrow text-eyebrow">CA SÁNG · 06:00 - 14:00</span></div><div class="flex items-center gap-space-md"><button class="flex items-center gap-space-xs px-space-sm py-1.5 rounded-lg border border-outline-variant/40 bg-surface-container-lowest hover:bg-surface-container text-on-surface-variant hover:text-on-surface transition-colors font-body-sm text-body-sm shadow-xs" type="button"><span class="material-symbols-outlined text-[18px]">search</span><span>Tìm nhanh phòng/khách (Ctrl+K)</span></button><button class="w-9 h-9 rounded-lg border border-outline-variant/40 bg-surface-container-lowest flex items-center justify-center text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors shadow-xs relative" type="button"><span class="material-symbols-outlined text-[20px]">notifications</span><span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-secondary-container"></span></button><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></header><main class="relative pt-16 bg-background min-h-screen w-full px-space-lg py-space-lg"><div class="flex flex-col w-full">
+<div class="w-full max-w-[1600px] mx-auto px-space-xl py-space-md">
+<!-- Top Workspace Header Bar -->
+<div class="flex items-start justify-between mb-space-lg">
+<div class="flex flex-col">
+<div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-primary-fixed text-on-primary-fixed font-eyebrow text-eyebrow uppercase tracking-wider w-max mb-1.5 shadow-xs">
+<span class="w-1.5 h-1.5 rounded-full bg-primary-container"></span>
+          UC1.4 · NHÂN VIÊN & QUẢN TRỊ
+        </div>
+<h1 class="font-headline-1 text-headline-1 text-on-surface tracking-tight">Sơ đồ trạng thái phòng</h1>
+<p class="font-body-regular text-body-regular text-on-surface-variant mt-1">Phòng được nhóm theo tầng. Cập nhật thủ công chỉ áp dụng cho các chuyển trạng thái được phép.</p>
+</div>
+<div class="flex items-center gap-space-sm pt-1">
+<button class="group flex items-center gap-space-xs px-4 py-2 rounded-lg bg-surface-container-lowest text-on-surface shadow-xs hover:bg-surface-container transition-all active:scale-[0.98]" id="refresh-grid-btn" type="button">
+<span class="material-symbols-outlined text-[18px] text-on-surface-variant group-hover:rotate-180 transition-transform duration-500 ease-out">refresh</span>
+<span class="font-body-medium text-body-medium">Tải lại</span>
+</button>
+</div>
+</div>
+<!-- Status Legend Card -->
+<section class="bg-surface-container-lowest rounded-xl p-space-md shadow-xs mb-space-lg flex flex-wrap items-center gap-y-3 justify-between">
+<div class="flex flex-wrap items-center gap-3">
+<div class="flex items-center gap-1.5 text-on-surface font-body-medium text-body-medium mr-2">
+<span class="material-symbols-outlined text-[18px] text-primary">tune</span>
+<span>Chú giải trạng thái:</span>
+</div>
+<!-- 1. Trống -->
+<div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container text-primary font-body-sm text-body-sm shadow-xs">
+<span class="w-2 h-2 rounded-full bg-primary-container"></span>
+<span>Trống</span>
+</div>
+<!-- 2. Đã đặt -->
+<div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container-high text-tertiary font-body-sm text-body-sm shadow-xs">
+<span class="w-2 h-2 rounded-full bg-tertiary"></span>
+<span>Đã đặt</span>
+</div>
+<!-- 3. Đang sử dụng -->
+<div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary-fixed text-secondary font-body-sm text-body-sm shadow-xs">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span>Đang sử dụng</span>
+</div>
+<!-- 4. Chờ dọn dẹp -->
+<div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-tertiary-fixed text-tertiary-container font-body-sm text-body-sm shadow-xs">
+<span class="w-2 h-2 rounded-full bg-tertiary-container"></span>
+<span>Chờ dọn dẹp</span>
+</div>
+<!-- 5. Bảo trì -->
+<div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-error-container text-error font-body-sm text-body-sm shadow-xs">
+<span class="w-2 h-2 rounded-full bg-error"></span>
+<span>Bảo trì</span>
+</div>
+</div>
+<div class="font-caption text-caption text-on-surface-variant flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px]">domain</span>
+<span>Tổng cộng: <strong class="text-on-surface font-semibold">6 phòng</strong> (2 Trống · 1 Đã đặt · 1 Đang ở · 1 Chờ dọn · 1 Bảo trì)</span>
+</div>
+</section>
+<!-- FLOORS CONTAINER -->
+<div class="flex flex-col gap-space-lg">
+<!-- ================= FLOOR 1 ================= -->
+<section class="flex flex-col">
+<div class="flex items-center gap-space-xs mb-space-sm">
+<div class="w-2 h-5 rounded-full bg-primary"></div>
+<h2 class="font-headline-2 text-headline-2 text-on-surface">Tầng 1</h2>
+<span class="px-2.5 py-0.5 rounded-full bg-surface-container-highest text-on-surface-variant font-eyebrow text-eyebrow uppercase tracking-wide">2 phòng</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+<!-- Room Card: P101 (Trống) -->
+<article class="bg-surface-container-lowest rounded-xl shadow-xs hover:shadow-md transition-shadow p-space-md flex flex-col justify-between group">
+<div>
+<div class="flex items-start justify-between gap-2 mb-2">
+<div class="flex items-center gap-space-xs">
+<div class="w-9 h-9 rounded-lg bg-surface-container-low flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[22px]">meeting_room</span>
+</div>
+<div>
+<h3 class="font-headline-3 text-headline-3 text-on-surface tracking-tight">P101</h3>
+<p class="font-caption text-caption text-on-surface-variant">Standard Pine Garden</p>
+</div>
+</div>
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary-fixed text-on-primary-fixed font-eyebrow text-eyebrow uppercase tracking-wider">
+<span class="w-1.5 h-1.5 rounded-full bg-primary-container"></span>
+                  Trống
+                </span>
+</div>
+<!-- Visual Thumbnail Room Banner -->
+<div class="relative w-full h-28 rounded-lg overflow-hidden my-space-xs bg-surface-container-low">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="Boutique homestay ground floor suite interior overlooking misty Da Lat pine woods with morning sunbeams streaming through linen curtains, warm natural woodwork, cozy double bed, architectural interior photography." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDVyb51UEs1wGeNap4s26pfbpdS-tgLdil5cQycPc86jClidiorVWM5IeIZbRodqSDCF5cV7rcGjsZiai-cxskPaO93rAYw0aD2BAxl7SDkH2Jzt2xu9sGXUOiq8Jc6amk5vbBChfMmZywXRFoF8qzbVl8uvGKCTRazzbUU7ZWbjsSoj8QUaPHKe5fDAKeAo1M44po8tsCc19vvxuJzDa-2P6JG-6w8rYJaTmxBmuo"/>
+<div class="absolute bottom-2 left-2 px-2 py-0.5 rounded bg-inverse-surface/80 text-inverse-on-surface backdrop-blur-sm font-caption text-caption flex items-center gap-1">
+<span class="material-symbols-outlined text-[13px]">bed</span>
+<span>1 Giường đôi · 2 Khách</span>
+</div>
+</div>
+<div class="flex items-center justify-between text-on-surface-variant font-body-sm text-body-sm mt-2 px-1">
+<span>Giá niêm yết:</span>
+<span class="font-currency-tabular text-currency-tabular text-primary">650.000 đ<span class="font-caption text-caption text-on-surface-variant">/đêm</span></span>
+</div>
+</div>
+<!-- Bottom Control Strip -->
+<div class="pt-space-sm mt-space-sm bg-surface-container-low/50 -mx-space-md -mb-space-md p-space-md rounded-b-xl flex items-center justify-between gap-2">
+<div class="flex items-center gap-1.5 text-on-surface-variant font-body-sm text-body-sm">
+<span class="material-symbols-outlined text-[16px] text-primary">sync_alt</span>
+<span class="truncate">Cập nhật:</span>
+</div>
+<select class="font-body-sm text-body-sm bg-surface-container-lowest text-on-surface px-2.5 py-1.5 rounded-lg shadow-xs focus:outline-none focus:ring-2 focus:ring-primary cursor-pointer hover:bg-surface-bright transition-colors" id="status-P101" onchange="handleStatusChange('P101', this.value)">
+<option selected="" value="">Chọn trạng thái mới</option>
+<option value="maintenance">Chuyển sang Bảo trì</option>
+</select>
+</div>
+</article>
+<!-- Room Card: P102 (Đã đặt) -->
+<article class="bg-surface-container-lowest rounded-xl shadow-xs hover:shadow-md transition-shadow p-space-md flex flex-col justify-between group">
+<div>
+<div class="flex items-start justify-between gap-2 mb-2">
+<div class="flex items-center gap-space-xs">
+<div class="w-9 h-9 rounded-lg bg-surface-container-low flex items-center justify-center text-tertiary">
+<span class="material-symbols-outlined text-[22px]">event_seat</span>
+</div>
+<div>
+<h3 class="font-headline-3 text-headline-3 text-on-surface tracking-tight">P102</h3>
+<p class="font-caption text-caption text-on-surface-variant">Cozy Studio Garden</p>
+</div>
+</div>
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-container-highest text-tertiary font-eyebrow text-eyebrow uppercase tracking-wider">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span>
+                  Đã đặt
+                </span>
+</div>
+<!-- Visual Thumbnail Room Banner -->
+<div class="relative w-full h-28 rounded-lg overflow-hidden my-space-xs bg-surface-container-low">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="Charming garden studio homestay with wooden patio doors leading to green fern courtyards, soft daylight, warm neutral linens, reading armchairs, serene boutique hospitality." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAbZlhxwhBqRAQ2pgrE4dpBlzpFIBM8_TFdjBvR2sxlE5wu8XpkdLjqrsu7VyXvevXN_Nch-ypQasjIrWWRillHtKfgM948zVZjt-G-hVVSxfnvPrqdn7Oe1dmaD-U6ESa6cAgYpVMhSDj9qb0IX-aIb99-m5sqWx5TtDpSQmWFL20uDc92bf0kaVFam-JBpHT3SOb_eAlL2AmzVxsgsHVbigdPpDsEQSXxKthhZcA"/>
+<div class="absolute bottom-2 left-2 px-2 py-0.5 rounded bg-inverse-surface/80 text-inverse-on-surface backdrop-blur-sm font-caption text-caption flex items-center gap-1">
+<span class="material-symbols-outlined text-[13px]">schedule</span>
+<span>Nhận hôm nay 14:00</span>
+</div>
+</div>
+<div class="bg-surface-container-low rounded-lg p-2.5 mt-2 flex flex-col gap-1">
+<div class="flex items-center justify-between text-body-sm font-body-sm">
+<span class="text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">person</span> Khách:
+                  </span>
+<span class="font-body-medium text-body-medium text-on-surface">Trần Khải Hoàng</span>
+</div>
+<div class="flex items-center justify-between text-caption font-caption text-on-surface-variant">
+<span>Mã đặt phòng:</span>
+<span class="font-code-id text-code-id text-tertiary">#BK-2024-8841</span>
+</div>
+</div>
+</div>
+<!-- Bottom Control Strip (Disabled) -->
+<div class="pt-space-sm mt-space-sm bg-surface-container-low/50 -mx-space-md -mb-space-md p-space-md rounded-b-xl flex items-center justify-between gap-2">
+<div class="flex items-center gap-1.5 text-on-surface-variant font-body-sm text-body-sm">
+<span class="material-symbols-outlined text-[16px] text-outline">lock</span>
+<span class="truncate">Cập nhật:</span>
+</div>
+<select class="font-body-sm text-body-sm bg-surface-container-highest/60 text-outline-variant px-2.5 py-1.5 rounded-lg shadow-none cursor-not-allowed" disabled="">
+<option selected="">Không có chuyển đổi thủ công</option>
+</select>
+</div>
+</article>
+<!-- Metric / Floor Insight Bento Panel -->
+<article class="bg-surface-container-low rounded-xl p-space-md flex flex-col justify-between shadow-xs">
+<div class="flex flex-col">
+<div class="flex items-center justify-between mb-2">
+<span class="font-eyebrow text-eyebrow uppercase text-on-surface-variant">Tải vận hành tầng 1</span>
+<span class="material-symbols-outlined text-primary text-[20px]">equalizer</span>
+</div>
+<div class="flex items-baseline gap-2 mb-1">
+<span class="font-headline-1 text-headline-1 text-on-surface">50%</span>
+<span class="font-body-sm text-body-sm text-primary">Tỉ lệ lấp đầy</span>
+</div>
+<p class="font-caption text-caption text-on-surface-variant">P101 sẵn sàng đón khách vãng lai hoặc walk-in ngay tại quầy.</p>
+<!-- Progress bar -->
+<div class="w-full h-2 rounded-full bg-surface-container-highest overflow-hidden mt-4">
+<div class="h-full bg-primary rounded-full" style="width: 50%;"></div>
+</div>
+</div>
+<div class="mt-4 pt-3 flex items-center justify-between text-body-sm font-body-sm">
+<span class="text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px] text-primary">room_service</span>
+                Dọn phòng buổi sáng
+              </span>
+<span class="font-eyebrow text-eyebrow text-primary uppercase font-semibold">Hoàn tất</span>
+</div>
+</article>
+</div>
+</section>
+<!-- ================= FLOOR 2 ================= -->
+<section class="flex flex-col mt-2">
+<div class="flex items-center gap-space-xs mb-space-sm">
+<div class="w-2 h-5 rounded-full bg-primary"></div>
+<h2 class="font-headline-2 text-headline-2 text-on-surface">Tầng 2</h2>
+<span class="px-2.5 py-0.5 rounded-full bg-surface-container-highest text-on-surface-variant font-eyebrow text-eyebrow uppercase tracking-wide">2 phòng</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+<!-- Room Card: P201 (Trống) -->
+<article class="bg-surface-container-lowest rounded-xl shadow-xs hover:shadow-md transition-shadow p-space-md flex flex-col justify-between group">
+<div>
+<div class="flex items-start justify-between gap-2 mb-2">
+<div class="flex items-center gap-space-xs">
+<div class="w-9 h-9 rounded-lg bg-surface-container-low flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[22px]">balcony</span>
+</div>
+<div>
+<h3 class="font-headline-3 text-headline-3 text-on-surface tracking-tight">P201</h3>
+<p class="font-caption text-caption text-on-surface-variant">Deluxe Panoramic View</p>
+</div>
+</div>
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary-fixed text-on-primary-fixed font-eyebrow text-eyebrow uppercase tracking-wider">
+<span class="w-1.5 h-1.5 rounded-full bg-primary-container"></span>
+                  Trống
+                </span>
+</div>
+<!-- Visual Thumbnail Room Banner -->
+<div class="relative w-full h-28 rounded-lg overflow-hidden my-space-xs bg-surface-container-low">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="Luxurious boutique hotel bedroom with wide open sliding glass balcony looking over panoramic pine hills of Da Lat, gentle morning fog, king bed with moss-green accents, warm sunrise lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDwKmL86NQCe6YwW_iG4UCAG0IE8dmYQTE3M373guWh1fDiGnz87vJlY37fOoSV4JnuBurlS26YoXzgWX6oOlJRJcTb4WvACDRKU824gRAd56HImu9bLte22vSKyWdc5yqYQF41MfUc2k5V3Y6DRkVpKFHagUT4SzTfk0Q4W1xs5cNsta0_8hcj5rVJHO52128vhYKOO-wkzBosYWuI22Jonch_P4KUDCX4XnlmvNw"/>
+<div class="absolute bottom-2 left-2 px-2 py-0.5 rounded bg-inverse-surface/80 text-inverse-on-surface backdrop-blur-sm font-caption text-caption flex items-center gap-1">
+<span class="material-symbols-outlined text-[13px]">king_bed</span>
+<span>1 Giường King · Ban công thung lũng</span>
+</div>
+</div>
+<div class="flex items-center justify-between text-on-surface-variant font-body-sm text-body-sm mt-2 px-1">
+<span>Giá niêm yết:</span>
+<span class="font-currency-tabular text-currency-tabular text-primary">850.000 đ<span class="font-caption text-caption text-on-surface-variant">/đêm</span></span>
+</div>
+</div>
+<!-- Bottom Control Strip -->
+<div class="pt-space-sm mt-space-sm bg-surface-container-low/50 -mx-space-md -mb-space-md p-space-md rounded-b-xl flex items-center justify-between gap-2">
+<div class="flex items-center gap-1.5 text-on-surface-variant font-body-sm text-body-sm">
+<span class="material-symbols-outlined text-[16px] text-primary">sync_alt</span>
+<span class="truncate">Cập nhật:</span>
+</div>
+<select class="font-body-sm text-body-sm bg-surface-container-lowest text-on-surface px-2.5 py-1.5 rounded-lg shadow-xs focus:outline-none focus:ring-2 focus:ring-primary cursor-pointer hover:bg-surface-bright transition-colors" id="status-P201" onchange="handleStatusChange('P201', this.value)">
+<option selected="" value="">Chọn trạng thái mới</option>
+<option value="maintenance">Chuyển sang Bảo trì</option>
+</select>
+</div>
+</article>
+<!-- Room Card: P202 (Chờ dọn dẹp) -->
+<article class="bg-surface-container-lowest rounded-xl shadow-xs hover:shadow-md transition-shadow p-space-md flex flex-col justify-between group">
+<div>
+<div class="flex items-start justify-between gap-2 mb-2">
+<div class="flex items-center gap-space-xs">
+<div class="w-9 h-9 rounded-lg bg-surface-container-low flex items-center justify-center text-tertiary-container">
+<span class="material-symbols-outlined text-[22px]">cleaning_services</span>
+</div>
+<div>
+<h3 class="font-headline-3 text-headline-3 text-on-surface tracking-tight">P202</h3>
+<p class="font-caption text-caption text-on-surface-variant">Standard Pine View</p>
+</div>
+</div>
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-tertiary-fixed text-tertiary-container font-eyebrow text-eyebrow uppercase tracking-wider">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary-container"></span>
+                  Chờ dọn dẹp
+                </span>
+</div>
+<!-- Visual Thumbnail Room Banner -->
+<div class="relative w-full h-28 rounded-lg overflow-hidden my-space-xs bg-surface-container-low">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="Minimalist airy pine view hotel room interior currently prepared for housekeeping service, stripped fresh white linens on a bench, clean Scandinavian wood decor, gentle ambient daylight." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCvfy5IbwMBZ0GhSWOYGvVKD_muisSqJV_KP6ZLaSdrV_QvXMVpQgN3OXVfS9MBfkK0z1gJvfkH0Ni3vnzxNs7Hmm4e1i4B22ushKWr7PhfwcODojPeyu56a_hgA1NQfz6DW_RQYOFpMdSS0Xwf5nfXFh-JuCuvJ5qv8oPnC_kG8D77PywBkGg-G-yKbnAhqAUxgYxuDfyfKbLoHqzV0MPIu4BCoNt9sFMmCd9N5RU"/>
+<div class="absolute bottom-2 left-2 px-2 py-0.5 rounded bg-inverse-surface/80 text-inverse-on-surface backdrop-blur-sm font-caption text-caption flex items-center gap-1">
+<span class="material-symbols-outlined text-[13px]">history</span>
+<span>Khách trả lúc 11:30</span>
+</div>
+</div>
+<div class="bg-surface-container-high/40 rounded-lg p-2.5 mt-2 flex flex-col gap-1">
+<div class="flex items-center gap-1.5 text-body-sm font-body-sm text-tertiary-container">
+<span class="material-symbols-outlined text-[15px]">notification_important</span>
+<span>Cần thay ga giường & dọn phòng</span>
+</div>
+<div class="flex items-center justify-between text-caption font-caption text-on-surface-variant">
+<span>Phân công HK:</span>
+<span class="font-body-medium text-on-surface">Chị Lan (Tổ 1)</span>
+</div>
+</div>
+</div>
+<!-- Bottom Control Strip -->
+<div class="pt-space-sm mt-space-sm bg-surface-container-low/50 -mx-space-md -mb-space-md p-space-md rounded-b-xl flex items-center justify-between gap-2">
+<div class="flex items-center gap-1.5 text-on-surface-variant font-body-sm text-body-sm">
+<span class="material-symbols-outlined text-[16px] text-tertiary-container">sync_alt</span>
+<span class="truncate">Cập nhật:</span>
+</div>
+<select class="font-body-sm text-body-sm bg-surface-container-lowest text-on-surface px-2.5 py-1.5 rounded-lg shadow-xs focus:outline-none focus:ring-2 focus:ring-primary cursor-pointer hover:bg-surface-bright transition-colors" id="status-P202" onchange="handleStatusChange('P202', this.value)">
+<option selected="" value="">Chọn trạng thái mới</option>
+<option value="maintenance">Chuyển sang Bảo trì</option>
+</select>
+</div>
+</article>
+<!-- Housekeeping Quick Action Panel -->
+<article class="bg-surface-container-low rounded-xl p-space-md flex flex-col justify-between shadow-xs">
+<div class="flex flex-col">
+<div class="flex items-center justify-between mb-2">
+<span class="font-eyebrow text-eyebrow uppercase text-on-surface-variant">Quy trình buồng phòng tầng 2</span>
+<span class="material-symbols-outlined text-tertiary-container text-[20px]">assignment_turned_in</span>
+</div>
+<h4 class="font-headline-3 text-headline-3 text-on-surface mb-1">Kiểm tra vệ sinh</h4>
+<p class="font-caption text-caption text-on-surface-variant">Sau khi dọn phòng xong, nhân viên buồng phòng sẽ quét mã QR cửa phòng để chuyển trạng thái về "Trống".</p>
+</div>
+<div class="mt-4 pt-3 flex items-center justify-between">
+<div class="flex items-center gap-1.5 font-caption text-caption text-on-surface-variant">
+<span class="w-2 h-2 rounded-full bg-secondary-container"></span>
+<span>1 phòng đang xử lý</span>
+</div>
+<button class="px-3 py-1.5 rounded bg-surface-container-lowest hover:bg-surface-container text-on-surface font-body-sm text-body-sm shadow-xs transition-colors" onclick="showToast('Đã gửi thông báo nhắc việc tới tổ buồng phòng')" type="button">
+                Nhắc việc HK
+              </button>
+</div>
+</article>
+</div>
+</section>
+<!-- ================= FLOOR 3 ================= -->
+<section class="flex flex-col mt-2">
+<div class="flex items-center gap-space-xs mb-space-sm">
+<div class="w-2 h-5 rounded-full bg-primary"></div>
+<h2 class="font-headline-2 text-headline-2 text-on-surface">Tầng 3</h2>
+<span class="px-2.5 py-0.5 rounded-full bg-surface-container-highest text-on-surface-variant font-eyebrow text-eyebrow uppercase tracking-wide">2 phòng</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+<!-- Room Card: P301 (Bảo trì) -->
+<article class="bg-surface-container-lowest rounded-xl shadow-xs hover:shadow-md transition-shadow p-space-md flex flex-col justify-between group">
+<div>
+<div class="flex items-start justify-between gap-2 mb-2">
+<div class="flex items-center gap-space-xs">
+<div class="w-9 h-9 rounded-lg bg-surface-container-low flex items-center justify-center text-error">
+<span class="material-symbols-outlined text-[22px]">construction</span>
+</div>
+<div>
+<h3 class="font-headline-3 text-headline-3 text-on-surface tracking-tight">P301</h3>
+<p class="font-caption text-caption text-on-surface-variant">Suite Cloud Hunting</p>
+</div>
+</div>
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-error-container text-error font-eyebrow text-eyebrow uppercase tracking-wider">
+<span class="w-1.5 h-1.5 rounded-full bg-error"></span>
+                  Bảo trì
+                </span>
+</div>
+<!-- Visual Thumbnail Room Banner -->
+<div class="relative w-full h-28 rounded-lg overflow-hidden my-space-xs bg-surface-container-low">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="High altitude suite terrace overlooking clouds with artisan timber balcony, painter ladders and drop cloth neatly placed, soft mountain mist, professional hotel property maintenance." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAqReC8sSP0G6KRpnobERAI-jhtCMm3G3xDayeS8Val2rCtAJMcCuzjLcCb6PR9MUNCXSwXvb--voCsFEA3WuXTN3DqEx1x4cFMrDlNPw5a4eCSU8038mJZvFEdE4LNC6-PM3wNJSlC5HEjLKr6nTZdcFFFwuGjyz2tSJBVxUjtYnB7uUKA0mVOjbO8-7qcZfyh4iyRL43v0rKVWTIX5aAGMdf53zJItt-LHwq3_kw"/>
+<div class="absolute bottom-2 left-2 px-2 py-0.5 rounded bg-error-container/90 text-on-error-container backdrop-blur-sm font-caption text-caption flex items-center gap-1">
+<span class="material-symbols-outlined text-[13px]">handyman</span>
+<span>Dự kiến xong: 18:00</span>
+</div>
+</div>
+<div class="bg-error-container/30 rounded-lg p-2.5 mt-2 flex flex-col gap-1">
+<div class="text-body-sm font-body-sm text-error">
+<span class="font-semibold">Lý do:</span> Sơn lại khung ban công săn mây
+                </div>
+<div class="flex items-center justify-between text-caption font-caption text-on-surface-variant">
+<span>Kỹ thuật viên:</span>
+<span class="font-body-medium text-on-surface">Đội thợ Mộc Lâm Đồng</span>
+</div>
+</div>
+</div>
+<!-- Bottom Control Strip -->
+<div class="pt-space-sm mt-space-sm bg-surface-container-low/50 -mx-space-md -mb-space-md p-space-md rounded-b-xl flex items-center justify-between gap-2">
+<div class="flex items-center gap-1.5 text-on-surface-variant font-body-sm text-body-sm">
+<span class="material-symbols-outlined text-[16px] text-error">sync_alt</span>
+<span class="truncate">Cập nhật:</span>
+</div>
+<select class="font-body-sm text-body-sm bg-surface-container-lowest text-on-surface px-2.5 py-1.5 rounded-lg shadow-xs focus:outline-none focus:ring-2 focus:ring-primary cursor-pointer hover:bg-surface-bright transition-colors" id="status-P301" onchange="handleStatusChange('P301', this.value)">
+<option selected="" value="">Chọn trạng thái mới</option>
+<option value="available">Chuyển sang Trống</option>
+</select>
+</div>
+</article>
+<!-- Room Card: P302 (Đang sử dụng) -->
+<article class="bg-surface-container-lowest rounded-xl shadow-xs hover:shadow-md transition-shadow p-space-md flex flex-col justify-between group">
+<div>
+<div class="flex items-start justify-between gap-2 mb-2">
+<div class="flex items-center gap-space-xs">
+<div class="w-9 h-9 rounded-lg bg-surface-container-low flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-[22px]">hotel</span>
+</div>
+<div>
+<h3 class="font-headline-3 text-headline-3 text-on-surface tracking-tight">P302</h3>
+<p class="font-caption text-caption text-on-surface-variant">Romantic Valley Penthouse</p>
+</div>
+</div>
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-secondary-fixed text-secondary font-eyebrow text-eyebrow uppercase tracking-wider">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+                  Đang sử dụng
+                </span>
+</div>
+<!-- Visual Thumbnail Room Banner -->
+<div class="relative w-full h-28 rounded-lg overflow-hidden my-space-xs bg-surface-container-low">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="Penthouse top-floor master suite with sloped wooden attic ceilings, glass wall overlooking pine valley, stylish cozy lighting, plush bed, high-end mountain homestay luxury." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDAjnN0ad_cvV_K_-lRls9ruwYPTV2Tf0V52ljW_lCQLu3iTh991XuLBChSKqRp_4ka-sVtVMyj8aArS45Xqb6_kX508C4rWxZCIAeKPFFwuZfSu1WZBEryMybahkmHnJxoAV0sPuy3Qe71EJrwxKrWECgR7gd_XPnwjCf-jHiZNRF0w8cts6cQZ55vsfObZhLXaW8pYgrvvz7ib-AKVHLp9bZapfiRH8K9ub1biOo"/>
+<div class="absolute bottom-2 left-2 px-2 py-0.5 rounded bg-inverse-surface/80 text-inverse-on-surface backdrop-blur-sm font-caption text-caption flex items-center gap-1">
+<span class="material-symbols-outlined text-[13px]">person_check</span>
+<span>Đang lưu trú</span>
+</div>
+</div>
+<div class="bg-surface-container-low rounded-lg p-2.5 mt-2 flex flex-col gap-1">
+<div class="flex items-center justify-between text-body-sm font-body-sm">
+<span class="text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">group</span> Khách:
+                  </span>
+<span class="font-body-medium text-body-medium text-on-surface">Mai Linh & Hoàng Nam</span>
+</div>
+<div class="flex items-center justify-between text-caption font-caption text-on-surface-variant">
+<span>Dự kiến trả:</span>
+<span class="font-body-medium text-on-surface">12:00 ngày mai</span>
+</div>
+</div>
+</div>
+<!-- Bottom Control Strip (Disabled) -->
+<div class="pt-space-sm mt-space-sm bg-surface-container-low/50 -mx-space-md -mb-space-md p-space-md rounded-b-xl flex items-center justify-between gap-2">
+<div class="flex items-center gap-1.5 text-on-surface-variant font-body-sm text-body-sm">
+<span class="material-symbols-outlined text-[16px] text-outline">lock</span>
+<span class="truncate">Cập nhật:</span>
+</div>
+<select class="font-body-sm text-body-sm bg-surface-container-highest/60 text-outline-variant px-2.5 py-1.5 rounded-lg shadow-none cursor-not-allowed" disabled="">
+<option selected="">Không có chuyển đổi thủ công</option>
+</select>
+</div>
+</article>
+<!-- Operations Summary Card -->
+<article class="bg-surface-container-low rounded-xl p-space-md flex flex-col justify-between shadow-xs">
+<div class="flex flex-col">
+<div class="flex items-center justify-between mb-2">
+<span class="font-eyebrow text-eyebrow uppercase text-on-surface-variant">Khu vực áp mái Penthouse</span>
+<span class="material-symbols-outlined text-secondary text-[20px]">roofing</span>
+</div>
+<h4 class="font-headline-3 text-headline-3 text-on-surface mb-1">Ghi chú ca trực</h4>
+<p class="font-caption text-caption text-on-surface-variant">Phòng P302 có yêu cầu bữa sáng phục vụ tại ban công lúc 07:30 sáng mai. Bếp đã nhận phiếu phụ thu.</p>
+</div>
+<div class="mt-4 pt-3 flex items-center justify-between text-caption font-caption text-on-surface-variant">
+<span>Cập nhật lần cuối:</span>
+<span class="font-code-id text-code-id text-on-surface">13:45 · Lễ tân Minh Anh</span>
+</div>
+</article>
+</div>
+</section>
+</div>
+<!-- Floating Live Sync Toast Notification -->
+<div class="fixed bottom-6 right-6 z-50 flex items-center gap-2.5 px-4 py-2.5 rounded-full bg-inverse-surface text-inverse-on-surface font-body-sm text-body-sm shadow-xl transition-all duration-300 transform translate-y-0 opacity-95" id="live-toast">
+<span class="material-symbols-outlined text-[18px] text-primary-fixed">cloud_done</span>
+<span>Sẵn sàng đồng bộ trực tiếp với cơ sở dữ liệu phòng SweetHome</span>
+</div>
+</div>
+</div>
+<script>
+  function showToast(message) {
+    const toast = document.getElementById('live-toast');
+    if (!toast) return;
+    toast.innerHTML = `
+      <span class="material-symbols-outlined text-[18px] text-primary-fixed">check_circle</span>
+      <span>${message}</span>
+    `;
+    toast.classList.remove('opacity-0', 'translate-y-4');
+    toast.classList.add('opacity-95', 'translate-y-0');
+
+    clearTimeout(window.__toastTimeout);
+    window.__toastTimeout = setTimeout(() => {
+      toast.classList.add('opacity-95');
+    }, 3500);
+  }
+
+  function handleStatusChange(roomId, newStatus) {
+    if (!newStatus) return;
+
+    let targetLabel = '';
+    if (newStatus === 'maintenance') targetLabel = 'Bảo trì';
+    if (newStatus === 'available') targetLabel = 'Trống';
+
+    showToast(`Đã chuyển trạng thái phòng ${roomId} sang "${targetLabel}" thành công!`);
+
+    // Reset dropdown back to default placeholder after operation
+    const selectElem = document.getElementById(`status-${roomId}`);
+    if (selectElem) {
+      setTimeout(() => {
+        selectElem.value = "";
+      }, 800);
+    }
+  }
+
+  document.getElementById('refresh-grid-btn')?.addEventListener('click', () => {
+    showToast('Đang làm mới sơ đồ trạng thái 6 phòng...');
+  });
+</script></main></div></body></html>

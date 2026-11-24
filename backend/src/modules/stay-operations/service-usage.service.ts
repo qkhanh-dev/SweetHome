@@ -37,6 +37,32 @@ export class StayServiceUsageService {
     return booking;
   }
 
+  private async syncDraftInvoiceServiceTotal(
+    tx: Prisma.TransactionClient,
+    bookingId: string,
+    tienDichVu: number,
+  ): Promise<void> {
+    if (
+      typeof tx.hoaDon?.findUnique !== 'function' ||
+      typeof tx.hoaDon?.update !== 'function'
+    ) {
+      return;
+    }
+    const draft = await tx.hoaDon.findUnique({ where: { maDatPhong: bookingId } });
+    if (!draft || draft.trangThai !== 'CHUA_THANH_TOAN') {
+      return;
+    }
+
+    const tongCanThanhToan = Math.max(
+      0,
+      Math.round(draft.tienPhong + tienDichVu + draft.phuPhi - draft.tienCocDaTra),
+    );
+    await tx.hoaDon.update({
+      where: { maHoaDon: draft.maHoaDon },
+      data: { tienDichVu, tongCanThanhToan },
+    });
+  }
+
   async getServiceUsages(bookingId: string) {
     const booking = await this.prisma.datPhong.findUnique({
       where: { maDatPhong: bookingId },
@@ -122,6 +148,8 @@ export class StayServiceUsageService {
           suDungDichVus.reduce((total, item) => total + item.thanhTien, 0),
         );
 
+        await this.syncDraftInvoiceServiceTotal(tx, bookingId, tongTienDichVuTamTinh);
+
         return {
           suDungDichVu,
           suDungDichVus,
@@ -162,6 +190,8 @@ export class StayServiceUsageService {
         const tongTienDichVuTamTinh = Math.round(
           remaining.reduce((total, item) => total + item.thanhTien, 0),
         );
+
+        await this.syncDraftInvoiceServiceTotal(tx, bookingId, tongTienDichVuTamTinh);
 
         return {
           deleted: true,

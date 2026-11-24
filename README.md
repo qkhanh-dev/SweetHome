@@ -128,6 +128,19 @@ npx prisma db seed
 docker compose --profile fullstack up --build -d
 ```
 
+### 3.3. Danh sách tài khoản đăng nhập mẫu theo quyền (`backend/prisma/seed.ts`)
+
+Sau khi chạy `npx prisma db seed` (hoặc khởi động `docker compose`), hệ thống có sẵn 6 tài khoản mẫu với mật khẩu chung **`123456`**:
+
+| Vai trò | Username | Mật khẩu | Trạng thái | Đường dẫn chính |
+| :--- | :--- | :--- | :--- | :--- |
+| **Chủ homestay (`ADMIN`)** | `admin` | `123456` | `ACTIVE` | `/admin` |
+| **Lễ tân (`STAFF`)** | `staff_dalat` | `123456` | `ACTIVE` | `/staff/rooms` |
+| **Lễ tân (`STAFF`)** | `staff_dalat2` | `123456` | `ACTIVE` | `/staff/rooms` |
+| **Khách hàng (`CUSTOMER`)** | `khanh_customer` | `123456` | `ACTIVE` | `/` |
+| **Khách hàng (`CUSTOMER`)** | `hoang_customer` | `123456` | `ACTIVE` | `/` |
+| **Khách hàng (`CUSTOMER`)** | `locked_user` | `123456` | `LOCKED` *(kiểm thử chặn đăng nhập `403`)* | — |
+
 ---
 
 ## 4. QUY ƯỚC PHÂN NHÁNH GIT (BRANCHING STRATEGY) & COMMIT
