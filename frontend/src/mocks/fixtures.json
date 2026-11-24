@@ -1,0 +1,864 @@
+﻿{
+    "0.1":  {
+                "success":  true,
+                "statusCode":  200,
+                "message":  "SweetHome Backend v2 is healthy",
+                "data":  {
+                             "status":  "UP",
+                             "database":  "CONNECTED",
+                             "version":  "2.0.0"
+                         },
+                "timestamp":  "2026-11-06T08:00:00.000Z"
+            },
+    "1.1":  {
+                "success":  true,
+                "statusCode":  201,
+                "message":  "Đăng ký tài khoản thành công",
+                "data":  {
+                             "accessToken":  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+                             "taiKhoan":  {
+                                              "maTaiKhoan":  "TK_CUST_01",
+                                              "username":  "khachhang_minhanh",
+                                              "vaiTro":  "CUSTOMER",
+                                              "trangThai":  "ACTIVE",
+                                              "khachHang":  {
+                                                                "maKH":  "KH001",
+                                                                "hoTen":  "Nguyễn Minh Anh",
+                                                                "soDienThoai":  "0901234567",
+                                                                "email":  "minhanh@gmail.com",
+                                                                "soCCCD":  null
+                                                            }
+                                          }
+                         },
+                "timestamp":  "2026-11-06T08:05:00.000Z"
+            },
+    "1.2":  {
+                "success":  true,
+                "statusCode":  200,
+                "message":  "Đăng nhập thành công",
+                "data":  {
+                             "accessToken":  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+                             "taiKhoan":  {
+                                              "maTaiKhoan":  "TK_ADMIN_01",
+                                              "username":  "admin_sweethome",
+                                              "vaiTro":  "ADMIN",
+                                              "trangThai":  "ACTIVE",
+                                              "khachHang":  null
+                                          }
+                         },
+                "timestamp":  "2026-11-06T08:10:00.000Z"
+            },
+    "1.3":  {
+                "success":  true,
+                "statusCode":  200,
+                "message":  "Đổi mật khẩu thành công",
+                "data":  {
+                             "maTaiKhoan":  "TK_CUST_01",
+                             "username":  "khachhang_minhanh"
+                         },
+                "timestamp":  "2026-11-06T08:15:00.000Z"
+            },
+    "1.5":  {
+                "success":  true,
+                "statusCode":  200,
+                "message":  "Lấy thông tin hồ sơ khách hàng thành công",
+                "data":  {
+                             "maKH":  "KH001",
+                             "hoTen":  "Nguyễn Minh Anh",
+                             "soDienThoai":  "0901234567",
+                             "email":  "minhanh@gmail.com",
+                             "soCCCD":  "079203001234",
+                             "maTaiKhoan":  "TK_CUST_01"
+                         },
+                "timestamp":  "2026-11-06T08:16:00.000Z"
+            },
+    "1.6":  {
+                "success":  true,
+                "statusCode":  200,
+                "message":  "Cập nhật hồ sơ khách hàng thành công",
+                "data":  {
+                             "maKH":  "KH001",
+                             "hoTen":  "Nguyễn Minh Anh",
+                             "soDienThoai":  "0909999888",
+                             "email":  "minhanh.new@gmail.com",
+                             "soCCCD":  "079203001234",
+                             "maTaiKhoan":  "TK_CUST_01"
+                         },
+                "timestamp":  "2026-11-06T08:17:00.000Z"
+            },
+    "2.1":  {
+                "success":  true,
+                "statusCode":  200,
+                "message":  "Lấy danh sách tài khoản thành công",
+                "data":  [
+                             {
+                                 "maTaiKhoan":  "TK_ADMIN_01",
+                                 "username":  "admin_sweethome",
+                                 "vaiTro":  "ADMIN",
+                                 "trangThai":  "ACTIVE",
+                                 "khachHang":  null
+                             },
+                             {
+                                 "maTaiKhoan":  "TK_STAFF_01",
+                                 "username":  "letan_ca1",
+                                 "vaiTro":  "STAFF",
+                                 "trangThai":  "ACTIVE",
+                                 "khachHang":  null
+                             }
+                         ],
+                "timestamp":  "2026-11-06T08:20:00.000Z"
+            },
+    "2.3":  {
+                "success":  true,
+                "statusCode":  200,
+                "message":  "Cập nhật trạng thái tài khoản thành công",
+                "data":  {
+                             "maTaiKhoan":  "TK_STAFF_01",
+                             "username":  "letan_ca1",
+                             "vaiTro":  "STAFF",
+                             "trangThai":  "LOCKED"
+                         },
+                "timestamp":  "2026-11-06T08:25:00.000Z"
+            },
+    "3.1":  {
+                "success":  true,
+                "statusCode":  200,
+                "message":  "Lấy thông tin Homestay thành công",
+                "data":  {
+                             "maHomestay":  "HS01",
+                             "tenHomestay":  "SweetHome Dalat Pine Valley",
+                             "diaChi":  "Số 18 Đường Triệu Việt Vương, Phường 4, TP. Đà Lạt, Lâm Đồng",
+                             "hotline":  "0909888999",
+                             "email":  "contact@sweethome.vn",
+                             "quyDinhChung":  "Giờ nhận phòng (Check-in): từ 14:00. Giờ trả phòng (Check-out): trước 12:00 trưa. Vui lòng xuất trình CCCD khi nhận phòng. Không hút thuốc trong phòng kín."
+                         },
+                "timestamp":  "2026-11-06T08:30:00.000Z"
+            },
+    "3.3":  {
+                "success":  true,
+                "statusCode":  200,
+                "message":  "Lấy danh sách phòng thuộc Homestay thành công",
+                "data":  [
+                             {
+                                 "maPhong":  "P101",
+                                 "soPhong":  "101",
+                                 "tang":  1,
+                                 "trangThai":  "TRONG",
+                                 "maHomestay":  "HS01",
+                                 "maLoaiPhong":  "LP01"
+                             },
+                             {
+                                 "maPhong":  "P201",
+                                 "soPhong":  "201",
+                                 "tang":  2,
+                                 "trangThai":  "DA_DAT",
+                                 "maHomestay":  "HS01",
+                                 "maLoaiPhong":  "LP02"
+                             }
+                         ],
+                "timestamp":  "2026-11-06T08:32:00.000Z"
+            },
+    "4.1":  {
+                "success":  true,
+                "statusCode":  200,
+                "message":  "Lấy danh sách loại phòng thành công",
+                "data":  [
+                             {
+                                 "maLoaiPhong":  "LP01",
+                                 "tenLoaiPhong":  "Standard Cozy Double",
+                                 "sucChuaToiDa":  2,
+                                 "giaNgayThuong":  500000,
+                                 "giaCuoiTuan":  650000,
+                                 "moTa":  "Phòng đôi ấm cúng nhìn ra vườn thông, diện tích 25m2."
+                             },
+                             {
+                                 "maLoaiPhong":  "LP02",
+                                 "tenLoaiPhong":  "Deluxe Mountain View",
+                                 "sucChuaToiDa":  4,
+                                 "giaNgayThuong":  800000,
+                                 "giaCuoiTuan":  1000000,
+                                 "moTa":  "Phòng gia đình có ban công săn mây toàn cảnh, 2 giường lớn."
+                             }
+                         ],
+                "timestamp":  "2026-11-06T08:35:00.000Z"
+            },
+    "5.1":  {
+                "success":  true,
+                "statusCode":  200,
+                "message":  "Lấy danh sách tiện nghi thành công",
+                "data":  [
+                             {
+                                 "maTienNghi":  "TN01",
+                                 "tenTienNghi":  "Wifi tốc độ cao",
+                                 "loaiTienNghi":  "CoBan"
+                             },
+                             {
+                                 "maTienNghi":  "TN02",
+                                 "tenTienNghi":  "Bếp nướng BBQ sân vườn",
+                                 "loaiTienNghi":  "AmThuc"
+                             },
+                             {
+                                 "maTienNghi":  "TN03",
+                                 "tenTienNghi":  "Bồn tắm nước nóng",
+                                 "loaiTienNghi":  "PhongTam"
+                             }
+                         ],
+                "timestamp":  "2026-11-06T08:40:00.000Z"
+            },
+    "6.1":  {
+                "success":  true,
+                "statusCode":  200,
+                "message":  "Lấy danh sách phòng thành công",
+                "data":  [
+                             {
+                                 "maPhong":  "P101",
+                                 "soPhong":  "101",
+                                 "tang":  1,
+                                 "trangThai":  "TRONG",
+                                 "maHomestay":  "HS01",
+                                 "maLoaiPhong":  "LP01",
+                                 "loaiPhong":  {
+                                                   "maLoaiPhong":  "LP01",
+                                                   "tenLoaiPhong":  "Standard Cozy Double",
+                                                   "sucChuaToiDa":  2,
+                                                   "giaNgayThuong":  500000,
+                                                   "giaCuoiTuan":  650000,
+                                                   "moTa":  "Phòng đôi ấm cúng nhìn ra vườn thông, diện tích 25m2."
+                                               },
+                                 "tienNghis":  [
+                                                   {
+                                                       "maTienNghi":  "TN01",
+                                                       "tenTienNghi":  "Wifi tốc độ cao",
+                                                       "loaiTienNghi":  "CoBan"
+                                                   }
+                                               ]
+                             }
+                         ],
+                "timestamp":  "2026-11-06T08:45:00.000Z"
+            },
+    "6.6":  {
+                "success":  true,
+                "statusCode":  200,
+                "message":  "Cập nhật trạng thái phòng thành công",
+                "data":  {
+                             "maPhong":  "P101",
+                             "soPhong":  "101",
+                             "tang":  1,
+                             "trangThai":  "BAO_TRI",
+                             "maHomestay":  "HS01",
+                             "maLoaiPhong":  "LP01"
+                         },
+                "timestamp":  "2026-11-06T08:50:00.000Z"
+            },
+    "6.7":  {
+                "success":  true,
+                "statusCode":  200,
+                "message":  "Đã xác nhận hoàn tất dọn phòng, phòng sẵn sàng đón khách mới",
+                "data":  {
+                             "maPhong":  "P101",
+                             "soPhong":  "101",
+                             "tang":  1,
+                             "trangThai":  "TRONG",
+                             "maHomestay":  "HS01",
+                             "maLoaiPhong":  "LP01"
+                         },
+                "timestamp":  "2026-11-06T08:55:00.000Z"
+            },
+    "7.1":  {
+                "success":  true,
+                "statusCode":  200,
+                "message":  "Tìm thấy 2 phòng trống phù hợp",
+                "data":  [
+                             {
+                                 "maPhong":  "P201",
+                                 "soPhong":  "201",
+                                 "tang":  2,
+                                 "trangThai":  "TRONG",
+                                 "maHomestay":  "HS01",
+                                 "maLoaiPhong":  "LP02",
+                                 "loaiPhong":  {
+                                                   "maLoaiPhong":  "LP02",
+                                                   "tenLoaiPhong":  "Deluxe Mountain View",
+                                                   "sucChuaToiDa":  4,
+                                                   "giaNgayThuong":  800000,
+                                                   "giaCuoiTuan":  1000000,
+                                                   "moTa":  "Phòng gia đình có ban công săn mây toàn cảnh, 2 giường lớn."
+                                               },
+                                 "tienNghis":  [
+                                                   {
+                                                       "maTienNghi":  "TN01",
+                                                       "tenTienNghi":  "Wifi tốc độ cao",
+                                                       "loaiTienNghi":  "CoBan"
+                                                   },
+                                                   {
+                                                       "maTienNghi":  "TN02",
+                                                       "tenTienNghi":  "Bếp nướng BBQ sân vườn",
+                                                       "loaiTienNghi":  "AmThuc"
+                                                   }
+                                               ],
+                                 "soDemLuuTru":  3,
+                                 "soDemNgayThuong":  1,
+                                 "soDemCuoiTuan":  2,
+                                 "tongTienDuKien":  2800000,
+                                 "tienCoc":  840000
+                             }
+                         ],
+                "timestamp":  "2026-11-06T09:00:00.000Z"
+            },
+    "8.1":  {
+                "success":  true,
+                "statusCode":  201,
+                "message":  "Khởi tạo đơn đặt phòng thành công, vui lòng quét mã QR để thanh toán tiền cọc",
+                "data":  {
+                             "datPhong":  {
+                                              "maDatPhong":  "DP2026110601",
+                                              "maKH":  "KH001",
+                                              "maPhong":  "P201",
+                                              "ngayDat":  "2026-11-06T09:05:00.000Z",
+                                              "ngayNhan":  "2026-11-12T00:00:00.000Z",
+                                              "ngayTra":  "2026-11-15T00:00:00.000Z",
+                                              "soKhach":  2,
+                                              "tienCoc":  840000,
+                                              "tongTienDuKien":  2800000,
+                                              "trangThai":  "CHO_COC",
+                                              "ghiChu":  "Nhận phòng khoảng 15h chiều, chuẩn bị sẵn bếp than BBQ.",
+                                              "khachHang":  {
+                                                                "maKH":  "KH001",
+                                                                "hoTen":  "Nguyễn Minh Anh",
+                                                                "soDienThoai":  "0901234567",
+                                                                "email":  "minhanh@gmail.com",
+                                                                "soCCCD":  null
+                                                            },
+                                              "phong":  {
+                                                            "maPhong":  "P201",
+                                                            "soPhong":  "201",
+                                                            "tang":  2,
+                                                            "trangThai":  "TRONG",
+                                                            "maHomestay":  "HS01",
+                                                            "maLoaiPhong":  "LP02"
+                                                        }
+                                          },
+                             "paymentQr":  {
+                                               "maGiaoDich":  "PAY_DP2026110601",
+                                               "maDatPhong":  "DP2026110601",
+                                               "soTienCoc":  840000,
+                                               "noiDungChuyenKhoan":  "SWEETHOME COC DP2026110601",
+                                               "qrCodeUrl":  "https://img.vietqr.io/image/MB-0987654321-compact2.png?amount=840000\u0026addInfo=SWEETHOME%20COC%20DP2026110601",
+                                               "idempotencyKey":  "idem-DP2026110601"
+                                           }
+                         },
+                "timestamp":  "2026-11-06T09:05:00.000Z"
+            },
+    "8.4":  {
+                "success":  true,
+                "statusCode":  200,
+                "message":  "Lấy lịch sử đặt phòng của khách hàng thành công",
+                "data":  [
+                             {
+                                 "maDatPhong":  "DP2026110601",
+                                 "maKH":  "KH001",
+                                 "maPhong":  "P201",
+                                 "ngayDat":  "2026-11-06T09:05:00.000Z",
+                                 "ngayNhan":  "2026-11-12T00:00:00.000Z",
+                                 "ngayTra":  "2026-11-15T00:00:00.000Z",
+                                 "soKhach":  2,
+                                 "tienCoc":  840000,
+                                 "tongTienDuKien":  2800000,
+                                 "trangThai":  "DA_XAC_NHAN",
+                                 "ghiChu":  "Nhận phòng khoảng 15h chiều, chuẩn bị sẵn bếp than BBQ.",
+                                 "phong":  {
+                                               "maPhong":  "P201",
+                                               "soPhong":  "201",
+                                               "tang":  2,
+                                               "trangThai":  "DA_DAT"
+                                           }
+                             }
+                         ],
+                "timestamp":  "2026-11-06T09:10:00.000Z"
+            },
+    "9.1":  {
+                "success":  true,
+                "statusCode":  200,
+                "message":  "Xác nhận thanh toán tiền cọc thành công, đơn đặt phòng đã được xác nhận",
+                "data":  {
+                             "idempotentReplay":  false,
+                             "maGiaoDich":  "PAY_DP2026110601",
+                             "datPhong":  {
+                                              "maDatPhong":  "DP2026110601",
+                                              "maKH":  "KH001",
+                                              "maPhong":  "P201",
+                                              "ngayDat":  "2026-11-06T09:05:00.000Z",
+                                              "ngayNhan":  "2026-11-12T00:00:00.000Z",
+                                              "ngayTra":  "2026-11-15T00:00:00.000Z",
+                                              "soKhach":  2,
+                                              "tienCoc":  840000,
+                                              "tongTienDuKien":  2800000,
+                                              "trangThai":  "DA_XAC_NHAN",
+                                              "ghiChu":  "Nhận phòng khoảng 15h chiều, chuẩn bị sẵn bếp than BBQ."
+                                          },
+                             "phong":  {
+                                           "maPhong":  "P201",
+                                           "soPhong":  "201",
+                                           "trangThai":  "DA_DAT"
+                                       }
+                         },
+                "timestamp":  "2026-11-06T09:06:30.000Z"
+            },
+    "10.1":  {
+                 "success":  true,
+                 "statusCode":  200,
+                 "message":  "Tra cứu đơn đặt phòng thành công",
+                 "data":  [
+                              {
+                                  "maDatPhong":  "DP2026110601",
+                                  "maKH":  "KH001",
+                                  "maPhong":  "P201",
+                                  "ngayDat":  "2026-11-06T09:05:00.000Z",
+                                  "ngayNhan":  "2026-11-12T00:00:00.000Z",
+                                  "ngayTra":  "2026-11-15T00:00:00.000Z",
+                                  "soKhach":  2,
+                                  "tienCoc":  840000,
+                                  "tongTienDuKien":  2800000,
+                                  "trangThai":  "DA_XAC_NHAN",
+                                  "ghiChu":  "Nhận phòng khoảng 15h chiều, chuẩn bị sẵn bếp than BBQ.",
+                                  "khachHang":  {
+                                                    "maKH":  "KH001",
+                                                    "hoTen":  "Nguyễn Minh Anh",
+                                                    "soDienThoai":  "0901234567",
+                                                    "email":  "minhanh@gmail.com",
+                                                    "soCCCD":  null
+                                                },
+                                  "phong":  {
+                                                "maPhong":  "P201",
+                                                "soPhong":  "201",
+                                                "tang":  2,
+                                                "trangThai":  "DA_DAT",
+                                                "maHomestay":  "HS01",
+                                                "maLoaiPhong":  "LP02",
+                                                "loaiPhong":  {
+                                                                  "maLoaiPhong":  "LP02",
+                                                                  "tenLoaiPhong":  "Deluxe Mountain View",
+                                                                  "sucChuaToiDa":  4,
+                                                                  "giaNgayThuong":  800000,
+                                                                  "giaCuoiTuan":  1000000,
+                                                                  "moTa":  "Phòng gia đình có ban công săn mây toàn cảnh, 2 giường lớn."
+                                                              }
+                                            },
+                                  "hoaDon":  null,
+                                  "danhGia":  null
+                              }
+                          ],
+                 "timestamp":  "2026-11-06T10:00:00.000Z"
+             },
+    "10.2":  {
+                 "success":  true,
+                 "statusCode":  200,
+                 "message":  "Tính toán số tiền hoàn cọc dự kiến thành công",
+                 "data":  {
+                              "maDatPhong":  "DP2026110601",
+                              "ngayNhan":  "2026-11-12T00:00:00.000Z",
+                              "trangThaiHienTai":  "DA_XAC_NHAN",
+                              "tienCoc":  840000,
+                              "deltaHours":  148.0,
+                              "tyLeHoanPhanTram":  100,
+                              "soTienHoan":  840000,
+                              "chinhSachApDung":  "Hủy trước giờ nhận phòng \u003e= 72 giờ (3 ngày): Hoàn 100% tiền cọc."
+                          },
+                 "timestamp":  "2026-11-06T10:00:00.000Z"
+             },
+    "10.3":  {
+                 "success":  true,
+                 "statusCode":  200,
+                 "message":  "Hủy đơn đặt phòng và xử lý hoàn tiền cọc thành công",
+                 "data":  {
+                              "datPhong":  {
+                                               "maDatPhong":  "DP2026110601",
+                                               "maKH":  "KH001",
+                                               "maPhong":  "P201",
+                                               "ngayDat":  "2026-11-06T09:05:00.000Z",
+                                               "ngayNhan":  "2026-11-12T00:00:00.000Z",
+                                               "ngayTra":  "2026-11-15T00:00:00.000Z",
+                                               "soKhach":  2,
+                                               "tienCoc":  840000,
+                                               "tongTienDuKien":  2800000,
+                                               "trangThai":  "DA_HUY",
+                                               "ghiChu":  "Lý do hủy: Thay đổi lịch trình công tác đột xuất"
+                                           },
+                              "phong":  {
+                                            "maPhong":  "P201",
+                                            "soPhong":  "201",
+                                            "trangThai":  "TRONG"
+                                        },
+                              "hoanCoc":  {
+                                              "maGiaoDichHoan":  "REFUND_DP2026110601",
+                                              "deltaHours":  148.0,
+                                              "tyLeHoanPhanTram":  100,
+                                              "tienCocDaDong":  840000,
+                                              "soTienHoan":  840000,
+                                              "trangThaiHoanTien":  "THANH_CONG",
+                                              "chinhSachApDung":  "Hủy trước giờ nhận phòng \u003e= 72 giờ (3 ngày): Hoàn 100% tiền cọc."
+                                          }
+                          },
+                 "timestamp":  "2026-11-06T10:05:00.000Z"
+             },
+    "11.1":  {
+                 "success":  true,
+                 "statusCode":  200,
+                 "message":  "Làm thủ tục Check-in nhận phòng thành công",
+                 "data":  {
+                              "datPhong":  {
+                                               "maDatPhong":  "DP2026110602",
+                                               "maKH":  "KH001",
+                                               "maPhong":  "P201",
+                                               "ngayDat":  "2026-11-06T09:05:00.000Z",
+                                               "ngayNhan":  "2026-11-12T00:00:00.000Z",
+                                               "ngayTra":  "2026-11-15T00:00:00.000Z",
+                                               "soKhach":  2,
+                                               "tienCoc":  840000,
+                                               "tongTienDuKien":  2800000,
+                                               "trangThai":  "DANG_LUU_TRU",
+                                               "ghiChu":  "Đã đối chiếu CCCD bản gốc và bàn giao 01 thẻ từ phòng 201.",
+                                               "khachHang":  {
+                                                                 "maKH":  "KH001",
+                                                                 "hoTen":  "Nguyễn Minh Anh",
+                                                                 "soDienThoai":  "0901234567",
+                                                                 "email":  "minhanh@gmail.com",
+                                                                 "soCCCD":  "079203001234"
+                                                             },
+                                               "phong":  {
+                                                             "maPhong":  "P201",
+                                                             "soPhong":  "201",
+                                                             "tang":  2,
+                                                             "trangThai":  "DANG_SU_DUNG",
+                                                             "maHomestay":  "HS01",
+                                                             "maLoaiPhong":  "LP02"
+                                                         }
+                                           }
+                          },
+                 "timestamp":  "2026-11-12T07:10:00.000Z"
+             },
+    "12.1":  {
+                 "success":  true,
+                 "statusCode":  200,
+                 "message":  "Lấy danh mục dịch vụ thành công",
+                 "data":  [
+                              {
+                                  "maDichVu":  "DV01",
+                                  "tenDichVu":  "Set nướng BBQ sân vườn",
+                                  "donGia":  250000,
+                                  "donViTinh":  "Phần"
+                              },
+                              {
+                                  "maDichVu":  "DV02",
+                                  "tenDichVu":  "Thuê xe máy tay ga",
+                                  "donGia":  150000,
+                                  "donViTinh":  "Ngày"
+                              },
+                              {
+                                  "maDichVu":  "DV03",
+                                  "tenDichVu":  "Giặt sấy quần áo",
+                                  "donGia":  50000,
+                                  "donViTinh":  "Kg"
+                              }
+                          ],
+                 "timestamp":  "2026-11-06T10:15:00.000Z"
+             },
+    "13.1":  {
+                 "success":  true,
+                 "statusCode":  200,
+                 "message":  "Lấy danh sách dịch vụ phát sinh của phòng thành công",
+                 "data":  {
+                              "maDatPhong":  "DP2026110602",
+                              "tongTienDichVuTamTinh":  650000,
+                              "suDungDichVus":  [
+                                                    {
+                                                        "maSuDung":  "SDDV001",
+                                                        "maDatPhong":  "DP2026110602",
+                                                        "maDichVu":  "DV01",
+                                                        "soLuong":  2,
+                                                        "thoiDiem":  "2026-11-12T18:30:00.000Z",
+                                                        "thanhTien":  500000,
+                                                        "dichVu":  {
+                                                                       "maDichVu":  "DV01",
+                                                                       "tenDichVu":  "Set nướng BBQ sân vườn",
+                                                                       "donGia":  250000,
+                                                                       "donViTinh":  "Phần"
+                                                                   }
+                                                    },
+                                                    {
+                                                        "maSuDung":  "SDDV002",
+                                                        "maDatPhong":  "DP2026110602",
+                                                        "maDichVu":  "DV02",
+                                                        "soLuong":  1,
+                                                        "thoiDiem":  "2026-11-13T08:00:00.000Z",
+                                                        "thanhTien":  150000,
+                                                        "dichVu":  {
+                                                                       "maDichVu":  "DV02",
+                                                                       "tenDichVu":  "Thuê xe máy tay ga",
+                                                                       "donGia":  150000,
+                                                                       "donViTinh":  "Ngày"
+                                                                   }
+                                                    }
+                                                ]
+                          },
+                 "timestamp":  "2026-11-13T08:05:00.000Z"
+             },
+    "13.2":  {
+                 "success":  true,
+                 "statusCode":  201,
+                 "message":  "Ghi nhận sử dụng dịch vụ thành công",
+                 "data":  {
+                              "suDungDichVu":  {
+                                                   "maSuDung":  "SDDV001",
+                                                   "maDatPhong":  "DP2026110602",
+                                                   "maDichVu":  "DV01",
+                                                   "soLuong":  2,
+                                                   "thoiDiem":  "2026-11-12T18:30:00.000Z",
+                                                   "thanhTien":  500000,
+                                                   "dichVu":  {
+                                                                  "maDichVu":  "DV01",
+                                                                  "tenDichVu":  "Set nướng BBQ sân vườn",
+                                                                  "donGia":  250000,
+                                                                  "donViTinh":  "Phần"
+                                                              }
+                                               },
+                              "tongTienDichVuTamTinh":  500000
+                          },
+                 "timestamp":  "2026-11-12T18:30:00.000Z"
+             },
+    "14.1":  {
+                 "success":  true,
+                 "statusCode":  201,
+                 "message":  "Lập hóa đơn quyết toán thành công",
+                 "data":  {
+                              "maHoaDon":  "HD2026111501",
+                              "maDatPhong":  "DP2026110602",
+                              "tienPhong":  2800000,
+                              "tienDichVu":  650000,
+                              "phuPhi":  100000,
+                              "tienCocDaTra":  840000,
+                              "tongCanThanhToan":  2710000,
+                              "ngayLap":  "2026-11-15T11:45:00.000Z",
+                              "phuongThuc":  "CHUYEN_KHOAN_QR",
+                              "trangThai":  "CHUA_THANH_TOAN",
+                              "datPhong":  {
+                                               "maDatPhong":  "DP2026110602",
+                                               "maKH":  "KH001",
+                                               "maPhong":  "P201",
+                                               "ngayNhan":  "2026-11-12T00:00:00.000Z",
+                                               "ngayTra":  "2026-11-15T00:00:00.000Z",
+                                               "soKhach":  2,
+                                               "tienCoc":  840000,
+                                               "tongTienDuKien":  2800000,
+                                               "trangThai":  "DANG_LUU_TRU",
+                                               "khachHang":  {
+                                                                 "maKH":  "KH001",
+                                                                 "hoTen":  "Nguyễn Minh Anh",
+                                                                 "soDienThoai":  "0901234567",
+                                                                 "email":  "minhanh@gmail.com",
+                                                                 "soCCCD":  "079203001234"
+                                                             },
+                                               "phong":  {
+                                                             "maPhong":  "P201",
+                                                             "soPhong":  "201",
+                                                             "tang":  2,
+                                                             "trangThai":  "DANG_SU_DUNG"
+                                                         },
+                                               "suDungDichVus":  [
+                                                                     {
+                                                                         "maSuDung":  "SDDV001",
+                                                                         "maDatPhong":  "DP2026110602",
+                                                                         "maDichVu":  "DV01",
+                                                                         "soLuong":  2,
+                                                                         "thoiDiem":  "2026-11-12T18:30:00.000Z",
+                                                                         "thanhTien":  500000,
+                                                                         "dichVu":  {
+                                                                                        "maDichVu":  "DV01",
+                                                                                        "tenDichVu":  "Set nướng BBQ sân vườn",
+                                                                                        "donGia":  250000,
+                                                                                        "donViTinh":  "Phần"
+                                                                                    }
+                                                                     },
+                                                                     {
+                                                                         "maSuDung":  "SDDV002",
+                                                                         "maDatPhong":  "DP2026110602",
+                                                                         "maDichVu":  "DV02",
+                                                                         "soLuong":  1,
+                                                                         "thoiDiem":  "2026-11-13T08:00:00.000Z",
+                                                                         "thanhTien":  150000,
+                                                                         "dichVu":  {
+                                                                                        "maDichVu":  "DV02",
+                                                                                        "tenDichVu":  "Thuê xe máy tay ga",
+                                                                                        "donGia":  150000,
+                                                                                        "donViTinh":  "Ngày"
+                                                                                    }
+                                                                     }
+                                                                 ]
+                                           }
+                          },
+                 "timestamp":  "2026-11-15T11:45:00.000Z"
+             },
+    "14.2":  {
+                 "success":  true,
+                 "statusCode":  200,
+                 "message":  "Xác nhận thanh toán và hoàn tất thủ tục trả phòng (Check-out) thành công",
+                 "data":  {
+                              "hoaDon":  {
+                                             "maHoaDon":  "HD2026111501",
+                                             "maDatPhong":  "DP2026110602",
+                                             "tienPhong":  2800000,
+                                             "tienDichVu":  650000,
+                                             "phuPhi":  100000,
+                                             "tienCocDaTra":  840000,
+                                             "tongCanThanhToan":  2710000,
+                                             "ngayLap":  "2026-11-15T11:50:00.000Z",
+                                             "phuongThuc":  "CHUYEN_KHOAN_QR",
+                                             "trangThai":  "DA_THANH_TOAN"
+                                         },
+                              "datPhong":  {
+                                               "maDatPhong":  "DP2026110602",
+                                               "trangThai":  "HOAN_TAT"
+                                           },
+                              "phong":  {
+                                            "maPhong":  "P201",
+                                            "soPhong":  "201",
+                                            "trangThai":  "CHO_DON_DEP"
+                                        },
+                              "pdfDownloadUrl":  "/api/invoices/HD2026111501/pdf"
+                          },
+                 "timestamp":  "2026-11-15T11:50:00.000Z"
+             },
+    "15.1":  {
+                 "success":  true,
+                 "statusCode":  200,
+                 "message":  "Lấy danh sách đánh giá thành công",
+                 "data":  [
+                              {
+                                  "maDanhGia":  "DG001",
+                                  "maDatPhong":  "DP2026110602",
+                                  "soSao":  5,
+                                  "noiDung":  "Phòng 201 cực kỳ sạch sẽ, view săn mây buổi sáng tuyệt đẹp, nhân viên hỗ trợ chuẩn bị BBQ rất nhiệt tình!",
+                                  "ngayDanhGia":  "2026-11-15T15:00:00.000Z",
+                                  "phanHoiHost":  "Cảm ơn bạn Minh Anh đã lựa chọn SweetHome Dalat! Rất mong được đón tiếp bạn và gia đình vào kỳ nghỉ tới ạ.",
+                                  "datPhong":  {
+                                                   "maDatPhong":  "DP2026110602",
+                                                   "maPhong":  "P201",
+                                                   "ngayNhan":  "2026-11-12T00:00:00.000Z",
+                                                   "ngayTra":  "2026-11-15T00:00:00.000Z",
+                                                   "khachHang":  {
+                                                                     "maKH":  "KH001",
+                                                                     "hoTen":  "Nguyễn Minh Anh"
+                                                                 },
+                                                   "phong":  {
+                                                                 "maPhong":  "P201",
+                                                                 "soPhong":  "201",
+                                                                 "maLoaiPhong":  "LP02"
+                                                             }
+                                               }
+                              }
+                          ],
+                 "timestamp":  "2026-11-15T16:00:00.000Z"
+             },
+    "15.2":  {
+                 "success":  true,
+                 "statusCode":  201,
+                 "message":  "Cảm ơn bạn đã gửi đánh giá trải nghiệm tại SweetHome",
+                 "data":  {
+                              "maDanhGia":  "DG001",
+                              "maDatPhong":  "DP2026110602",
+                              "soSao":  5,
+                              "noiDung":  "Phòng 201 cực kỳ sạch sẽ, view săn mây buổi sáng tuyệt đẹp, nhân viên hỗ trợ chuẩn bị BBQ rất nhiệt tình!",
+                              "ngayDanhGia":  "2026-11-15T15:00:00.000Z",
+                              "phanHoiHost":  null
+                          },
+                 "timestamp":  "2026-11-15T15:00:00.000Z"
+             },
+    "15.3":  {
+                 "success":  true,
+                 "statusCode":  200,
+                 "message":  "Phản hồi đánh giá thành công",
+                 "data":  {
+                              "maDanhGia":  "DG001",
+                              "maDatPhong":  "DP2026110602",
+                              "soSao":  5,
+                              "noiDung":  "Phòng 201 cực kỳ sạch sẽ, view săn mây buổi sáng tuyệt đẹp, nhân viên hỗ trợ chuẩn bị BBQ rất nhiệt tình!",
+                              "ngayDanhGia":  "2026-11-15T15:00:00.000Z",
+                              "phanHoiHost":  "Cảm ơn bạn Minh Anh đã lựa chọn SweetHome Dalat! Rất mong được đón tiếp bạn và gia đình vào kỳ nghỉ tới ạ."
+                          },
+                 "timestamp":  "2026-11-15T15:30:00.000Z"
+             },
+    "15.4":  {
+                 "success":  true,
+                 "statusCode":  200,
+                 "message":  "Lấy báo cáo thống kê doanh thu thành công",
+                 "data":  {
+                              "tuNgay":  "2026-11-01",
+                              "denNgay":  "2026-11-30",
+                              "groupBy":  "day",
+                              "tongHop":  {
+                                              "soHoaDonDaThanhToan":  12,
+                                              "tongTienPhong":  24500000,
+                                              "tongTienDichVu":  4800000,
+                                              "tongPhuPhi":  500000,
+                                              "tongDoanhThu":  29800000,
+                                              "tongTienCocDaThu":  7350000,
+                                              "tongThuKhiCheckOut":  22450000
+                                          },
+                              "chiTietTheoKy":  [
+                                                    {
+                                                        "kyBaoCao":  "2026-11-15",
+                                                        "soHoaDon":  2,
+                                                        "tienPhong":  4800000,
+                                                        "tienDichVu":  950000,
+                                                        "phuPhi":  100000,
+                                                        "tongDoanhThu":  5850000
+                                                    }
+                                                ]
+                          },
+                 "timestamp":  "2026-11-15T16:10:00.000Z"
+             },
+    "15.5":  {
+                 "success":  true,
+                 "statusCode":  200,
+                 "message":  "Lấy báo cáo tỷ lệ lấp đầy phòng thành công",
+                 "data":  {
+                              "tuNgay":  "2026-11-01",
+                              "denNgay":  "2026-11-30",
+                              "soNgayTrongKy":  30,
+                              "tongSoPhong":  12,
+                              "tongSoDemKhaDung":  360,
+                              "tongSoDemDaKhaiThac":  234,
+                              "tyLeLapDayToanHomestay":  65.0,
+                              "thongKeTrangThaiHienTai":  {
+                                                              "TRONG":  5,
+                                                              "DA_DAT":  3,
+                                                              "DANG_SU_DUNG":  2,
+                                                              "CHO_DON_DEP":  1,
+                                                              "BAO_TRI":  1
+                                                          },
+                              "chiTietTheoPhong":  [
+                                                       {
+                                                           "maPhong":  "P101",
+                                                           "soPhong":  "101",
+                                                           "tang":  1,
+                                                           "tenLoaiPhong":  "Standard Cozy Double",
+                                                           "trangThaiHienTai":  "TRONG",
+                                                           "soDemLuuTru":  21,
+                                                           "soNgayTrongKy":  30,
+                                                           "tyLeLapDayPhanTram":  70.0
+                                                       },
+                                                       {
+                                                           "maPhong":  "P201",
+                                                           "soPhong":  "201",
+                                                           "tang":  2,
+                                                           "tenLoaiPhong":  "Deluxe Mountain View",
+                                                           "trangThaiHienTai":  "CHO_DON_DEP",
+                                                           "soDemLuuTru":  24,
+                                                           "soNgayTrongKy":  30,
+                                                           "tyLeLapDayPhanTram":  80.0
+                                                       }
+                                                   ]
+                          },
+                 "timestamp":  "2026-11-15T16:15:00.000Z"
+             }
+}

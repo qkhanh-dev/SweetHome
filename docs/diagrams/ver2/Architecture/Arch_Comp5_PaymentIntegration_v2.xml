@@ -1,0 +1,80 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="app.diagrams.net" pages="1">
+  <diagram id="arch_payment_v2" name="Arch_Comp5_PaymentIntegration_v2">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1060" pageHeight="480" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="pi_bkctrl" value="&amp;lt;&amp;lt;controller&amp;gt;&amp;gt;&lt;br&gt;&lt;b&gt;BookingPaymentController&lt;/b&gt;" style="swimlane;fontStyle=0;align=center;verticalAlign=middle;startSize=38;rounded=0;collapsible=0;fillColor=#FFFFFF;fontColor=#000000;strokeColor=#000000;strokeWidth=1.5;fontSize=13;html=1;" vertex="1" parent="1">
+          <mxGeometry x="30" y="30" width="300" height="85" as="geometry" />
+        </mxCell>
+        <mxCell id="pi_bkctrl_body" value="+ webhook(dto, idempotencyKey, secret)&lt;br&gt;+ qr(dto: CreateQrDto)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=8;fontSize=13;fontColor=#000000;whiteSpace=wrap;" vertex="1" parent="pi_bkctrl">
+          <mxGeometry y="38" width="300" height="47" as="geometry" />
+        </mxCell>
+        <mxCell id="pi_bksvc" value="&amp;lt;&amp;lt;service&amp;gt;&amp;gt;&lt;br&gt;&lt;b&gt;BookingService&lt;/b&gt;" style="swimlane;fontStyle=0;align=center;verticalAlign=middle;startSize=38;rounded=0;collapsible=0;fillColor=#FFFFFF;fontColor=#000000;strokeColor=#000000;strokeWidth=1.5;fontSize=13;html=1;" vertex="1" parent="1">
+          <mxGeometry x="30" y="180" width="300" height="95" as="geometry" />
+        </mxCell>
+        <mxCell id="pi_bksvc_body" value="+ create() / createQr()&lt;br&gt;+ webhook() (lưu ThanhToanCoc)&lt;br&gt;+ cancel() (lưu HoanCoc &amp;amp; gọi hoàn tiền)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=8;fontSize=13;fontColor=#000000;whiteSpace=wrap;" vertex="1" parent="pi_bksvc">
+          <mxGeometry y="38" width="300" height="57" as="geometry" />
+        </mxCell>
+        <mxCell id="pi_gw" value="&amp;lt;&amp;lt;integration service&amp;gt;&amp;gt;&lt;br&gt;&lt;b&gt;PaymentGatewayService&lt;/b&gt;" style="swimlane;fontStyle=0;align=center;verticalAlign=middle;startSize=38;rounded=0;collapsible=0;fillColor=#FFFFFF;fontColor=#000000;strokeColor=#000000;strokeWidth=1.5;fontSize=13;html=1;" vertex="1" parent="1">
+          <mxGeometry x="30" y="335" width="450" height="115" as="geometry" />
+        </mxCell>
+        <mxCell id="pi_gw_body" value="+ verifyWebhook(secret) (timingSafeEqual)&lt;br&gt;+ taoYeuCauThanhToan(maDatPhong, soTienCoc): VietQR URL&lt;br&gt;+ hoanTien(maGiaoDich, soTienHoan, idempotencyKey)&lt;br&gt;• Hỗ trợ chuyển đổi mock mode / PAYMENT_REFUND_URL" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=8;fontSize=13;fontColor=#000000;whiteSpace=wrap;" vertex="1" parent="pi_gw">
+          <mxGeometry y="38" width="450" height="77" as="geometry" />
+        </mxCell>
+        <mxCell id="pi_invctrl" value="&amp;lt;&amp;lt;controller&amp;gt;&amp;gt;&lt;br&gt;&lt;b&gt;InvoicePaymentController&lt;/b&gt;" style="swimlane;fontStyle=0;align=center;verticalAlign=middle;startSize=38;rounded=0;collapsible=0;fillColor=#FFFFFF;fontColor=#000000;strokeColor=#000000;strokeWidth=1.5;fontSize=13;html=1;" vertex="1" parent="1">
+          <mxGeometry x="580" y="30" width="450" height="85" as="geometry" />
+        </mxCell>
+        <mxCell id="pi_invctrl_body" value="+ pay(invoiceId, dto: ConfirmInvoicePaymentDto)&lt;br&gt;+ downloadPdf(invoiceId, currentAccount): StreamableFile" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=8;fontSize=13;fontColor=#000000;whiteSpace=wrap;" vertex="1" parent="pi_invctrl">
+          <mxGeometry y="38" width="450" height="47" as="geometry" />
+        </mxCell>
+        <mxCell id="pi_billsvc" value="&amp;lt;&amp;lt;service&amp;gt;&amp;gt;&lt;br&gt;&lt;b&gt;BillingPaymentService&lt;/b&gt;" style="swimlane;fontStyle=0;align=center;verticalAlign=middle;startSize=38;rounded=0;collapsible=0;fillColor=#FFFFFF;fontColor=#000000;strokeColor=#000000;strokeWidth=1.5;fontSize=13;html=1;" vertex="1" parent="1">
+          <mxGeometry x="580" y="180" width="450" height="95" as="geometry" />
+        </mxCell>
+        <mxCell id="pi_billsvc_body" value="+ createOrUpdateCheckOutInvoice(bookingId, dto)&lt;br&gt;+ payInvoice(invoiceId, dto)&lt;br&gt;+ getPaidInvoicePdf(invoiceId, currentAccount)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=8;fontSize=13;fontColor=#000000;whiteSpace=wrap;" vertex="1" parent="pi_billsvc">
+          <mxGeometry y="38" width="450" height="57" as="geometry" />
+        </mxCell>
+        <mxCell id="pi_pdf" value="&amp;lt;&amp;lt;pdf library &amp;amp; assets&amp;gt;&amp;gt;&lt;br&gt;&lt;b&gt;PDFDocument (PDFKit) &amp;amp; Font Resolver&lt;/b&gt;" style="swimlane;fontStyle=0;align=center;verticalAlign=middle;startSize=38;rounded=0;collapsible=0;fillColor=#FFFFFF;fontColor=#000000;strokeColor=#000000;strokeWidth=1.5;fontSize=13;html=1;" vertex="1" parent="1">
+          <mxGeometry x="580" y="335" width="450" height="115" as="geometry" />
+        </mxCell>
+        <mxCell id="pi_pdf_body" value="- renderInvoicePdf(invoice: PdfInvoice): Promise&amp;lt;Buffer&amp;gt;&lt;br&gt;+ resolveInvoiceFontDirectory(moduleDirectory)&lt;br&gt;• Nhúng font NotoSans-Regular.ttf / NotoSans-Bold.ttf&lt;br&gt;  hỗ trợ xuất biên lai tiếng Việt có dấu chuẩn" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;spacingRight=8;fontSize=13;fontColor=#000000;whiteSpace=wrap;" vertex="1" parent="pi_pdf">
+          <mxGeometry y="38" width="450" height="77" as="geometry" />
+        </mxCell>
+        <mxCell id="e_pi_1" value="gọi" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;endSize=9;strokeColor=#000000;strokeWidth=1.35;fontColor=#000000;fontSize=13;labelBackgroundColor=#FFFFFF;dashed=1;dashPattern=5 4;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="180" y="115" as="sourcePoint" />
+            <mxPoint x="180" y="180" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_pi_2" value="tạo QR / hoàn cọc" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;endSize=9;strokeColor=#000000;strokeWidth=1.35;fontColor=#000000;fontSize=13;labelBackgroundColor=#FFFFFF;dashed=1;dashPattern=5 4;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="180" y="275" as="sourcePoint" />
+            <mxPoint x="180" y="335" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_pi_3" value="verifyWebhook()" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;endSize=9;strokeColor=#000000;strokeWidth=1.35;fontColor=#000000;fontSize=13;labelBackgroundColor=#FFFFFF;dashed=1;dashPattern=5 4;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="330" y="72" as="sourcePoint" />
+            <mxPoint x="380" y="335" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="380" y="72" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_pi_4" value="gọi" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;endSize=9;strokeColor=#000000;strokeWidth=1.35;fontColor=#000000;fontSize=13;labelBackgroundColor=#FFFFFF;dashed=1;dashPattern=5 4;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="805" y="115" as="sourcePoint" />
+            <mxPoint x="805" y="180" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_pi_5" value="kết xuất PDF" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;endSize=9;strokeColor=#000000;strokeWidth=1.35;fontColor=#000000;fontSize=13;labelBackgroundColor=#FFFFFF;dashed=1;dashPattern=5 4;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="805" y="275" as="sourcePoint" />
+            <mxPoint x="805" y="335" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

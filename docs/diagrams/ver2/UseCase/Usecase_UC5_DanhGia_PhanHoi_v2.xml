@@ -1,0 +1,31 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="Usecase_UC5_DanhGia_PhanHoi" id="usecase_uc5_danhgia_phanhoi">
+    <mxGraphModel dx="1773" dy="852" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1040" pageHeight="410" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="actor_guest" parent="1" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fillColor=#ffffff;strokeColor=#334155;fontColor=#0f172a;fontSize=14;fontStyle=1;strokeWidth=1.5;" value="Khách hàng" vertex="1">
+          <mxGeometry height="100" width="55" x="60" y="98" as="geometry" />
+        </mxCell>
+        <mxCell id="actor_admin" parent="1" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fillColor=#ffffff;strokeColor=#334155;fontColor=#0f172a;fontSize=14;fontStyle=1;strokeWidth=1.5;" value="Chủ Homestay / Admin" vertex="1">
+          <mxGeometry height="100" width="55" x="880" y="222" as="geometry" />
+        </mxCell>
+        <mxCell id="system_boundary" parent="1" style="swimlane;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#334155;strokeWidth=1.8;fontStyle=1;fontSize=14;fontColor=#0f172a;startSize=38;collapsible=0;" value="UC5. Đánh giá và phản hồi trải nghiệm" vertex="1">
+          <mxGeometry height="320" width="500" x="250" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_5_1" parent="system_boundary" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#334155;strokeWidth=1.4;fontColor=#0f172a;fontSize=14;" value="UC5.1: Gửi đánh giá và chấm điểm phòng" vertex="1">
+          <mxGeometry height="75" width="380" x="60" y="70" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_5_2" parent="system_boundary" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#334155;strokeWidth=1.4;fontColor=#0f172a;fontSize=14;" value="UC5.2: Phản hồi đánh giá của khách" vertex="1">
+          <mxGeometry height="75" width="380" x="60" y="195" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_guest_uc51" edge="1" parent="1" source="actor_guest" style="endArrow=none;html=1;strokeColor=#334155;strokeWidth=1.3;exitX=1;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="uc_5_1" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_admin_uc52" edge="1" parent="1" source="actor_admin" style="endArrow=none;html=1;strokeColor=#334155;strokeWidth=1.3;exitX=0;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="uc_5_2" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

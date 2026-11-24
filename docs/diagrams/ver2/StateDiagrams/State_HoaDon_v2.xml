@@ -1,0 +1,57 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="app.diagrams.net" pages="1">
+  <diagram id="state_hoadon_v2" name="State_HoaDon_v2">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="980" pageHeight="540" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="hd_init" value="" style="ellipse;html=1;shape=startState;fillColor=#000000;strokeColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="184" y="32" width="22" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="hd_chua_tt" value="CHUA_THANH_TOAN (Chưa thanh toán)" style="swimlane;fontStyle=1;align=center;verticalAlign=middle;startSize=30;rounded=1;arcSize=12;collapsible=0;fillColor=#FFFFFF;fontColor=#000000;strokeColor=#000000;strokeWidth=1.6;fontSize=13;html=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="145" width="410" height="92" as="geometry" />
+        </mxCell>
+        <mxCell id="hd_chua_tt_body" value="entry / tính tienPhong + tienDichVu + phuPhi - tienCocDaTra&lt;br&gt;do / hiển thị hóa đơn nháp chờ xác nhận thanh toán" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=10;spacingRight=8;fontSize=13;fontColor=#000000;whiteSpace=wrap;" vertex="1" parent="hd_chua_tt">
+          <mxGeometry y="30" width="410" height="62" as="geometry" />
+        </mxCell>
+        <mxCell id="hd_da_tt" value="DA_THANH_TOAN (Đã thanh toán)" style="swimlane;fontStyle=1;align=center;verticalAlign=middle;startSize=30;rounded=1;arcSize=12;collapsible=0;fillColor=#FFFFFF;fontColor=#000000;strokeColor=#000000;strokeWidth=1.6;fontSize=13;html=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="360" width="410" height="92" as="geometry" />
+        </mxCell>
+        <mxCell id="hd_da_tt_body" value="entry / DatPhong → HOAN_TAT; Phong → CHO_DON_DEP&lt;br&gt;internal / getPaidInvoicePdf() → xuất biên lai PDF" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=10;spacingRight=8;fontSize=13;fontColor=#000000;whiteSpace=wrap;" vertex="1" parent="hd_da_tt">
+          <mxGeometry y="30" width="410" height="62" as="geometry" />
+        </mxCell>
+        <mxCell id="hd_final" value="" style="ellipse;html=1;shape=endState;fillColor=#000000;strokeColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="231" y="495" width="28" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="e_hd_init" value="createOrUpdateCheckOutInvoice(bookingId, dto)&lt;br&gt;[DatPhong == DANG_LUU_TRU ∧ chưa có HoaDon]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;endSize=10;strokeColor=#000000;strokeWidth=1.4;fontColor=#000000;fontSize=13;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="hd_init" target="hd_chua_tt">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="195" y="54" as="sourcePoint" />
+            <mxPoint x="195" y="145" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_hd_update_draft" value="createOrUpdateCheckOutInvoice(bookingId, dto)&lt;br&gt;[DatPhong == DANG_LUU_TRU]&lt;br&gt;/ cập nhật tienDichVu, phuPhi, tongCanThanhToan, phuongThuc" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;endSize=10;strokeColor=#000000;strokeWidth=1.4;fontColor=#000000;fontSize=13;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="hd_chua_tt" target="hd_chua_tt">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="450" y="168" as="sourcePoint" />
+            <mxPoint x="450" y="214" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="505" y="168" />
+              <mxPoint x="505" y="214" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_hd_pay" value="payInvoice(invoiceId, dto)&lt;br&gt;[DatPhong == DANG_LUU_TRU ∧ tổng dịch vụ khớp&lt;br&gt;∧ tongCanThanhToan nhất quán ∧ Phong == DANG_SU_DUNG]&lt;br&gt;/ ghi nhận phuongThuc (TIEN_MAT | CHUYEN_KHOAN_QR), ngayLap = now()" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;endSize=10;strokeColor=#000000;strokeWidth=1.4;fontColor=#000000;fontSize=13;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="hd_chua_tt" target="hd_da_tt">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="245" y="237" as="sourcePoint" />
+            <mxPoint x="245" y="360" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_hd_final" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;endSize=10;strokeColor=#000000;strokeWidth=1.4;fontColor=#000000;fontSize=13;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="hd_da_tt" target="hd_final">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="245" y="452" as="sourcePoint" />
+            <mxPoint x="245" y="495" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

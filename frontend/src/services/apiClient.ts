@@ -1,0 +1,518 @@
+import type {
+  ApiResponse,
+  DanhGia,
+  DatPhong,
+  DichVu,
+  HoaDon,
+  Homestay,
+  KhachHang,
+  LoaiPhong,
+  Phong,
+  TaiKhoan,
+  TienNghi,
+  TrangThaiDatPhong,
+  TrangThaiPhong,
+  TrangThaiTaiKhoan,
+  VaiTroTaiKhoan,
+} from "@/types/sweethome";
+import type {
+  AddStayServiceResult,
+  AuthResult,
+  AvailableRoomResult,
+  CancelBookingResult,
+  ChangePasswordDto,
+  CheckInResult,
+  CreateBookingDto,
+  CreateBookingResult,
+  CreateRoomDto,
+  CreateUserDto,
+  LoginDto,
+  PaymentQrResult,
+  PaymentWebhookDto,
+  PayInvoiceResult,
+  RefundPreviewResult,
+  RegisterDto,
+  RemoveStayServiceResult,
+  RevenueGroupBy,
+  RevenueStatsResult,
+  OccupancyStatsResult,
+  StayServicesResult,
+  UpdateRoomDto,
+  WebhookResult,
+} from "@/types/api";
+import { mockApi, setMockAuthenticatedAccount } from "@/mocks/mockAdapter";
+import { ApiError } from "@/services/apiError";
+
+export { ApiError } from "@/services/apiError";
+
+const API_BASE_URL = (
+  (typeof window === "undefined" ? process.env.INTERNAL_API_URL : undefined) ||
+  process.env.NEXT_PUBLIC_API_URL ||
+  "http://localhost:3001/api"
+).replace(/\/+$/, "");
+const USE_MOCK = process.env.NEXT_PUBLIC_USE_MOCK === "true";
+
+export function paymentSimulatorEnabled(useMock: boolean, explicitQaFlag: boolean, nodeEnv: string | undefined): boolean {
+  return useMock || (nodeEnv !== "production" && explicitQaFlag);
+}
+
+const PAYMENT_SIMULATOR_ENABLED = paymentSimulatorEnabled(
+  USE_MOCK,
+  process.env.NEXT_PUBLIC_ENABLE_PAYMENT_SIMULATOR === "true",
+  process.env.NODE_ENV,
+);
+
+let accessToken: string | null = null;
+let forbiddenSessionCheck: Promise<void> | null = null;
+export const isMockMode = USE_MOCK;
+export const isPaymentSimulatorEnabled = PAYMENT_SIMULATOR_ENABLED;
+
+export function setAccessToken(token: string | null): void {
+  // Never retain a user token in a server module shared by concurrent requests.
+  if (typeof window === "undefined") return;
+  accessToken = token?.trim() || null;
+}
+
+export function getAccessToken(): string | null {
+  return typeof window === "undefined" ? null : accessToken;
+}
+
+function syncVerifiedMockAccount(account: TaiKhoan | null): void {
+  if (USE_MOCK && typeof window !== "undefined") setMockAuthenticatedAccount(account);
+}
+
+function clearBrowserSession(): void {
+  setAccessToken(null);
+  if (typeof window !== "undefined") {
+    syncVerifiedMockAccount(null);
+    void fetch("/api/auth/session", { method: "DELETE", credentials: "same-origin" });
+    window.dispatchEvent(new Event("sweethome:session-invalid"));
+  }
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+function queryPath(path: string, params?: object): string {
+  const query = new URLSearchParams();
+  for (const [key, value] of Object.entries(params ?? {})) {
+    if (value === undefined || value === null) continue;
+    query.set(key, Array.isArray(value) ? value.join(",") : String(value));
+  }
+  const search = query.toString();
+  return search ? `${path}?${search}` : path;
+}
+
+async function request<T>(
+  path: string,
+  mock: () => Promise<ApiResponse<T>>,
+  options: RequestInit = {},
+): Promise<ApiResponse<T>> {
+  if (USE_MOCK) return mock();
+
+  const headers = new Headers(options.headers);
+  headers.set("Accept", "application/json");
+  if (options.body !== undefined && options.body !== null) {
+    headers.set("Content-Type", "application/json; charset=utf-8");
+  }
+  // The module token is browser-only. Server requests must carry an explicit
+  // per-request Authorization header so concurrent users cannot share it.
+  if (typeof window !== "undefined" && accessToken) {
+    headers.set("Authorization", `Bearer ${accessToken}`);
+  }
+
+  const response = await fetch(`${API_BASE_URL}${path}`, {
+    ...options,
+    headers,
+    cache: "no-store",
+  });
+
+  let payload: unknown;
+  try {
+    payload = await response.json();
+  } catch {
+    throw new ApiError(
+      "Backend trả về phản hồi không phải JSON hợp lệ.",
+      response.status,
+      null,
+    );
+  }
+
+  if (!response.ok || (isRecord(payload) && payload.success === false)) {
+    if (typeof window !== "undefined" && response.status === 401) {
+      clearBrowserSession();
+    } else if (typeof window !== "undefined" && response.status === 403) {
+      // 403 can mean either an expired/locked session or a valid user lacking
+      // the role for this resource. Revalidate /auth/me before deciding to log out.
+      await revalidateSessionAfterForbidden();
+    }
+    const message =
+      isRecord(payload) && typeof payload.message === "string"
+        ? payload.message
+        : `Yêu cầu thất bại với mã HTTP ${response.status}.`;
+    const statusCode =
+      isRecord(payload) && typeof payload.statusCode === "number"
+        ? payload.statusCode
+        : response.status;
+    throw new ApiError(message, statusCode, payload);
+  }
+
+  if (
+    !isRecord(payload) ||
+    payload.success !== true ||
+    typeof payload.statusCode !== "number" ||
+    payload.statusCode !== response.status ||
+    typeof payload.message !== "string" ||
+    typeof payload.timestamp !== "string" ||
+    !Number.isFinite(Date.parse(payload.timestamp)) ||
+    !Object.prototype.hasOwnProperty.call(payload, "data")
+  ) {
+    throw new ApiError(
+      "Phản hồi Backend không đúng cấu trúc ApiResponse.",
+      response.status,
+      payload,
+    );
+  }
+
+  return payload as unknown as ApiResponse<T>;
+}
+
+async function internalAuthRequest<T>(
+  action: string,
+  method: "GET" | "POST",
+  body?: unknown,
+): Promise<ApiResponse<T>> {
+  const response = await fetch(`/api/auth/${action}`, {
+    method,
+    credentials: "same-origin",
+    headers: {
+      Accept: "application/json",
+      ...(body === undefined ? {} : { "Content-Type": "application/json; charset=utf-8" }),
+    },
+    ...(body === undefined ? {} : { body: JSON.stringify(body) }),
+    cache: "no-store",
+  });
+  let payload: unknown;
+  try {
+    payload = await response.json();
+  } catch {
+    throw new ApiError("Phản hồi xác thực không hợp lệ.", response.status, null);
+  }
+  if (!response.ok || (isRecord(payload) && payload.success === false)) {
+    const message = isRecord(payload) && typeof payload.message === "string"
+      ? payload.message
+      : `Yêu cầu xác thực thất bại với mã HTTP ${response.status}.`;
+    const statusCode = isRecord(payload) && typeof payload.statusCode === "number"
+      ? payload.statusCode
+      : response.status;
+    throw new ApiError(message, statusCode, payload);
+  }
+  if (
+    !isRecord(payload) || payload.success !== true ||
+    typeof payload.statusCode !== "number" ||
+    typeof payload.message !== "string" ||
+    typeof payload.timestamp !== "string" ||
+    !Object.prototype.hasOwnProperty.call(payload, "data")
+  ) {
+    throw new ApiError("Phản hồi Backend không đúng cấu trúc ApiResponse.", response.status, payload);
+  }
+  const restoredToken = response.headers.get("X-SweetHome-Access-Token");
+  if (restoredToken) setAccessToken(restoredToken);
+  return payload as unknown as ApiResponse<T>;
+}
+
+async function revalidateSessionAfterForbidden(): Promise<void> {
+  if (typeof window === "undefined") return;
+
+  // Several concurrent requests can receive 403 at once; share one session check.
+  if (!forbiddenSessionCheck) {
+    forbiddenSessionCheck = (async () => {
+      try {
+        await internalAuthRequest<TaiKhoan>("me", "GET");
+      } catch (error) {
+        // A role-level 403 from the original API is not a logout condition.
+        // /auth/me returns 401/403 only when the current session is invalid.
+        if (
+          error instanceof ApiError &&
+          (error.statusCode === 401 || error.statusCode === 403)
+        ) {
+          clearBrowserSession();
+        }
+      }
+    })().finally(() => {
+      forbiddenSessionCheck = null;
+    });
+  }
+
+  await forbiddenSessionCheck;
+}
+
+const json = (method: string, body?: unknown, headers?: HeadersInit): RequestInit => ({
+  method,
+  ...(body === undefined ? {} : { body: JSON.stringify(body) }),
+  ...(headers === undefined ? {} : { headers }),
+});
+
+export const apiClient = {
+  // Auth, users and customer profile.
+  register: async (payload: RegisterDto): Promise<ApiResponse<AuthResult>> => {
+    const response = typeof window !== "undefined"
+      ? await internalAuthRequest<AuthResult>("register", "POST", payload)
+      : await request("/auth/register", () => mockApi.register(payload), json("POST", payload));
+    setAccessToken(response.data.accessToken);
+    syncVerifiedMockAccount(response.data.taiKhoan);
+    return response;
+  },
+
+  login: async (payload: LoginDto): Promise<ApiResponse<AuthResult>> => {
+    const response = typeof window !== "undefined"
+      ? await internalAuthRequest<AuthResult>("login", "POST", payload)
+      : await request("/auth/login", () => mockApi.login(payload), json("POST", payload));
+    setAccessToken(response.data.accessToken);
+    syncVerifiedMockAccount(response.data.taiKhoan);
+    return response;
+  },
+
+  changePassword: (payload: ChangePasswordDto): Promise<ApiResponse<{ maTaiKhoan: string; username: string }>> =>
+    request("/auth/change-password", () => mockApi.changePassword(payload), json("PATCH", payload)),
+
+  getMe: async (): Promise<ApiResponse<TaiKhoan>> => {
+    try {
+      const response = typeof window !== "undefined"
+        ? await internalAuthRequest<TaiKhoan>("me", "GET")
+        : await request("/auth/me", () => mockApi.getMe());
+      syncVerifiedMockAccount(response.data);
+      return response;
+    } catch (error) {
+      syncVerifiedMockAccount(null);
+      setAccessToken(null);
+      throw error;
+    }
+  },
+
+  logout: async (): Promise<void> => {
+    if (typeof window !== "undefined") {
+      try {
+        await fetch("/api/auth/session", { method: "DELETE", credentials: "same-origin" });
+      } finally {
+        setAccessToken(null);
+        syncVerifiedMockAccount(null);
+      }
+      return;
+    }
+    setAccessToken(null);
+  },
+
+  getCustomerProfile: (): Promise<ApiResponse<KhachHang>> =>
+    request("/customers/profile", () => mockApi.getCustomerProfile()),
+
+  updateCustomerProfile: (payload: { hoTen: string; soDienThoai: string; email: string }): Promise<ApiResponse<KhachHang>> =>
+    request("/customers/profile", () => mockApi.updateCustomerProfile(payload), json("PUT", payload)),
+
+  getUsers: (params?: { vaiTro?: string; trangThai?: string }): Promise<ApiResponse<TaiKhoan[]>> =>
+    request(queryPath("/users", params), () => mockApi.getUsers(params)),
+
+  createUser: (payload: CreateUserDto): Promise<ApiResponse<TaiKhoan>> =>
+    request("/users", () => mockApi.createUser(payload), json("POST", payload)),
+
+  updateUserStatus: (maTaiKhoan: string, trangThai: TrangThaiTaiKhoan): Promise<ApiResponse<TaiKhoan>> => {
+    const path = `/users/${encodeURIComponent(maTaiKhoan)}/status`;
+    const body = { trangThai };
+    return request(path, () => mockApi.updateUserStatus(maTaiKhoan, trangThai), json("PATCH", body));
+  },
+
+  updateUserRole: (maTaiKhoan: string, vaiTro: VaiTroTaiKhoan): Promise<ApiResponse<TaiKhoan>> => {
+    const path = `/users/${encodeURIComponent(maTaiKhoan)}/role`;
+    const body = { vaiTro };
+    return request(path, () => mockApi.updateUserRole(maTaiKhoan, vaiTro), json("PATCH", body));
+  },
+
+  // Homestay, room types, amenities and rooms.
+  getHomestay: (): Promise<ApiResponse<Homestay>> =>
+    request("/homestay", () => mockApi.getHomestay()),
+
+  updateHomestay: (payload: Partial<Homestay>): Promise<ApiResponse<Homestay>> =>
+    request("/homestay", () => mockApi.updateHomestay(payload), json("PUT", payload)),
+
+  getHomestayRooms: (): Promise<ApiResponse<Phong[]>> =>
+    request("/homestay/rooms", () => mockApi.getHomestayRooms()),
+
+  getRoomTypes: (): Promise<ApiResponse<LoaiPhong[]>> =>
+    request("/room-types", () => mockApi.getRoomTypes()),
+
+  getRoomTypeById: (maLoaiPhong: string): Promise<ApiResponse<LoaiPhong>> =>
+    request(`/room-types/${encodeURIComponent(maLoaiPhong)}`, () => mockApi.getRoomTypeById(maLoaiPhong)),
+
+  createRoomType: (payload: Omit<LoaiPhong, "maLoaiPhong">): Promise<ApiResponse<LoaiPhong>> =>
+    request("/room-types", () => mockApi.createRoomType(payload), json("POST", payload)),
+
+  updateRoomType: (maLoaiPhong: string, payload: Partial<LoaiPhong>): Promise<ApiResponse<LoaiPhong>> =>
+    request(`/room-types/${encodeURIComponent(maLoaiPhong)}`, () => mockApi.updateRoomType(maLoaiPhong, payload), json("PUT", payload)),
+
+  deleteRoomType: (maLoaiPhong: string): Promise<ApiResponse<{ deleted: boolean; maLoaiPhong: string }>> =>
+    request(`/room-types/${encodeURIComponent(maLoaiPhong)}`, () => mockApi.deleteRoomType(maLoaiPhong), { method: "DELETE" }),
+
+  getAmenities: (): Promise<ApiResponse<TienNghi[]>> =>
+    request("/amenities", () => mockApi.getAmenities()),
+
+  createAmenity: (payload: Omit<TienNghi, "maTienNghi">): Promise<ApiResponse<TienNghi>> =>
+    request("/amenities", () => mockApi.createAmenity(payload), json("POST", payload)),
+
+  updateAmenity: (maTienNghi: string, payload: Partial<TienNghi>): Promise<ApiResponse<TienNghi>> =>
+    request(`/amenities/${encodeURIComponent(maTienNghi)}`, () => mockApi.updateAmenity(maTienNghi, payload), json("PUT", payload)),
+
+  deleteAmenity: (maTienNghi: string): Promise<ApiResponse<{ deleted: boolean; maTienNghi: string }>> =>
+    request(`/amenities/${encodeURIComponent(maTienNghi)}`, () => mockApi.deleteAmenity(maTienNghi), { method: "DELETE" }),
+
+  getRooms: (params?: { tang?: number; trangThai?: TrangThaiPhong; maLoaiPhong?: string }): Promise<ApiResponse<Phong[]>> =>
+    request(queryPath("/rooms", params), () => mockApi.getRooms(params)),
+
+  getRoomById: (maPhong: string): Promise<ApiResponse<Phong>> =>
+    request(`/rooms/${encodeURIComponent(maPhong)}`, () => mockApi.getRoomById(maPhong)),
+
+  createRoom: (payload: CreateRoomDto): Promise<ApiResponse<Phong>> =>
+    request("/rooms", () => mockApi.createRoom(payload), json("POST", payload)),
+
+  updateRoom: (maPhong: string, payload: UpdateRoomDto): Promise<ApiResponse<Phong>> =>
+    request(`/rooms/${encodeURIComponent(maPhong)}`, () => mockApi.updateRoom(maPhong, payload), json("PUT", payload)),
+
+  deleteRoom: (maPhong: string): Promise<ApiResponse<{ deleted: boolean; maPhong: string }>> =>
+    request(`/rooms/${encodeURIComponent(maPhong)}`, () => mockApi.deleteRoom(maPhong), { method: "DELETE" }),
+
+  updateRoomStatus: (maPhong: string, trangThai: TrangThaiPhong): Promise<ApiResponse<Phong>> => {
+    const path = `/rooms/${encodeURIComponent(maPhong)}/status`;
+    const body = { trangThai };
+    return request(path, () => mockApi.updateRoomStatus(maPhong, trangThai), json("PATCH", body));
+  },
+
+  completeRoomCleaning: (maPhong: string): Promise<ApiResponse<Phong>> => {
+    const path = `/rooms/${encodeURIComponent(maPhong)}/complete-cleaning`;
+    return request(path, () => mockApi.completeRoomCleaning(maPhong), json("POST", {}));
+  },
+
+  // Availability, booking and deposit.
+  getAvailableRooms: (params: {
+    ngayNhan: string;
+    ngayTra: string;
+    soKhach: number;
+    tienNghiIds?: string[];
+    maLoaiPhong?: string;
+  }): Promise<ApiResponse<AvailableRoomResult[]>> =>
+    request(queryPath("/rooms/available", params), () => mockApi.getAvailableRooms(params)),
+
+  createBooking: (payload: CreateBookingDto): Promise<ApiResponse<CreateBookingResult>> =>
+    request("/bookings", () => mockApi.createBooking(payload), json("POST", payload)),
+
+  getBookings: (params?: { trangThai?: TrangThaiDatPhong; maPhong?: string; tuNgay?: string; denNgay?: string }): Promise<ApiResponse<DatPhong[]>> =>
+    request(queryPath("/bookings", params), () => mockApi.getBookings(params)),
+
+  getBookingById: (maDatPhong: string): Promise<ApiResponse<DatPhong>> =>
+    request(`/bookings/${encodeURIComponent(maDatPhong)}`, () => mockApi.getBookingById(maDatPhong)),
+
+  getMyHistory: (): Promise<ApiResponse<DatPhong[]>> =>
+    request("/bookings/my-history", () => mockApi.getMyHistory()),
+
+  triggerPaymentWebhook: (payload: PaymentWebhookDto, idempotencyKey?: string): Promise<ApiResponse<WebhookResult>> =>
+    request(
+      "/payments/webhook",
+      () => mockApi.triggerPaymentWebhook(payload, idempotencyKey),
+      json("POST", payload, idempotencyKey ? { "Idempotency-Key": idempotencyKey } : undefined),
+    ),
+
+  getPaymentQr: (maDatPhong: string): Promise<ApiResponse<PaymentQrResult>> =>
+    request("/payments/create-qr", () => mockApi.getPaymentQr(maDatPhong), json("POST", { maDatPhong })),
+
+  lookupBookings: (tuKhoa: string): Promise<ApiResponse<DatPhong[]>> =>
+    request(queryPath("/bookings/lookup", { tuKhoa }), () => mockApi.lookupBookings(tuKhoa)),
+
+  getRefundPreview: (maDatPhong: string): Promise<ApiResponse<RefundPreviewResult>> =>
+    request(`/bookings/${encodeURIComponent(maDatPhong)}/refund-preview`, () => mockApi.getRefundPreview(maDatPhong)),
+
+  cancelBooking: (maDatPhong: string, lyDo: string): Promise<ApiResponse<CancelBookingResult>> => {
+    const path = `/bookings/${encodeURIComponent(maDatPhong)}/cancel`;
+    const payload = { lyDo };
+    return request(path, () => mockApi.cancelBooking(maDatPhong, lyDo), json("POST", payload));
+  },
+
+  // Check-in, service operations, invoices and PDF URL.
+  checkIn: (maDatPhong: string, payload: { soCCCD: string; ghiChuCheckIn?: string }): Promise<ApiResponse<CheckInResult>> =>
+    request(`/stays/${encodeURIComponent(maDatPhong)}/check-in`, () => mockApi.checkIn(maDatPhong, payload), json("POST", payload)),
+
+  getServices: (): Promise<ApiResponse<DichVu[]>> =>
+    request("/services", () => mockApi.getServices()),
+
+  createService: (payload: Omit<DichVu, "maDichVu">): Promise<ApiResponse<DichVu>> =>
+    request("/services", () => mockApi.createService(payload), json("POST", payload)),
+
+  updateService: (maDichVu: string, payload: Partial<DichVu>): Promise<ApiResponse<DichVu>> =>
+    request(`/services/${encodeURIComponent(maDichVu)}`, () => mockApi.updateService(maDichVu, payload), json("PUT", payload)),
+
+  deleteService: (maDichVu: string): Promise<ApiResponse<{ deleted: boolean; maDichVu: string }>> =>
+    request(`/services/${encodeURIComponent(maDichVu)}`, () => mockApi.deleteService(maDichVu), { method: "DELETE" }),
+
+  getStayServices: (maDatPhong: string): Promise<ApiResponse<StayServicesResult>> =>
+    request(`/stays/${encodeURIComponent(maDatPhong)}/services`, () => mockApi.getStayServices(maDatPhong)),
+
+  addStayService: (maDatPhong: string, payload: { maDichVu: string; soLuong: number }): Promise<ApiResponse<AddStayServiceResult>> =>
+    request(`/stays/${encodeURIComponent(maDatPhong)}/services`, () => mockApi.addStayService(maDatPhong, payload), json("POST", payload)),
+
+  removeStayService: (maDatPhong: string, maSuDung: string): Promise<ApiResponse<RemoveStayServiceResult>> =>
+    request(
+      `/stays/${encodeURIComponent(maDatPhong)}/services/${encodeURIComponent(maSuDung)}`,
+      () => mockApi.removeStayService(maDatPhong, maSuDung),
+      { method: "DELETE" },
+    ),
+
+  createCheckOutInvoice: (maDatPhong: string, payload: { phuPhi: number; phuongThuc?: string; ghiChuPhuPhi?: string }): Promise<ApiResponse<HoaDon>> =>
+    request(`/stays/${encodeURIComponent(maDatPhong)}/check-out-invoice`, () => mockApi.createCheckOutInvoice(maDatPhong, payload), json("POST", payload)),
+
+  getInvoiceById: (maHoaDon: string): Promise<ApiResponse<HoaDon>> =>
+    request(`/invoices/${encodeURIComponent(maHoaDon)}`, () => mockApi.getInvoiceById(maHoaDon)),
+
+  getInvoices: (): Promise<ApiResponse<HoaDon[]>> =>
+    request("/invoices", () => mockApi.getInvoices()),
+
+  payInvoice: (maHoaDon: string, payload: { phuongThuc: string }): Promise<ApiResponse<PayInvoiceResult>> =>
+    request(`/invoices/${encodeURIComponent(maHoaDon)}/pay`, () => mockApi.payInvoice(maHoaDon, payload), json("POST", payload)),
+
+  getInvoicePdfUrl: (maHoaDon: string): string =>
+    `${API_BASE_URL}/invoices/${encodeURIComponent(maHoaDon)}/pdf`,
+
+  downloadInvoicePdf: async (maHoaDon: string): Promise<Blob> => {
+    if (USE_MOCK) throw new ApiError("Dùng In biên lai / Lưu thành PDF với dữ liệu mock.", 400, null);
+    const headers = new Headers({ Accept: "application/pdf" });
+    const token = getAccessToken();
+    if (token) headers.set("Authorization", `Bearer ${token}`);
+    const response = await fetch(apiClient.getInvoicePdfUrl(maHoaDon), { headers, cache: "no-store" });
+    if (!response.ok) {
+      let message = `Không tải được biên lai (HTTP ${response.status}).`;
+      try { const payload = await response.json(); if (typeof payload.message === "string") message = payload.message; } catch { /* The PDF endpoint may return a plain error. */ }
+      if (response.status === 401) clearBrowserSession();
+      throw new ApiError(message, response.status, null);
+    }
+    if (!response.headers.get("Content-Type")?.toLowerCase().includes("application/pdf")) throw new ApiError("Phản hồi không phải tệp PDF.", response.status, null);
+    const blob = await response.blob();
+    if ((await blob.slice(0, 5).text()) !== "%PDF-") throw new ApiError("Nội dung tệp PDF không hợp lệ.", response.status, null);
+    return blob;
+  },
+
+  // Reviews and administrative reports.
+  getReviews: (params?: { maPhong?: string; maLoaiPhong?: string; soSao?: number }): Promise<ApiResponse<DanhGia[]>> =>
+    request(queryPath("/reviews", params), () => mockApi.getReviews(params)),
+
+  createReview: (payload: { maDatPhong: string; soSao: number; noiDung: string }): Promise<ApiResponse<DanhGia>> =>
+    request("/reviews", () => mockApi.createReview(payload), json("POST", payload)),
+
+  replyReview: (maDanhGia: string, phanHoiHost: string): Promise<ApiResponse<DanhGia>> => {
+    const path = `/reviews/${encodeURIComponent(maDanhGia)}/reply`;
+    const payload = { phanHoiHost };
+    return request(path, () => mockApi.replyReview(maDanhGia, phanHoiHost), json("PATCH", payload));
+  },
+
+  getRevenueStats: (params?: { tuNgay?: string; denNgay?: string; groupBy?: RevenueGroupBy }): Promise<ApiResponse<RevenueStatsResult>> =>
+    request(queryPath("/reports/revenue", params), () => mockApi.getRevenueStats(params)),
+
+  getOccupancyStats: (params?: { tuNgay?: string; denNgay?: string }): Promise<ApiResponse<OccupancyStatsResult>> =>
+    request(queryPath("/reports/occupancy", params), () => mockApi.getOccupancyStats(params)),
+};

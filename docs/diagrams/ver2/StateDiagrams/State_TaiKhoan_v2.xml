@@ -1,0 +1,53 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="app.diagrams.net" pages="1">
+  <diagram id="state_taikhoan_v2" name="State_TaiKhoan_v2">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1060" pageHeight="310" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="tk_init" value="" style="ellipse;html=1;shape=startState;fillColor=#000000;strokeColor=#000000;" vertex="1" parent="1">
+          <mxGeometry x="179" y="32" width="22" height="22" as="geometry" />
+        </mxCell>
+        <mxCell id="tk_active" value="ACTIVE (Đang hoạt động)" style="swimlane;fontStyle=1;align=center;verticalAlign=middle;startSize=30;rounded=1;arcSize=12;collapsible=0;fillColor=#FFFFFF;fontColor=#000000;strokeColor=#000000;strokeWidth=1.6;fontSize=13;html=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="148" width="380" height="112" as="geometry" />
+        </mxCell>
+        <mxCell id="tk_active_body" value="internal / login() → cấp JWT accessToken&lt;br&gt;internal / changePassword() [matKhauCu đúng]&lt;br&gt;internal / updateRole() [ADMIN ∧ hợp lệ]" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=10;spacingRight=8;fontSize=13;fontColor=#000000;whiteSpace=wrap;" vertex="1" parent="tk_active">
+          <mxGeometry y="30" width="380" height="82" as="geometry" />
+        </mxCell>
+        <mxCell id="tk_locked" value="LOCKED (Bị khóa)" style="swimlane;fontStyle=1;align=center;verticalAlign=middle;startSize=30;rounded=1;arcSize=12;collapsible=0;fillColor=#FFFFFF;fontColor=#000000;strokeColor=#000000;strokeWidth=1.6;fontSize=13;html=1;" vertex="1" parent="1">
+          <mxGeometry x="690" y="158" width="330" height="92" as="geometry" />
+        </mxCell>
+        <mxCell id="tk_locked_body" value="internal / login() → từ chối (403 Forbidden)&lt;br&gt;internal / findActiveAccount() → chặn JWT" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=10;spacingRight=8;fontSize=13;fontColor=#000000;whiteSpace=wrap;" vertex="1" parent="tk_locked">
+          <mxGeometry y="30" width="330" height="62" as="geometry" />
+        </mxCell>
+        <mxCell id="e_tk_init_active" value="register() / mặc định ACTIVE (CUSTOMER)&lt;br&gt;UsersService.create() [ADMIN ∧ trangThai != 'LOCKED']" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;endSize=10;strokeColor=#000000;strokeWidth=1.4;fontColor=#000000;fontSize=13;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="tk_init" target="tk_active">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="190" y="54" as="sourcePoint" />
+            <mxPoint x="190" y="148" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_tk_init_locked" value="UsersService.create() [ADMIN ∧ dto.trangThai == 'LOCKED']" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;endSize=10;strokeColor=#000000;strokeWidth=1.4;fontColor=#000000;fontSize=13;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="tk_init" target="tk_locked">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="201" y="43" as="sourcePoint" />
+            <mxPoint x="855" y="158" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="855" y="43" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_tk_lock" value="updateStatus(id, 'LOCKED')&lt;br&gt;[ADMIN ∧ id != actorId]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;endSize=10;strokeColor=#000000;strokeWidth=1.4;fontColor=#000000;fontSize=13;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="tk_active" target="tk_locked">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="420" y="180" as="sourcePoint" />
+            <mxPoint x="690" y="180" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_tk_unlock" value="updateStatus(id, 'ACTIVE') [ADMIN]" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=open;endFill=0;endSize=10;strokeColor=#000000;strokeWidth=1.4;fontColor=#000000;fontSize=13;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="tk_locked" target="tk_active">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="690" y="228" as="sourcePoint" />
+            <mxPoint x="420" y="228" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

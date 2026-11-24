@@ -1,0 +1,449 @@
+{
+  "info": {
+    "_postman_id": "sh11-deep-qa-postman-collection",
+    "name": "SweetHome SH-11 Deep QA Collection",
+    "description": "Bộ kịch bản kiểm thử Postman chuyên sâu phục vụ Task SH-11: DB (SH-02), Auth/RBAC (SH-07), SD01 & SD02 (SH-08).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:3001/api", "type": "string" },
+    { "key": "adminToken", "value": "", "type": "string" },
+    { "key": "staffToken", "value": "", "type": "string" },
+    { "key": "customerToken", "value": "", "type": "string" },
+    { "key": "testMaDatPhong", "value": "", "type": "string" },
+    { "key": "testMaPhong", "value": "P101", "type": "string" },
+    { "key": "tienCoc", "value": "0", "type": "string" },
+    { "key": "idempotencyKey", "value": "", "type": "string" }
+  ],
+  "item": [
+    {
+      "name": "1. Database SH-02 (SQL Verification Items)",
+      "item": [
+        {
+          "name": "1.1 Check Health Endpoint (BE + DB Connected)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/health", "host": ["{{baseUrl}}"], "path": ["health"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Auth & RBAC Security (SH-07)",
+      "item": [
+        {
+          "name": "2.1 Login - Wrong Password (Expect 401)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"WrongPass_2026!\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/auth/login", "host": ["{{baseUrl}}"], "path": ["auth", "login"] }
+          }
+        },
+        {
+          "name": "2.2 Login - Locked User (Expect 403)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"locked_user\",\n  \"password\": \"123456\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/auth/login", "host": ["{{baseUrl}}"], "path": ["auth", "login"] }
+          }
+        },
+        {
+          "name": "2.3 Unauthenticated Request to Protected Route (Expect 401)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/auth/me", "host": ["{{baseUrl}}"], "path": ["auth", "me"] }
+          }
+        },
+        {
+          "name": "2.4 Login Admin (Success 200 - Save adminToken)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res.data && res.data.accessToken) {",
+                  "  pm.collectionVariables.set('adminToken', res.data.accessToken);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"123456\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/auth/login", "host": ["{{baseUrl}}"], "path": ["auth", "login"] }
+          }
+        },
+        {
+          "name": "2.5 Login Staff (Success 200 - Save staffToken)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res.data && res.data.accessToken) {",
+                  "  pm.collectionVariables.set('staffToken', res.data.accessToken);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"staff_dalat\",\n  \"password\": \"123456\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/auth/login", "host": ["{{baseUrl}}"], "path": ["auth", "login"] }
+          }
+        },
+        {
+          "name": "2.6 Login Customer (Success 200 - Save customerToken)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res.data && res.data.accessToken) {",
+                  "  pm.collectionVariables.set('customerToken', res.data.accessToken);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"khanh_customer\",\n  \"password\": \"123456\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/auth/login", "host": ["{{baseUrl}}"], "path": ["auth", "login"] }
+          }
+        },
+        {
+          "name": "2.7 Customer Access Admin Route (Expect 403 Forbidden)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{customerToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tenLoaiPhong\": \"Forbidden Type\",\n  \"sucChuaToiDa\": 2,\n  \"giaNgayThuong\": 500000,\n  \"giaCuoiTuan\": 650000,\n  \"moTa\": \"Test Forbidden\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/room-types", "host": ["{{baseUrl}}"], "path": ["room-types"] }
+          }
+        },
+        {
+          "name": "2.8 Staff Access Admin Route (Expect 403 Forbidden)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{staffToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"tenLoaiPhong\": \"Staff Forbidden Type\",\n  \"sucChuaToiDa\": 2,\n  \"giaNgayThuong\": 500000,\n  \"giaCuoiTuan\": 650000,\n  \"moTa\": \"Test Forbidden\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/room-types", "host": ["{{baseUrl}}"], "path": ["room-types"] }
+          }
+        },
+        {
+          "name": "2.9 Admin Access Admin Route (Expect 200 OK)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "url": { "raw": "{{baseUrl}}/users", "host": ["{{baseUrl}}"], "path": ["users"] }
+          }
+        },
+        {
+          "name": "2.10 Admin Inherits Staff Permissions (PATCH /rooms/:id/status Expect 200)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"trangThai\": \"TRONG\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/rooms/{{testMaPhong}}/status", "host": ["{{baseUrl}}"], "path": ["rooms", "{{testMaPhong}}", "status"] }
+          }
+        },
+        {
+          "name": "2.11 Get Me (Expect 200, No passwordHash leak)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "url": { "raw": "{{baseUrl}}/auth/me", "host": ["{{baseUrl}}"], "path": ["auth", "me"] }
+          }
+        },
+        {
+          "name": "2.12 Tampered JWT Token (Expect 401 Unauthorized)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.invalid.signature" }
+            ],
+            "url": { "raw": "{{baseUrl}}/auth/me", "host": ["{{baseUrl}}"], "path": ["auth", "me"] }
+          }
+        },
+        {
+          "name": "2.13 Register With Unexpected Role (Expect 400 Bad Request)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"hacker_admin\",\n  \"password\": \"Password123!\",\n  \"hoTen\": \"Attacker\",\n  \"soDienThoai\": \"0988998877\",\n  \"email\": \"hacker@test.com\",\n  \"vaiTro\": \"ADMIN\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/auth/register", "host": ["{{baseUrl}}"], "path": ["auth", "register"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. SD01 Online Booking & Concurrency (SH-08)",
+      "item": [
+        {
+          "name": "3.1 Search Available Rooms - Valid Range",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/rooms/available?ngayNhan=2035-11-12&ngayTra=2035-11-15&soKhach=2",
+              "host": ["{{baseUrl}}"],
+              "path": ["rooms", "available"],
+              "query": [
+                { "key": "ngayNhan", "value": "2035-11-12" },
+                { "key": "ngayTra", "value": "2035-11-15" },
+                { "key": "soKhach", "value": "2" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "3.2 Search Available Rooms - Invalid Dates (Expect 400)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/rooms/available?ngayNhan=2035-11-15&ngayTra=2035-11-15&soKhach=2",
+              "host": ["{{baseUrl}}"],
+              "path": ["rooms", "available"],
+              "query": [
+                { "key": "ngayNhan", "value": "2035-11-15" },
+                { "key": "ngayTra", "value": "2035-11-15" },
+                { "key": "soKhach", "value": "2" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "3.3 Create Booking (Runner Concurrency Target: Expect 201 on 1st, 409 on duplicates)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (pm.response.code === 201 && res.data) {",
+                  "  pm.collectionVariables.set('testMaDatPhong', res.data.datPhong.maDatPhong);",
+                  "  pm.collectionVariables.set('tienCoc', res.data.datPhong.tienCoc);",
+                  "  pm.collectionVariables.set('idempotencyKey', 'KEY_' + res.data.datPhong.maDatPhong);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"maPhong\": \"{{testMaPhong}}\",\n  \"ngayNhan\": \"2035-11-20\",\n  \"ngayTra\": \"2035-11-23\",\n  \"soKhach\": 2,\n  \"hoTen\": \"Nguyễn Văn Test\",\n  \"soDienThoai\": \"0912345678\",\n  \"email\": \"testbooking@example.com\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/bookings", "host": ["{{baseUrl}}"], "path": ["bookings"] }
+          }
+        },
+        {
+          "name": "3.4 Create VietQR Payment Payload",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"maDatPhong\": \"{{testMaDatPhong}}\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/payments/create-qr", "host": ["{{baseUrl}}"], "path": ["payments", "create-qr"] }
+          }
+        },
+        {
+          "name": "3.5 Webhook 1st Execution (Expect 200, idempotentReplay = false)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Idempotency-Key", "value": "{{idempotencyKey}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"maDatPhong\": \"{{testMaDatPhong}}\",\n  \"maGiaoDich\": \"TXN_{{testMaDatPhong}}\",\n  \"soTien\": {{tienCoc}},\n  \"trangThaiGiaoDich\": \"THANH_CONG\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/payments/webhook", "host": ["{{baseUrl}}"], "path": ["payments", "webhook"] }
+          }
+        },
+        {
+          "name": "3.6 Webhook 2nd Execution - Idempotency Replay (Expect 200, idempotentReplay = true)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Idempotency-Key", "value": "{{idempotencyKey}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"maDatPhong\": \"{{testMaDatPhong}}\",\n  \"maGiaoDich\": \"TXN_{{testMaDatPhong}}\",\n  \"soTien\": {{tienCoc}},\n  \"trangThaiGiaoDich\": \"THANH_CONG\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/payments/webhook", "host": ["{{baseUrl}}"], "path": ["payments", "webhook"] }
+          }
+        },
+        {
+          "name": "3.7 Webhook 3rd Execution - Idempotency Replay (Expect 200, idempotentReplay = true)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Idempotency-Key", "value": "{{idempotencyKey}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"maDatPhong\": \"{{testMaDatPhong}}\",\n  \"maGiaoDich\": \"TXN_{{testMaDatPhong}}\",\n  \"soTien\": {{tienCoc}},\n  \"trangThaiGiaoDich\": \"THANH_CONG\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/payments/webhook", "host": ["{{baseUrl}}"], "path": ["payments", "webhook"] }
+          }
+        },
+        {
+          "name": "3.8 Webhook Amount Mismatch (Expect 409 Conflict)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"maDatPhong\": \"{{testMaDatPhong}}\",\n  \"maGiaoDich\": \"TXN_MISMATCH\",\n  \"soTien\": 1000,\n  \"trangThaiGiaoDich\": \"THANH_CONG\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/payments/webhook", "host": ["{{baseUrl}}"], "path": ["payments", "webhook"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. SD02 Cancellation & Refunds (SH-08)",
+      "item": [
+        {
+          "name": "4.1 Lookup Booking by Code or Phone",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/bookings/lookup?tuKhoa={{testMaDatPhong}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["bookings", "lookup"],
+              "query": [{ "key": "tuKhoa", "value": "{{testMaDatPhong}}" }]
+            }
+          }
+        },
+        {
+          "name": "4.2 Refund Preview",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/bookings/{{testMaDatPhong}}/refund-preview",
+              "host": ["{{baseUrl}}"],
+              "path": ["bookings", "{{testMaDatPhong}}", "refund-preview"]
+            }
+          }
+        },
+        {
+          "name": "4.3 Cancel Booking (Expect 200, Return Room to TRONG)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"lyDo\": \"Thay đổi lịch trình công tác\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bookings/{{testMaDatPhong}}/cancel",
+              "host": ["{{baseUrl}}"],
+              "path": ["bookings", "{{testMaDatPhong}}", "cancel"]
+            }
+          }
+        },
+        {
+          "name": "4.4 Replay Cancel Request - Idempotent (Expect 200)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"lyDo\": \"Gửi lại yêu cầu hủy\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bookings/{{testMaDatPhong}}/cancel",
+              "host": ["{{baseUrl}}"],
+              "path": ["bookings", "{{testMaDatPhong}}", "cancel"]
+            }
+          }
+        },
+        {
+          "name": "4.5 Cancel Non-Existent Booking (Expect 404 Not Found)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"lyDo\": \"Đơn không tồn tại\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/bookings/DP_NON_EXISTENT_9999/cancel",
+              "host": ["{{baseUrl}}"],
+              "path": ["bookings", "DP_NON_EXISTENT_9999", "cancel"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

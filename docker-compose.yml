@@ -1,0 +1,119 @@
+# ==============================================================================
+# SWEETHOME MONOREPO - DOCKER COMPOSE CONFIGURATION (SH-21)
+# Phục vụ:
+# - Chạy PostgreSQL 16 độc lập: `docker compose up -d postgres`
+# - Chạy toàn bộ hệ thống (DB + BE + FE): `docker compose up --build`
+# - Khởi tạo sạch từ đầu (Pre-QA): `docker compose down -v && docker compose up --build`
+# ==============================================================================
+
+services:
+  # ----------------------------------------------------------------------------
+  # 1. POSTGRESQL 16 DATABASE (Cổng 5432 - SH-02, SH-03, SH-14, SH-21)
+  # ----------------------------------------------------------------------------
+  postgres:
+    image: postgres:16-alpine
+    container_name: sweethome-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-sweethome_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-sweethome_secret_2026}
+      POSTGRES_DB: ${POSTGRES_DB:-sweethome_db}
+      TZ: Asia/Ho_Chi_Minh
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - sweethome_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-sweethome_user} -d ${POSTGRES_DB:-sweethome_db}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
+    networks:
+      - sweethome-network
+
+  # ----------------------------------------------------------------------------
+  # 2. NESTJS BACKEND API (Cổng 3001 - SH-04, SH-07, SH-08, SH-14, SH-15, SH-16, SH-21)
+  # ----------------------------------------------------------------------------
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: sweethome-backend
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      PORT: 3001
+      API_PREFIX: ${API_PREFIX:-api}
+      DATABASE_URL: "postgresql://${POSTGRES_USER:-sweethome_user}:${POSTGRES_PASSWORD:-sweethome_secret_2026}@postgres:5432/${POSTGRES_DB:-sweethome_db}?schema=public"
+      JWT_SECRET: ${JWT_SECRET:-sweethome_super_secret_jwt_key_2026_v2_ooad}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-7d}
+      BCRYPT_SALT_ROUNDS: ${BCRYPT_SALT_ROUNDS:-10}
+      DEPOSIT_RATE: ${DEPOSIT_RATE:-0.3}
+      REFUND_FULL_HOURS: ${REFUND_FULL_HOURS:-72}
+      REFUND_HALF_HOURS: ${REFUND_HALF_HOURS:-24}
+      CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost:3000}
+      PAYMENT_GATEWAY_MODE: ${PAYMENT_GATEWAY_MODE:-mock}
+      PAYMENT_WEBHOOK_SECRET: ${PAYMENT_WEBHOOK_SECRET:-sweethome_webhook_secret_2026}
+      VIETQR_BANK_ID: ${VIETQR_BANK_ID:-MB}
+      VIETQR_ACCOUNT_NO: ${VIETQR_ACCOUNT_NO:-0987654321}
+      VIETQR_ACCOUNT_NAME: ${VIETQR_ACCOUNT_NAME:-HOMESTAY SWEETHOME}
+      TZ: Asia/Ho_Chi_Minh
+    ports:
+      - "3001:3001"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:3001/api/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 25s
+    networks:
+      - sweethome-network
+
+  # ----------------------------------------------------------------------------
+  # 3. NEXT.JS FRONTEND WEB APP (Cổng 3000 - SH-05, SH-09, SH-10, SH-17, SH-18, SH-21)
+  # ----------------------------------------------------------------------------
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:3001/api}
+        NEXT_PUBLIC_USE_MOCK: "false"
+        NEXT_PUBLIC_ENABLE_PAYMENT_SIMULATOR: ${NEXT_PUBLIC_ENABLE_PAYMENT_SIMULATOR:-false}
+    container_name: sweethome-frontend
+    restart: unless-stopped
+    depends_on:
+      backend:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      INTERNAL_API_URL: http://backend:3001/api
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:3001/api}
+      NEXT_PUBLIC_USE_MOCK: "false"
+      NEXT_PUBLIC_ENABLE_PAYMENT_SIMULATOR: ${NEXT_PUBLIC_ENABLE_PAYMENT_SIMULATOR:-false}
+      SWEETHOME_SESSION_SECRET: ${SWEETHOME_SESSION_SECRET:-sweethome_docker_session_secret_2026_v2_ooad}
+      TZ: Asia/Ho_Chi_Minh
+    ports:
+      - "3000:3000"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:3000 || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 15s
+    networks:
+      - sweethome-network
+
+volumes:
+  sweethome_pgdata:
+    name: sweethome_pgdata
+
+networks:
+  sweethome-network:
+    name: sweethome-network
+    driver: bridge
