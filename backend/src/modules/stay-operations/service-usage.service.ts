@@ -42,10 +42,7 @@ export class StayServiceUsageService {
     bookingId: string,
     tienDichVu: number,
   ): Promise<void> {
-    if (
-      typeof tx.hoaDon?.findUnique !== 'function' ||
-      typeof tx.hoaDon?.update !== 'function'
-    ) {
+    if (typeof tx.hoaDon?.findUnique !== 'function' || typeof tx.hoaDon?.update !== 'function') {
       return;
     }
     const draft = await tx.hoaDon.findUnique({ where: { maDatPhong: bookingId } });
